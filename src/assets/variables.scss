@@ -1,0 +1,7 @@
+$primary-color: #aea88f;
+$text-color: #be5400;
+
+:export {
+    textColor: $text-color;
+    primaryColor: $primary-color;
+}
