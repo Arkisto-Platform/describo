@@ -6,8 +6,8 @@ Vue.use(VueRouter);
 
 import ShellComponent from "components/Shell.component.vue";
 import BadRequestComponent from "components/BadRequest.component.vue";
-import TargetSelectionComponent from "components/TargetSelection/Shell.component.vue";
-import IntroductionComponent from "components/Introduction.component.vue";
+import DescribeShellComponent from "components/DescribeShell.component.vue";
+import IntroductionShellComponent from "components/IntroductionShell.component.vue";
 
 export const router = new VueRouter({
     routes: [
@@ -18,11 +18,11 @@ export const router = new VueRouter({
             children: [
                 {
                     path: "introduction",
-                    component: IntroductionComponent
+                    component: IntroductionShellComponent
                 },
                 {
-                    path: "target-selection",
-                    component: TargetSelectionComponent
+                    path: "describe",
+                    component: DescribeShellComponent
                 }
             ]
         }
