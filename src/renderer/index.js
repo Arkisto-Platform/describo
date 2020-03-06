@@ -2,6 +2,7 @@
 
 import "core-js/stable";
 import "regenerator-runtime/runtime";
+import "source-map-support/register";
 
 import "assets/tailwind.scss";
 import "element-ui/lib/theme-chalk/index.css";

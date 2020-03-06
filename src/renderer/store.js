@@ -8,14 +8,17 @@ const configuration = {
     strict: process.env.NODE_ENV !== "production",
     state: reset(),
     mutations: {
+        setFolder(state, payload) {
+            this.state.folder = payload.folder;
+        }
     },
-    actions: {
-    },
+    actions: {},
     getters: {}
 };
 export const store = new Vuex.Store(configuration);
 
 function reset() {
     return {
+        folder: null
     };
 }
