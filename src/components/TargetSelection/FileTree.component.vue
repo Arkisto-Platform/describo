@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { FileTreeLoader } from "./file-tree-loader";
+import FileTreeLoader from "./file-tree-loader";
 import path from "path";
 
 export default {
