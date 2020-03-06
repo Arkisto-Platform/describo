@@ -4,15 +4,15 @@ import fs from "fs-extra";
 import { spawn } from "child_process";
 import { mapKeys, camelCase } from "lodash";
 
-export class FileTreeLoader {
+export default class FileTreeLoader {
     constructor({ target }) {
         this.target = target;
     }
 
     async load(path) {
         const rclone = this.rclone();
-        console.log("PATH", path);
-        console.log("RCLONE BINARY", rclone, await fs.pathExists(rclone));
+        // console.log("PATH", path);
+        // console.log("RCLONE BINARY", rclone, await fs.pathExists(rclone));
 
         let content = await new Promise(resolve => {
             let content = "";
