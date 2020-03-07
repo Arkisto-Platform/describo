@@ -18,6 +18,7 @@ The tool to describe and package data.
 -   [VueJS](https://vuejs.org/)
 -   [ElementFE - component toolkit](https://element.eleme.io/#/en-US/component/installation)
 -   [TailwindCSS](https://tailwindcss.com/docs/installation/)
+-   [Fontawesome Free Icons](https://fontawesome.com/)
 -   [rclone](https://rclone.org/)
 -   [Jest - tests](https://jestjs.io/en/)
 

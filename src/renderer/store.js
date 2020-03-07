@@ -10,6 +10,9 @@ const configuration = {
     mutations: {
         setFolder(state, payload) {
             this.state.folder = payload.folder;
+        },
+        setProfile(state, payload) {
+            this.state.profile = payload.profile;
         }
     },
     actions: {},
@@ -19,6 +22,7 @@ export const store = new Vuex.Store(configuration);
 
 function reset() {
     return {
-        folder: null
+        folder: null,
+        profile: null
     };
 }

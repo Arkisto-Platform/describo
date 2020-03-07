@@ -13,10 +13,20 @@
             </div>
             <div class="flex-grow"></div>
             <div>
-                <el-button @click="describeThisFolder" type="success" :disabled="!this.folder">
-                    describe this folder
-                    <i class="fas fa-arrow-right"></i>
-                </el-button>
+                <el-button
+                    type="success"
+                    @click="describeThisFolder"
+                    :disabled="!this.folder"
+                >
+                    <div class="pb-2 text-2xl inline-block">
+                        describe this folder
+                    </div>
+
+                    <i
+                        class="fas fa-long-arrow-alt-right fa-2x"
+                        data-fa-transform="down-2"
+                    ></i
+                ></el-button>
             </div>
         </div>
         <div class="flex flex-col my-4" v-if="folder">
