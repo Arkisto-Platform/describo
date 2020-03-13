@@ -8,12 +8,9 @@
         </div>
         <div class="my-6">
             <el-button type="success" @click="storeProfile">
-                <div class="pb-2 text-2xl inline-block">
-                    Use the default profile
-                </div>
-
+                Use the default profile
                 <i
-                    class="fas fa-long-arrow-alt-right fa-2x"
+                    class="fas fa-long-arrow-alt-right"
                     data-fa-transform="down-2"
                 ></i
             ></el-button>

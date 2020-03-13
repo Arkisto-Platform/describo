@@ -18,14 +18,8 @@
                     @click="describeThisFolder"
                     :disabled="!this.folder"
                 >
-                    <div class="pb-2 text-2xl inline-block">
-                        describe this folder
-                    </div>
-
-                    <i
-                        class="fas fa-long-arrow-alt-right fa-2x"
-                        data-fa-transform="down-2"
-                    ></i
+                    describe this folder
+                    <i class="fas fa-long-arrow-alt-right"></i
                 ></el-button>
             </div>
         </div>
