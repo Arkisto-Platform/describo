@@ -2,7 +2,9 @@
     <div class="flex flex-row">
         <el-input
             class="style-text-input"
+            @focus="focus"
             @input="debouncedSave"
+            @change="save"
             v-model="value"
             :required="input.required"
             v-if="input.required || enabled"
@@ -43,9 +45,9 @@ export default {
         save() {
             this.$emit("save", this.value);
             this.saved = true;
-            setTimeout(() => {
-                this.saved = false;
-            }, 2000);
+        },
+        focus() {
+            this.saved = false;
         },
         add() {
             this.enabled = true;
