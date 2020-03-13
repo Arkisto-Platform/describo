@@ -68,9 +68,13 @@ export default {
         },
         methods: {
             save() {
-                const params = Object.keys(this.$data.properties).map(p => {
+                let params = Object.keys(this.$data.properties).map(p => {
                     return { k: p, v: this.properties[p] };
                 });
+                params = params.reduce(
+                    (map, obj) => ((map[obj.k] = obj.v), map),
+                    {}
+                );
                 save({
                     store: this.$store,
                     params

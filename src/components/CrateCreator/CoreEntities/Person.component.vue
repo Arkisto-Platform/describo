@@ -65,7 +65,7 @@ export default {
     },
     methods: {
         save() {
-            params = Object.keys(this.$data.properties).map(p => {
+            let params = Object.keys(this.$data.properties).map(p => {
                 return { k: p, v: this.properties[p] };
             });
             params = params.reduce(
