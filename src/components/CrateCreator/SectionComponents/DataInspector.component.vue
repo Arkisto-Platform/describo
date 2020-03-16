@@ -33,6 +33,14 @@
                         <i class="fas fa-eye"></i> inspect graph
                     </el-button>
                 </div>
+                <div>
+                    <el-input
+                        v-model="filterId"
+                        placeholder="search for id"
+                        v-if="title === 'Graph'"
+                        @input="debouncedFilterGraph"
+                    ></el-input>
+                </div>
                 <div class="p-4 rounded style-content-area overflow-scroll">
                     <pre>{{ content }}</pre>
                 </div>
@@ -42,6 +50,7 @@
 </template>
 
 <script>
+import { debounce } from "lodash";
 export default {
     props: {
         data: {
@@ -55,7 +64,9 @@ export default {
     data() {
         return {
             content: {},
-            title: undefined
+            title: undefined,
+            filterId: undefined,
+            debouncedFilterGraph: debounce(this.filterGraph, 100)
         };
     },
     watch: {
@@ -77,6 +88,15 @@ export default {
             setTimeout(() => {
                 this.$refs.graphSelectionBtn.$el.blur();
             }, 100);
+        },
+        filterGraph() {
+            if (!this.filterId) {
+                this.content = [...this.$store.state.graph];
+            } else {
+                this.content = this.$store.state.graph.filter(item =>
+                    item["@id"].match(this.filterId)
+                );
+            }
         }
     }
 };
