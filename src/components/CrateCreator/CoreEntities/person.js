@@ -11,6 +11,7 @@ export const properties = {
 export function save({ store, params }) {
     // params = params.reduce((map, obj) => ((map[obj.k] = obj.v), map), {});
     const person = {
+        uuid: params.uuid,
         "@id": params.id,
         "@type": "Person",
         name: params.name,
@@ -41,7 +42,7 @@ export function restore({ store, id }) {
         props.visible = false;
         return props;
     } else {
-        props.id = id;
+        props.uuid = id;
         props.identifierId = generateId();
         props.visible = true;
         return props;
