@@ -47,23 +47,34 @@
 
 <script>
 import { save, restore } from "./person.js";
-import apiMixins from "./api.mixins";
 
 export default {
-    mixins: [apiMixins],
+    props: {
+        input: {
+            type: Object,
+            required: true
+        }
+    },
     data() {
         return {
+            properties: {
+                visible: false
+            },
             idTypes: ["ORCID", "LinkedIn", "other"]
         };
     },
     created() {
         const properties = restore({
             store: this.$store,
-            id: this.input["@id"]
+            id: this.input.uuid
         });
         this.$data.properties = { ...properties };
     },
     methods: {
+        cancel() {
+            this.$emit("cancel", this.properties.uuid);
+            this.properties.visible = false;
+        },
         save() {
             let params = Object.keys(this.$data.properties).map(p => {
                 return { k: p, v: this.properties[p] };
@@ -76,7 +87,7 @@ export default {
                 store: this.$store,
                 params
             });
-            this.$emit("save", this.properties.id);
+            this.$emit("save", this.properties.uuid);
             this.properties.visible = false;
         }
     }

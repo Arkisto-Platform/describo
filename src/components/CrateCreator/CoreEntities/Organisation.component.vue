@@ -49,14 +49,19 @@
 
 <script>
 import { save, restore } from "./organisation.js";
-import apiMixins from "./api.mixins";
 
 export default {
-    mixins: [apiMixins],
     props: {
         input: {
             type: Object,
             required: true
+        },
+        data() {
+            return {
+                properties: {
+                    visible: false
+                }
+            };
         },
         created() {
             const properties = restore({
@@ -67,6 +72,10 @@ export default {
             this.$data.properties = { ...properties };
         },
         methods: {
+            cancel() {
+                this.$emit("cancel", this.properties.uuid);
+                this.properties.visible = false;
+            },
             save() {
                 let params = Object.keys(this.$data.properties).map(p => {
                     return { k: p, v: this.properties[p] };
