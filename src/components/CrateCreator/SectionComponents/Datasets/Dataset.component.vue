@@ -52,7 +52,7 @@ export default {
         return {
             dataInspector: false,
             dataset: {
-                "@id": this.id || generateId()
+                uuid: this.id || generateId()
             }
         };
     },

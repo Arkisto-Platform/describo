@@ -59,7 +59,7 @@ export default {
     methods: {
         add(type) {
             const add = {
-                "@id": generateId(),
+                uuid: generateId(),
                 "@type": type
             };
             this.input.items.push(add);
@@ -67,7 +67,7 @@ export default {
                 this.addItems = false;
         },
         cancel(id) {
-            this.input.items = this.input.items.filter(i => i["@id"] !== id);
+            this.input.items = this.input.items.filter(i => i.uuid !== id);
             this.$emit("save", {
                 property: this.property,
                 items: this.input.items
