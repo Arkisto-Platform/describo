@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col my-2">
-        <div class="w-32 my-auto text-left text-sm pr-2">
+        <div class="my-auto text-left text-sm pr-2">
             {{ label }}
         </div>
 
@@ -29,6 +29,12 @@
             v-if="input['@type'] === 'Text'"
             @save="save"
         />
+        <date-component
+            class="w-full"
+            :input="input"
+            v-if="input['@type'] === 'Date'"
+            @save="save"
+        />
     </div>
 </template>
 
@@ -36,6 +42,7 @@
 import AddControl from "./AddControl.component.vue";
 import RenderItemComponent from "./RenderItem.component.vue";
 import TextComponent from "components/CrateCreator/CoreEntities/Text.component.vue";
+import DateComponent from "components/CrateCreator/CoreEntities/Date.component.vue";
 import { generateId } from "components/CrateCreator/tools";
 import { cloneDeep, uniqBy } from "lodash";
 import { shortName } from "src/renderer/filters";
@@ -44,7 +51,8 @@ export default {
     components: {
         AddControl,
         RenderItemComponent,
-        TextComponent
+        TextComponent,
+        DateComponent
     },
     props: {
         input: {
@@ -80,7 +88,7 @@ export default {
             });
         },
         save(value) {
-            if (["Text"].includes(this.input["@type"])) {
+            if (["Text", "Date"].includes(this.input["@type"])) {
                 this.$emit("save", {
                     property: this.property,
                     value
