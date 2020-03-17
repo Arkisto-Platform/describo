@@ -20,10 +20,10 @@ export default {
             },
             {
                 property: "datePublished",
-                label: "Date Published",
+                label: "Date Published (your local date)",
 
                 // the type of element: one of the core types in components/CrateCreator/components
-                "@type": "Text"
+                "@type": "Date"
             },
             {
                 property: "author",
