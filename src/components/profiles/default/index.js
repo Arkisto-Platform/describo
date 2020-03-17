@@ -4,7 +4,7 @@ export default {
         extensible: true
     },
     DataTypes: {
-        Dataset: [
+        RootDataset: [
             {
                 // the schema element to write this data against
                 property: "name",

@@ -10,13 +10,13 @@
             v-if="ready"
         >
             <el-tab-pane
-                label="Datasets"
+                label="RO-Crate Root Dataset"
                 class="overflow-scroll set-tab-height m-2"
             >
-                <datasets-component
+                <root-dataset-component
                     :profile="profile"
                     v-if="activeTab === 'Datasets'"
-                ></datasets-component>
+                ></root-dataset-component>
             </el-tab-pane>
             <el-tab-pane label="People"></el-tab-pane>
             <el-tab-pane label="Organisations"></el-tab-pane>
@@ -28,11 +28,11 @@
 <script>
 import { cloneDeep } from "lodash";
 import ProfileLoader from "./profile-loader";
-import DatasetsComponent from "./SectionComponents/Datasets/Shell.component.vue";
+import RootDatasetComponent from "./SectionComponents/RootDataset/Shell.component.vue";
 
 export default {
     components: {
-        DatasetsComponent
+        RootDatasetComponent
     },
     data() {
         return {
