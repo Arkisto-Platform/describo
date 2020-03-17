@@ -15,7 +15,7 @@
             >
                 <root-dataset-component
                     :profile="profile"
-                    v-if="activeTab === 'Datasets'"
+                    v-if="activeTab === 'RO-Crate Root Dataset'"
                 ></root-dataset-component>
             </el-tab-pane>
             <el-tab-pane label="People"></el-tab-pane>
@@ -38,7 +38,7 @@ export default {
         return {
             profile: {},
             dataTypes: [],
-            activeTab: "Datasets",
+            activeTab: "RO-Crate Root Dataset",
             ready: false
         };
     },
