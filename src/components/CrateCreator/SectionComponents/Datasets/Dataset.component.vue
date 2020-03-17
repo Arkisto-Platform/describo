@@ -17,7 +17,11 @@
         <div class="flex flex-col flex-grow">
             <div v-for="(input, idx) of inputs" :key="idx">
                 <!-- <pre>{{ input }}</pre> -->
-                <render-entry-component :input="input" @save="save" />
+                <render-entry-component
+                    :input="input"
+                    :reference="dataset.uuid"
+                    @save="save"
+                />
             </div>
         </div>
         <data-inspector-component

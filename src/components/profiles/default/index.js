@@ -34,6 +34,16 @@ export default {
 
                 // can there be multiple authors?
                 multiple: true
+            },
+            {
+                property: "participant",
+                label: "Participant",
+
+                // the type of element: one of the core types in components/CrateCreator/components
+                "@type": ["Person", "Organisation"],
+
+                // can there be multiple authors?
+                multiple: true
             }
             // {
             //     property: "hasPart",

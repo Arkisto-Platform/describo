@@ -4,7 +4,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 Vue.use(Vuex);
 
-import { groupBy, uniqBy } from "lodash";
+import { groupBy, uniqBy, merge } from "lodash";
 import { stat } from "fs";
 
 const state = reset();
@@ -21,7 +21,15 @@ export const mutations = {
         //     '@type': ['Dataset' | 'Person' | ... ],
         //     ...:...
         // }
-        state.itemsById[payload["@id"]] = payload;
+        let cache = {};
+        if (state.itemsById[payload.uuid])
+            cache = state.itemsById[payload.uuid];
+        state.itemsById[payload.uuid] = { ...payload };
+        if (cache.reference && payload.reference)
+            state.itemsById[payload.uuid].reference = [
+                ...payload.reference,
+                ...cache.reference
+            ];
         state.graph = Object.keys(state.itemsById).map(
             key => state.itemsById[key]
         );
@@ -33,11 +41,22 @@ export const mutations = {
         //     '@type': ['Dataset' | 'Person' | ... ],
         //     ...:...
         // }
-        state.graph = state.graph.filter(
-            item => item["@id"] !== payload["@id"]
+        const { uuid, reference } = payload;
+        if (state.itemsById[uuid]) {
+            if (reference && state.itemsById[uuid].reference) {
+                state.itemsById[uuid].reference = state.itemsById[
+                    uuid
+                ].reference.filter(r => r !== reference);
+                if (!state.itemsById[uuid].reference.length)
+                    delete state.itemsById[uuid];
+            } else if (!reference) {
+                delete state.itemsById[uuid];
+            }
+        }
+        state.graph = Object.keys(state.itemsById).map(
+            key => state.itemsById[key]
         );
         state.itemsByType = groupBy(state.graph, "@type");
-        state.itemsById = groupBy(state.graph, "@id");
     },
     reset(state) {
         state.graph = [];

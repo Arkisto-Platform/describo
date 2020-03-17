@@ -94,7 +94,7 @@ export default {
                 this.content = [...this.$store.state.graph];
             } else {
                 this.content = this.$store.state.graph.filter(item =>
-                    item["@id"].match(this.filterId)
+                    item.uuid.match(this.filterId)
                 );
             }
         }

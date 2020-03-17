@@ -9,3 +9,12 @@ function uuidv4() {
 export function generateId() {
     return `#${uuidv4()}`;
 }
+
+export function getParams({ properties, reference }) {
+    let params = Object.keys(properties).map(p => {
+        return { k: p, v: properties[p] };
+    });
+    params = params.reduce((map, obj) => ((map[obj.k] = obj.v), map), {});
+    params.reference = reference;
+    return params;
+}

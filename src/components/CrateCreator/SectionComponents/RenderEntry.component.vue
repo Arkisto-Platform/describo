@@ -17,8 +17,10 @@
                     v-for="item of input.items"
                     :key="item['@id']"
                     :item="item"
+                    :reference="generateParentId()"
                     @cancel="cancel"
                     @save="save"
+                    @replace="replace"
                 />
             </div>
         </div>
@@ -35,7 +37,7 @@ import AddControl from "./AddControl.component.vue";
 import RenderItemComponent from "./RenderItem.component.vue";
 import TextComponent from "components/CrateCreator/CoreEntities/Text.component.vue";
 import { generateId } from "components/CrateCreator/tools";
-import { cloneDeep } from "lodash";
+import { cloneDeep, uniqBy } from "lodash";
 import { shortName } from "src/renderer/filters";
 
 export default {
@@ -47,6 +49,10 @@ export default {
     props: {
         input: {
             type: Object,
+            required: true
+        },
+        reference: {
+            type: String,
             required: true
         }
     },
@@ -85,6 +91,25 @@ export default {
                     items: this.input.items
                 });
             }
+        },
+        replace(payload) {
+            this.input.items = this.input.items.map(item => {
+                if (item.uuid === payload.old) {
+                    return {
+                        ...item,
+                        uuid: payload.new
+                    };
+                }
+                return item;
+            });
+            this.input.items = uniqBy(this.input.items, "uuid");
+            this.$emit("save", {
+                property: this.property,
+                items: this.input.items
+            });
+        },
+        generateParentId() {
+            return `${this.reference}-${this.property}`;
         }
     }
 };

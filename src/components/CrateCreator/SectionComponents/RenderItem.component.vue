@@ -2,8 +2,10 @@
     <component
         v-bind:is="component"
         :input="item"
+        :reference="reference"
         @cancel="cancel"
         @save="save"
+        @replace="replace"
     ></component>
 </template>
 
@@ -14,6 +16,10 @@ export default {
     props: {
         item: {
             type: Object,
+            required: true
+        },
+        reference: {
+            type: String,
             required: true
         }
     },
@@ -32,6 +38,9 @@ export default {
         },
         save(payload) {
             this.$emit("save", payload);
+        },
+        replace(payload) {
+            this.$emit("replace", payload);
         }
     }
 };
