@@ -2,16 +2,16 @@
     <div class="flex flex-col">
         <div class="style-controls-row border-b-2 pb-2">
             <div class="flex flex-row">
-                <el-button @click="destroy" type="danger">
+                <!-- <el-button @click="destroy" type="danger">
                     <i class="fas fa-trash-alt"></i>
-                </el-button>
+                </el-button> -->
                 <div class="flex-grow"></div>
                 <el-button @click="dataInspector = true" type="primary">
                     <i class="fas fa-eye"></i> inspect data
                 </el-button>
-                <el-button @click="done" type="success">
+                <!-- <el-button @click="done" type="success">
                     <i class="fas fa-check"></i>&nbsp;done
-                </el-button>
+                </el-button> -->
             </div>
         </div>
         <div class="flex flex-col flex-grow">
@@ -80,13 +80,13 @@ export default {
         updateDataset({ property, items, value }) {
             if (value) this.dataset = { ...this.dataset, [property]: value };
             if (items) this.dataset = { ...this.dataset, [property]: items };
-        },
-        done() {
-            this.$emit("done");
-        },
-        destroy() {
-            this.$emit("destroy", this.dataset);
         }
+        // done() {
+        //     this.$emit("done");
+        // },
+        // destroy() {
+        //     this.$emit("destroy", this.dataset);
+        // }
     }
 };
 </script>
