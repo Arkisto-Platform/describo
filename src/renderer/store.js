@@ -17,19 +17,25 @@ export const mutations = {
     },
     saveToGraph(state, payload) {
         // payload = {
-        //     '@id': 'xxx',
+        //     'uuid': 'xxx',
         //     '@type': ['Dataset' | 'Person' | ... ],
         //     ...:...
         // }
+        if (!payload.uuid || !payload["@type"]) {
+            throw new Error(
+                "Each item saved to the store must have 'uuid' and '@type' properties"
+            );
+            return;
+        }
         let cache = {};
         if (state.itemsById[payload.uuid])
             cache = state.itemsById[payload.uuid];
         state.itemsById[payload.uuid] = { ...payload };
-        if (cache.reference && payload.reference)
-            state.itemsById[payload.uuid].reference = [
-                ...payload.reference,
-                ...cache.reference
-            ];
+        if (cache["@reverse"] && payload["@reverse"])
+            state.itemsById[payload.uuid]["@reverse"] = {
+                ...cache["@reverse"],
+                ...payload["@reverse"]
+            };
         state.graph = Object.keys(state.itemsById).map(
             key => state.itemsById[key]
         );
@@ -37,21 +43,29 @@ export const mutations = {
     },
     removeFromGraph(state, payload) {
         // payload = {
-        //     '@id': 'xxx',
-        //     '@type': ['Dataset' | 'Person' | ... ],
+        //     'uuid': 'xxx',
         //     ...:...
         // }
-        const { uuid, reference } = payload;
-        if (state.itemsById[uuid]) {
-            if (reference && state.itemsById[uuid].reference) {
-                state.itemsById[uuid].reference = state.itemsById[
-                    uuid
-                ].reference.filter(r => r !== reference);
-                if (!state.itemsById[uuid].reference.length)
-                    delete state.itemsById[uuid];
-            } else if (!reference) {
-                delete state.itemsById[uuid];
+        if (!payload.uuid) {
+            throw new Error(
+                "Each item saved to the store must have 'uuid' and '@type' properties"
+            );
+            return;
+        }
+        const { uuid } = payload;
+        let item = { ...state.itemsById[uuid] };
+        if (!item) return;
+
+        if (payload["@reverse"] && item["@reverse"]) {
+            let reverseProperties = Object.keys(payload["@reverse"]);
+            for (let prop of reverseProperties) {
+                delete item["@reverse"][prop];
             }
+            reverseProperties = Object.keys(item["@reverse"]);
+            state.itemsById[uuid] = { ...item };
+            if (!reverseProperties.length) delete state.itemsById[uuid];
+        } else if (!payload["@reverse"]) {
+            delete state.itemsById[uuid];
         }
         state.graph = Object.keys(state.itemsById).map(
             key => state.itemsById[key]
