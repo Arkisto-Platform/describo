@@ -47,6 +47,7 @@ export default {
             inputs: cloneDeep(this.profile.DataTypes.RootDataset),
             dataInspector: false,
             dataset: {
+                "@type": "RootDataset",
                 uuid: generateId()
             }
         };
