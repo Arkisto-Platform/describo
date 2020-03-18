@@ -35,6 +35,9 @@
             v-if="input['@type'] === 'Date'"
             @save="save"
         />
+        <div v-if="input['@type'] === 'Value'" @blur="add(input.value)">
+            {{ input.value }}
+        </div>
     </div>
 </template>
 

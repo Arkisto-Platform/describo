@@ -6,6 +6,15 @@ export default {
     DataTypes: {
         RootDataset: [
             {
+                // If you want to add a property with a specific value
+                //  set @type = "value"
+                //  and specify the value
+                property: "additionalType",
+                label: "Additional Type",
+                "@type": "Value",
+                value: "item"
+            },
+            {
                 // the schema element to write this data against
                 property: "name",
 
