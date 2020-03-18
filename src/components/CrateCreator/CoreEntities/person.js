@@ -15,7 +15,7 @@ export function save({ store, params }) {
         "@type": "Person",
         name: params.name,
         identifier: params.identifierId,
-        reference: [params.reference]
+        "@reverse": params["@reverse"]
     };
     store.commit("saveToGraph", person);
 
@@ -52,10 +52,7 @@ export function restore({ store, id }) {
 }
 
 export function remove({ store, params }) {
-    store.commit("removeFromGraph", {
-        uuid: params.uuid,
-        reference: params.reference
-    });
+    store.commit("removeFromGraph", params);
     if (!store.state.itemsById[params.uuid]) {
         // go ahead and remove all related things
         store.commit("removeFromGraph", { uuid: params.identifierId });
