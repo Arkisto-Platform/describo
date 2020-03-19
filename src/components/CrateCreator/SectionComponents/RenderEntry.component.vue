@@ -3,7 +3,6 @@
         <div class="my-auto text-left text-sm pr-2">
             {{ label }}
         </div>
-
         <div
             class="flex flex-col flex-grow pl-2 border-l-2 border-gray-400"
             v-if="input.addItems"
@@ -15,7 +14,7 @@
                 <render-item-component
                     class="m-1"
                     v-for="item of input.items"
-                    :key="item['@id']"
+                    :key="item.uuid"
                     :item="item"
                     :reference="generateParentId()"
                     @cancel="cancel"
