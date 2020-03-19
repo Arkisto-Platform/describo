@@ -86,6 +86,8 @@ export default {
             } else {
                 this.dataset.uuid = rootDataset.uuid;
                 this.inputs = cloneDeep(this.profile.inputs).map(input => {
+                    if (input["@type"] === "Value") return input;
+
                     const item = rootDataset[input.property];
                     if (isObject(item)) {
                         input.items = item;
