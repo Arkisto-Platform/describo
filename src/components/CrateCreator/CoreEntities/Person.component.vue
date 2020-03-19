@@ -5,26 +5,14 @@
             type="success"
             @click="properties.visible = true"
             v-if="!properties.visible"
-            >{{ this.properties.name }}</el-tag
-        >
-        <el-card
-            type="box-card"
-            class="flex flex-col style-card"
-            v-if="properties.visible"
-        >
+        >{{ this.properties.name }}</el-tag>
+        <el-card type="box-card" class="flex flex-col style-card" v-if="properties.visible">
             <div class="flex flex-col">
-                <div class="text-sm text-gray-500">
-                    select an existing person
-                </div>
-                <select-existing-entry
-                    type="Person"
-                    @selection="mergeSelection"
-                />
+                <div class="text-sm text-gray-500">select an existing person</div>
+                <select-existing-entry type="Person" @selection="mergeSelection" />
             </div>
             <div class="flex flex-col mt-4">
-                <div class="text-sm text-gray-500">
-                    or create a new person
-                </div>
+                <div class="text-sm text-gray-500">or create a new person</div>
 
                 <div class="flex flex-row">
                     <div class="w-20 text-right mr-1 my-auto">@id:</div>
@@ -38,8 +26,7 @@
                             :key="idx"
                             :label="type"
                             :value="type"
-                        >
-                        </el-option>
+                        ></el-option>
                     </el-select>
                 </div>
                 <div class="flex flex-row mt-2">
@@ -47,13 +34,13 @@
                     <el-input v-model="properties.name"></el-input>
                 </div>
                 <div class="flex flex-row mt-2">
-                    <el-button @click="cancel" type="danger"
-                        ><i class="fas fa-trash-alt"></i
-                    ></el-button>
+                    <el-button @click="cancel" type="danger">
+                        <i class="fas fa-trash-alt"></i>
+                    </el-button>
                     <div class="flex-grow"></div>
-                    <el-button @click="save" type="success"
-                        ><i class="fas fa-check"></i
-                    ></el-button>
+                    <el-button @click="save" type="success">
+                        <i class="fas fa-check"></i>
+                    </el-button>
                 </div>
             </div>
         </el-card>
