@@ -32,7 +32,9 @@ export default {
                     "@type": "Text",
 
                     // whether this element is required - used by strict
-                    required: true
+                    required: true,
+                    help:
+                        "Some meaningful help text because this property really needs the explainer."
                 },
                 {
                     property: "datePublished",

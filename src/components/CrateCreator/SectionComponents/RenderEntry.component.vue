@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col my-2">
+    <div class="flex flex-col mt-1 mb-4">
         <div class="my-auto text-left text-sm pr-2">
             {{ label }}
         </div>
@@ -36,6 +36,9 @@
         />
         <div v-if="input['@type'] === 'Value'" @blur="add(input.value)">
             {{ input.value }}
+        </div>
+        <div class="text-sm text-gray-600" v-if="input.help">
+            {{ input.help }}
         </div>
     </div>
 </template>
