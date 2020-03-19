@@ -70,7 +70,7 @@ export default {
                 target: this.$store.state.target
             });
             if (!crate) {
-                this.inputs = cloneDeep(this.profile.DataTypes.RootDataset);
+                this.inputs = cloneDeep(this.profile.inputs);
                 this.dataset.uuid = generateId();
                 return;
             }
@@ -85,25 +85,23 @@ export default {
                 this.error(`Can't find root dataset in that crate`);
             } else {
                 this.dataset.uuid = rootDataset.uuid;
-                this.inputs = cloneDeep(this.profile.DataTypes.RootDataset).map(
-                    input => {
-                        const item = rootDataset[input.property];
-                        if (isObject(item)) {
-                            input.items = item;
-                            this.updateDataset({
-                                property: input.property,
-                                items: item
-                            });
-                        } else {
-                            input.value = item;
-                            this.updateDataset({
-                                property: input.property,
-                                value: item
-                            });
-                        }
-                        return input;
+                this.inputs = cloneDeep(this.profile.inputs).map(input => {
+                    const item = rootDataset[input.property];
+                    if (isObject(item)) {
+                        input.items = item;
+                        this.updateDataset({
+                            property: input.property,
+                            items: item
+                        });
+                    } else {
+                        input.value = item;
+                        this.updateDataset({
+                            property: input.property,
+                            value: item
+                        });
                     }
-                );
+                    return input;
+                });
             }
         },
         save({ property, items, value }) {
