@@ -2,10 +2,10 @@
     <div class="flex flex-col justify-around">
         <target-selection-component class="border-b-2 pb-4" />
         <profile-selection-component
-            v-if="folder"
+            v-if="target"
             class="mt-4 border-b-2 pb-4"
         />
-        <crate-creator v-if="folder && profile" class="mt-4"> </crate-creator>
+        <crate-creator v-if="target && profile" class="mt-4"> </crate-creator>
     </div>
 </template>
 
@@ -20,8 +20,8 @@ export default {
         CrateCreator
     },
     computed: {
-        folder: function() {
-            return this.$store.state.folder;
+        target: function() {
+            return this.$store.state.target;
         },
         profile: function() {
             return this.$store.state.profile;

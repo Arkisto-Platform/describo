@@ -9,8 +9,8 @@ import { stat } from "fs";
 
 const state = reset();
 export const mutations = {
-    setFolder(state, payload) {
-        state.folder = payload.folder;
+    setTarget(state, payload) {
+        state.target = payload;
     },
     setProfile(state, payload) {
         state.profile = payload.profile;
@@ -90,7 +90,7 @@ export const store = new Vuex.Store(configuration);
 
 function reset() {
     return {
-        folder: null,
+        target: null,
         profile: null,
         graph: [],
         itemsByType: {},

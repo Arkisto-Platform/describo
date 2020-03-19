@@ -51,7 +51,7 @@ export default {
             this.folder = folder.filePaths[0];
         },
         describeThisFolder() {
-            this.$emit("folder-selected", this.folder);
+            this.$emit("set-target", { type: "local", folder: this.folder });
         }
     }
 };
