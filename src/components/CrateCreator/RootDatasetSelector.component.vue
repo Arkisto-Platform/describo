@@ -11,12 +11,16 @@
                 ></el-option>
             </el-select>
             <div class="mx-4">
-                <el-button type="success" @click="emitSelection">
+                <el-button
+                    type="success"
+                    @click="emitSelection"
+                    :disabled="!selection"
+                >
                     <i class="fas fa-long-arrow-alt-right"></i>
                 </el-button>
             </div>
         </div>
-        <div class="my-2">About: {{selectionHelp}}</div>
+        <div class="my-2">About: {{ selectionHelp }}</div>
     </div>
 </template>
 
