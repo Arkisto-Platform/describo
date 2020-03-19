@@ -12,7 +12,7 @@
                 <div class="flex flex-row my-2">
                     <el-button
                         ref="datasetSelectionBtn"
-                        @click="inspectDataset"
+                        @click="inspect('dataset')"
                         type="primary"
                         class="hover:bg-orange-200 hover:text-gray-800"
                         :class="{
@@ -23,7 +23,7 @@
                     </el-button>
                     <el-button
                         ref="graphSelectionBtn"
-                        @click="inspectGraph"
+                        @click="inspect('graph')"
                         type="primary"
                         class="hover:bg-orange-200 hover:text-gray-800"
                         :class="{
@@ -31,6 +31,17 @@
                         }"
                     >
                         <i class="fas fa-eye"></i> inspect graph
+                    </el-button>
+                    <el-button
+                        ref="crateSelectionBtn"
+                        @click="inspect('crate')"
+                        type="primary"
+                        class="hover:bg-orange-200 hover:text-gray-800"
+                        :class="{
+                            'bg-orange-200 text-gray-800': title === 'Crate'
+                        }"
+                    >
+                        <i class="fas fa-eye"></i> inspect crate
                     </el-button>
                 </div>
                 <div>
@@ -51,6 +62,9 @@
 
 <script>
 import { debounce } from "lodash";
+import CrateTool from "components/CrateCreator/crate-tools";
+const crateTool = new CrateTool();
+
 export default {
     props: {
         data: {
@@ -71,22 +85,31 @@ export default {
     },
     watch: {
         drawer: function(n, o) {
-            if (n) this.inspectDataset();
+            if (n) this.inspect("dataset");
         }
     },
     methods: {
-        inspectDataset() {
-            this.content = { ...this.data };
-            this.title = "Dataset";
+        inspect(target) {
+            switch (target) {
+                case "dataset":
+                    this.content = { ...this.data };
+                    this.title = "Dataset";
+                    break;
+                case "graph":
+                    this.content = [...this.$store.state.graph];
+                    this.title = "Graph";
+                    break;
+                case "crate":
+                    crateTool.assembleCrate({
+                        data: this.$store.state.graph
+                    });
+                    this.content = crateTool.crate;
+                    this.title = "Crate";
+            }
             setTimeout(() => {
                 this.$refs.datasetSelectionBtn.$el.blur();
-            }, 100);
-        },
-        inspectGraph() {
-            this.content = [...this.$store.state.graph];
-            this.title = "Graph";
-            setTimeout(() => {
                 this.$refs.graphSelectionBtn.$el.blur();
+                this.$refs.crateSelectionBtn.$el.blur();
             }, 100);
         },
         filterGraph() {
