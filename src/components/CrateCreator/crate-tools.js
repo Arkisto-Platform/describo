@@ -26,13 +26,18 @@ export default class CrateTool {
 
     async readCrate({ target }) {
         let crate;
-        switch (target.type) {
-            case "local":
-                crate = await readFromLocalFolder({
-                    folder: target.folder
-                });
-                break;
+        try {
+            switch (target.type) {
+                case "local":
+                    crate = await readFromLocalFolder({
+                        folder: target.folder
+                    });
+                    break;
+            }
+        } catch (error) {
+            return null;
         }
+
         return this.loadCrate({ crate });
         async function readFromLocalFolder({ folder }) {
             const file = path.join(folder, roCrateMetadataFile);
