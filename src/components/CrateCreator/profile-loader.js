@@ -21,17 +21,16 @@ export default class ProfileLoader {
             );
         }
         this.profile = profiles[this.name];
-        const dataTypes = Object.keys(this.profile.DataTypes);
-        for (let type of dataTypes) {
-            this.profile.DataTypes[type] = this.profile.DataTypes[type].map(
-                input => {
-                    if (input.multiple) {
-                        input.items = [];
-                        input.addItems = true;
-                    }
-                    return input;
+        const rootDatasets = Object.keys(this.profile.RootDatasets);
+        for (let type of rootDatasets) {
+            const inputs = this.profile.RootDatasets[type].map(input => {
+                if (input.multiple) {
+                    input.items = [];
+                    input.addItems = true;
                 }
-            );
+                return input;
+            });
+            this.profile.RootDatasets[type] = [...inputs];
         }
         return { profile: this.profile };
     }
