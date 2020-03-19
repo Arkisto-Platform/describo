@@ -4,7 +4,7 @@
             class="flex flex-row border-2 border-gray-400 rounded-lg p-4"
             v-if="target"
         >
-            <div class="pt-2">Describing: {{ target }}</div>
+            <div class="pt-2"><render-selected-target-component /></div>
             <div class="flex-grow"></div>
             <div>
                 <el-button @click="describeNewFolder" type="danger">
@@ -47,8 +47,10 @@ import LocalFolderComponent from "./LocalFolder.component.vue";
 import AmazonS3Component from "./AmazonS3.component.vue";
 import GoogleDriveComponent from "./GoogleDrive.component.vue";
 import MicrosoftOneDriveComponent from "./MicrosoftOneDrive.component.vue";
+import RenderSelectedTargetComponent from "./RenderSelectedTarget.component.vue";
 export default {
     components: {
+        RenderSelectedTargetComponent,
         LocalFolderComponent,
         AmazonS3Component,
         GoogleDriveComponent,
