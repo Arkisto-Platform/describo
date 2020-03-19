@@ -14,7 +14,7 @@ export default {
             inputs: [
                 {
                     // If you want to add a property with a specific value
-                    //  set @type = "value"
+                    //  set @type = "Value"
                     //  and specify the value
                     property: "additionalType",
                     label: "Additional Type",
@@ -35,6 +35,15 @@ export default {
                     required: true,
                     help:
                         "Some meaningful help text because this property really needs the explainer."
+                },
+                {
+                    // If you want to add properties with values from a controlled vocab
+                    // set @type = "Select"
+                    // and specify the options
+                    property: "language",
+                    label: "Language",
+                    "@type": "Select",
+                    options: ["English", "French", "Spanish", "Other"]
                 },
                 {
                     property: "datePublished",

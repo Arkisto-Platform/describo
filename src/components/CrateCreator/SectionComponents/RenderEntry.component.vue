@@ -29,9 +29,13 @@
             @save="save"
         />
         <date-component
-            class="w-full"
             :input="input"
             v-if="input['@type'] === 'Date'"
+            @save="save"
+        />
+        <select-component
+            :input="input"
+            v-if="input['@type'] === 'Select'"
             @save="save"
         />
         <div v-if="input['@type'] === 'Value'" @blur="add(input.value)">
@@ -48,6 +52,7 @@ import AddControl from "./AddControl.component.vue";
 import RenderItemComponent from "./RenderItem.component.vue";
 import TextComponent from "components/CrateCreator/CoreEntities/Text.component.vue";
 import DateComponent from "components/CrateCreator/CoreEntities/Date.component.vue";
+import SelectComponent from "components/CrateCreator/CoreEntities/Select.component.vue";
 import { generateId } from "components/CrateCreator/tools";
 import { cloneDeep, uniqBy } from "lodash";
 import { shortName } from "src/renderer/filters";
@@ -57,7 +62,8 @@ export default {
         AddControl,
         RenderItemComponent,
         TextComponent,
-        DateComponent
+        DateComponent,
+        SelectComponent
     },
     props: {
         input: {
@@ -93,7 +99,7 @@ export default {
             });
         },
         save(value) {
-            if (["Text", "Date"].includes(this.input["@type"])) {
+            if (["Text", "Date", "Select"].includes(this.input["@type"])) {
                 this.$emit("save", {
                     property: this.property,
                     value
