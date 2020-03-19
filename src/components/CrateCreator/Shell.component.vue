@@ -6,9 +6,11 @@
                 @load-selection="loadSelection"
             />
             <div class="flex-grow"></div>
-            <el-button @click="loadProfile" type="danger">
-                <i class="fas fa-trash-alt"></i> reset
-            </el-button>
+            <div>
+                <el-button @click="loadProfile" type="danger">
+                    <i class="fas fa-trash-alt"></i> reset
+                </el-button>
+            </div>
         </div>
         <el-tabs
             tab-position="left"

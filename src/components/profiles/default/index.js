@@ -7,7 +7,10 @@ export default {
         // You can define as many root datasets as you like. If there's more
         //  than one a selector will be shown.
         Dataset: {
-            metadata: {},
+            metadata: {
+                about:
+                    "Some pithy text about what this is and why the user should select it"
+            },
             inputs: [
                 {
                     // If you want to add a property with a specific value
@@ -67,7 +70,10 @@ export default {
             ]
         },
         Collection: {
-            metadata: {},
+            metadata: {
+                about:
+                    "Some pithy text about what this is and why the LINGUIST user should select it"
+            },
             inputs: [
                 {
                     property: "additionalType",
