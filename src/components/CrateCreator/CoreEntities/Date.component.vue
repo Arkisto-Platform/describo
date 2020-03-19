@@ -21,38 +21,17 @@
 </template>
 
 <script>
-import AddControl from "components/CrateCreator/SectionComponents/AddControl.component.vue";
-import { debounce } from "lodash";
+import SimpleComponentMixins from "./SimpleComponentMixins";
 import { startOfDay } from "date-fns";
 
 export default {
-    components: {
-        AddControl
-    },
-    props: {
-        input: {
-            type: Object
-        }
-    },
-    data() {
-        return {
-            debouncedSave: debounce(this.save, 500),
-            saved: false,
-            value: this.input.value,
-            enabled: this.input.value ? true : false
-        };
-    },
-    methods: {
-        save() {
-            this.$emit("save", startOfDay(this.value).toISOString());
-            this.saved = true;
-        },
-        focus() {
+    mixins: [SimpleComponentMixins],
+    save() {
+        this.$emit("save", startOfDay(this.value).toISOString());
+        this.saved = true;
+        setTimeout(() => {
             this.saved = false;
-        },
-        add() {
-            this.enabled = true;
-        }
+        }, 1000);
     }
 };
 </script>
