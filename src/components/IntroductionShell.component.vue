@@ -1,18 +1,18 @@
 <template>
     <div class="flex flex-col">
-        <div class="flex flex-col style-introduction text-xl" v-if="!target && !profile">
+        <div
+            class="flex flex-col style-introduction text-xl  border-b-2 border-gray-300"
+            v-if="!target && !profile"
+        >
             <p class="text-3xl">Welcome to describo!</p>
             <p class="my-2">
                 Describo is a tool to create and update Research Object Crates
                 (RO-Crate).
             </p>
-            <p class="my-2">
-                You have some data and you wish to describe it in a standard way
-                such that others can discover and use it. Describo is the tool for
-                the job!
-            </p>
         </div>
-        <describe-component />
+        <div class="mt-8">
+            <describe-component />
+        </div>
     </div>
 </template>
 
@@ -37,5 +37,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

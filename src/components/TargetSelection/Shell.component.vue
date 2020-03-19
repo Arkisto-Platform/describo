@@ -13,7 +13,13 @@
             </div>
         </div>
         <div class="flex flex-col" v-if="!target">
-            <div>Get started by selecting a folder of content to describe.</div>
+            <div class="text-lg text-center">
+                Get started by selecting the content you wish to describe.
+                <span class="text-indigo-700">
+                    The RO-crate metadata file will be automatically saved to
+                    this location as you construct it.
+                </span>
+            </div>
             <el-tabs
                 tab-position="left"
                 type="border-card"
