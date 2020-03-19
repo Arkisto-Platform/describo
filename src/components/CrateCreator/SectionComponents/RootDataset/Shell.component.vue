@@ -1,6 +1,7 @@
 <template>
     <div class="flex flex-col">
-        <div class="style-controls-row border-b-2 pb-2">
+        <el-alert :title="error" type="error" effect="dark" v-if="error"></el-alert>
+        <div class="style-controls-row border-b-2 pb-2" v-if="!error">
             <div class="flex flex-row">
                 <el-button @click="dataInspector = true" type="primary">
                     <i class="fas fa-eye"></i> inspect data
@@ -16,11 +17,7 @@
         </div>
         <div class="flex flex-col flex-grow">
             <div v-for="(input, idx) of inputs" :key="idx">
-                <render-entry-component
-                    :input="input"
-                    :reference="dataset.uuid"
-                    @save="save"
-                />
+                <render-entry-component :input="input" :reference="dataset.uuid" @save="save" />
             </div>
         </div>
         <data-inspector-component
@@ -52,6 +49,7 @@ export default {
     },
     data() {
         return {
+            error: false,
             saved: false,
             saving: false,
             inputs: [],
@@ -71,6 +69,11 @@ export default {
             const crate = await crateTool.readCrate({
                 target: this.$store.state.target
             });
+            if (!crate) {
+                this.inputs = cloneDeep(this.profile.DataTypes.RootDataset);
+                this.dataset.uuid = generateId();
+                return;
+            }
             crate.forEach(element =>
                 this.$store.commit("saveToGraph", element)
             );
@@ -79,8 +82,7 @@ export default {
                 e => e["@type"] === "RootDataset"
             )[0];
             if (!rootDataset) {
-                this.inputs = cloneDeep(this.profile.DataTypes.RootDataset);
-                this.dataset.uuid = generateId();
+                this.error(`Can't find root dataset in that crate`);
             } else {
                 this.dataset.uuid = rootDataset.uuid;
                 this.inputs = cloneDeep(this.profile.DataTypes.RootDataset).map(
