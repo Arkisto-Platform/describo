@@ -1,6 +1,11 @@
 <template>
     <div class="flex flex-col">
-        <el-alert :title="error" type="error" effect="dark" v-if="error"></el-alert>
+        <el-alert
+            :title="error"
+            type="error"
+            effect="dark"
+            v-if="error"
+        ></el-alert>
         <div class="style-controls-row border-b-2 pb-2" v-if="!error">
             <div class="flex flex-row">
                 <el-button @click="dataInspector = true" type="primary">
@@ -17,7 +22,11 @@
         </div>
         <div class="flex flex-col flex-grow">
             <div v-for="(input, idx) of inputs" :key="idx">
-                <render-entry-component :input="input" :reference="dataset.uuid" @save="save" />
+                <render-entry-component
+                    :input="input"
+                    :reference="dataset.uuid"
+                    @save="save"
+                />
             </div>
         </div>
         <data-inspector-component
@@ -90,7 +99,7 @@ export default {
 
                     const item = rootDataset[input.property];
                     if (isObject(item)) {
-                        input.items = item;
+                        input.items = cloneDeep(item);
                         this.updateDataset({
                             property: input.property,
                             items: item

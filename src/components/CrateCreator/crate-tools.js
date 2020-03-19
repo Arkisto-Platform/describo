@@ -142,7 +142,7 @@ export default class CrateTool {
             return element;
         });
 
-        const elementsyUUID = groupBy(data, "uuid");
+        const elementsByUUID = groupBy(data, "uuid");
         let item;
         data = data.map(element => {
             for (let property of Object.keys(element)) {
