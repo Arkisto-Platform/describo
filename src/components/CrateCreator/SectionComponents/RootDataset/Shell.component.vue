@@ -2,10 +2,16 @@
     <div class="flex flex-col">
         <div class="style-controls-row border-b-2 pb-2">
             <div class="flex flex-row">
-                <div class="flex-grow"></div>
                 <el-button @click="dataInspector = true" type="primary">
                     <i class="fas fa-eye"></i> inspect data
                 </el-button>
+                <div class="flex-grow"></div>
+                <div v-show="saving" class="text-orange-600 pt-2">
+                    <i class="fas fa-save"></i> saving the crate
+                </div>
+                <div v-show="saved" class="text-green-600 pt-2">
+                    <i class="fas fa-check"></i> saved
+                </div>
             </div>
         </div>
         <div class="flex flex-col flex-grow">
@@ -29,7 +35,9 @@
 import { generateId } from "components/CrateCreator/tools";
 import RenderEntryComponent from "components/CrateCreator/SectionComponents/RenderEntry.component.vue";
 import DataInspectorComponent from "components/CrateCreator/SectionComponents/DataInspector.component.vue";
-import { cloneDeep } from "lodash";
+import { cloneDeep, isObject } from "lodash";
+import CrateTool from "components/CrateCreator/crate-tools";
+const crateTool = new CrateTool();
 
 export default {
     components: {
@@ -44,41 +52,80 @@ export default {
     },
     data() {
         return {
-            inputs: cloneDeep(this.profile.DataTypes.RootDataset),
+            saved: false,
+            saving: false,
+            inputs: [],
             dataInspector: false,
-            dataset: {
-                "@type": "RootDataset",
-                uuid: generateId()
-            }
+            dataset: {}
         };
     },
-    mounted() {
-        this.inputs.forEach(input => {
-            this.updateDataset({
-                property: input.property,
-                items: input.items,
-                value: input.value
-            });
-        });
+    async beforeMount() {
+        this.loadCrate();
     },
     methods: {
+        async loadCrate() {
+            this.dataset = {
+                "@type": "RootDataset"
+            };
+
+            const crate = await crateTool.readCrate({
+                target: this.$store.state.target
+            });
+            crate.forEach(element =>
+                this.$store.commit("saveToGraph", element)
+            );
+
+            const rootDataset = crate.filter(
+                e => e["@type"] === "RootDataset"
+            )[0];
+            if (!rootDataset) {
+                this.inputs = cloneDeep(this.profile.DataTypes.RootDataset);
+                this.dataset.uuid = generateId();
+            } else {
+                this.dataset.uuid = rootDataset.uuid;
+                this.inputs = cloneDeep(this.profile.DataTypes.RootDataset).map(
+                    input => {
+                        const item = rootDataset[input.property];
+                        if (isObject(item)) {
+                            input.items = item;
+                            this.updateDataset({
+                                property: input.property,
+                                items: item
+                            });
+                        } else {
+                            input.value = item;
+                            this.updateDataset({
+                                property: input.property,
+                                value: item
+                            });
+                        }
+                        return input;
+                    }
+                );
+            }
+        },
         save({ property, items, value }) {
             this.updateDataset({ property, items, value });
             this.$store.commit("saveToGraph", {
                 "@type": "Dataset",
                 ...cloneDeep(this.dataset)
             });
+            this.writeCrateToDisk();
         },
         updateDataset({ property, items, value }) {
             if (value) this.dataset = { ...this.dataset, [property]: value };
             if (items) this.dataset = { ...this.dataset, [property]: items };
+        },
+        writeCrateToDisk() {
+            this.saved = false;
+            this.saving = true;
+            crateTool.assembleCrate({ data: this.$store.state.graph });
+            crateTool.writeCrate({ target: this.$store.state.target });
+            setTimeout(() => {
+                this.saving = false;
+                this.saved = true;
+            }, 1000);
         }
-        // done() {
-        //     this.$emit("done");
-        // },
-        // destroy() {
-        //     this.$emit("destroy", this.dataset);
-        // }
     }
 };
 </script>
