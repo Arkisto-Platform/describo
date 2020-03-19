@@ -1,11 +1,8 @@
 <template>
     <div class="flex flex-col">
         <div class="flex flex-row">
-            <el-select
-                class="style-select"
-                v-model="selection"
-                placeholder="Select a root dataset to constuct"
-            >
+            <div class="mr-2 pt-1">Select a profile definition:</div>
+            <el-select class="style-select" v-model="selection">
                 <el-option
                     v-for="(item, idx) in rootDatasetOptions"
                     :key="idx"
@@ -15,12 +12,11 @@
             </el-select>
             <div class="mx-4">
                 <el-button type="success" @click="emitSelection">
-                    Use this root dataset definition
                     <i class="fas fa-long-arrow-alt-right"></i>
                 </el-button>
             </div>
         </div>
-        <div class="m-2">About: {{selectionHelp}}</div>
+        <div class="my-2">About: {{selectionHelp}}</div>
     </div>
 </template>
 
