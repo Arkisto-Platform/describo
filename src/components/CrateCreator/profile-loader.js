@@ -23,14 +23,14 @@ export default class ProfileLoader {
         this.profile = profiles[this.name];
         const rootDatasets = Object.keys(this.profile.RootDatasets);
         for (let type of rootDatasets) {
-            const inputs = this.profile.RootDatasets[type].map(input => {
+            const inputs = this.profile.RootDatasets[type].inputs.map(input => {
                 if (input.multiple) {
                     input.items = [];
                     input.addItems = true;
                 }
                 return input;
             });
-            this.profile.RootDatasets[type] = [...inputs];
+            this.profile.RootDatasets[type].inputs = [...inputs];
         }
         return { profile: this.profile };
     }
