@@ -1,12 +1,43 @@
 import { cloneDeep, isPlainObject, isArray, groupBy } from "lodash";
+import { writeFile, readJSON } from "fs-extra";
+import { generateId } from "components/CrateCreator/tools";
+import path from "path";
+const roCrateMetadataFile = "ro-crate-metadata.jsonld";
 
 export default class CrateTool {
     constructor() {
         this.crate = undefined;
     }
 
-    writeCrate() {
-        // not yet implemented
+    writeCrate({ target }) {
+        switch (target.type) {
+            case "local":
+                writeToLocalFolder({
+                    folder: target.folder,
+                    crate: this.crate
+                });
+                break;
+        }
+        function writeToLocalFolder({ folder, crate }) {
+            const file = path.join(folder, roCrateMetadataFile);
+            writeFile(file, JSON.stringify(crate));
+        }
+    }
+
+    async readCrate({ target }) {
+        let crate;
+        switch (target.type) {
+            case "local":
+                crate = await readFromLocalFolder({
+                    folder: target.folder
+                });
+                break;
+        }
+        return this.loadCrate({ crate });
+        async function readFromLocalFolder({ folder }) {
+            const file = path.join(folder, roCrateMetadataFile);
+            return await readJSON(file);
+        }
     }
 
     loadCrate({ crate }) {
@@ -17,9 +48,12 @@ export default class CrateTool {
         );
         elements = elements.map(element => {
             if (element["@id"] === "./") {
+                element.uuid = generateId();
                 element["@type"] = "RootDataset";
+            } else {
+                element.uuid = element["@id"];
             }
-            element.uuid = element["@id"];
+
             for (let property of Object.keys(element)) {
                 if (isPlainObject(element[property])) {
                     element[property].uuid = element[property]["@id"];
@@ -36,6 +70,7 @@ export default class CrateTool {
     }
 
     assembleCrate({ data }) {
+        data = cloneDeep(data);
         data = this.mapIdentifiers({ data });
         data = this.cleanup({ data });
 
