@@ -142,16 +142,17 @@ export default class CrateTool {
             return element;
         });
 
-        const elementsByUUID = groupBy(data, "uuid");
+        const elementsyUUID = groupBy(data, "uuid");
+        let item;
         data = data.map(element => {
             for (let property of Object.keys(element)) {
                 if (isPlainObject(element[property])) {
-                    const item = elementsByUUID[element.uuid][0];
-                    element["@id"] = item["@id"];
+                    item = elementsByUUID[element.uuid];
+                    if (item) entry["@id"] = item[0]["@id"];
                 } else if (isArray(element[property])) {
                     element[property] = element[property].map(entry => {
-                        const item = elementsByUUID[entry.uuid][0];
-                        entry["@id"] = item["@id"];
+                        item = elementsByUUID[entry.uuid];
+                        if (item) entry["@id"] = item[0]["@id"];
                         return entry;
                     });
                 }
