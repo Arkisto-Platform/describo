@@ -26,6 +26,7 @@
                     :input="input"
                     :reference="dataset.uuid"
                     @save="save"
+                    @cancel="cancel"
                 />
             </div>
         </div>
@@ -117,6 +118,15 @@ export default {
         },
         save({ property, items, value }) {
             this.updateDataset({ property, items, value });
+            this.$store.commit("saveToGraph", {
+                "@type": "Dataset",
+                ...cloneDeep(this.dataset)
+            });
+            this.writeCrateToDisk();
+        },
+        cancel({ property }) {
+            delete this.dataset[property];
+            this.dataset = { ...this.dataset };
             this.$store.commit("saveToGraph", {
                 "@type": "Dataset",
                 ...cloneDeep(this.dataset)

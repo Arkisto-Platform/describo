@@ -9,14 +9,19 @@
             :required="input.required"
             v-if="input.required || enabled"
         ></el-input>
-        <div v-if="saved" class="ml-2 text-green-600 pt-1">
-            <i class="far fa-check-circle fa-2x"></i>
-        </div>
         <add-control
             type="Text"
             @add="add"
             v-if="!input.required && !enabled"
         />
+        <remove-control
+            type="Text"
+            @cancel="cancel"
+            v-if="!input.required && enabled"
+        />
+        <div v-if="saved" class="ml-2 text-green-600 pt-1">
+            <i class="far fa-check-circle fa-2x"></i>
+        </div>
     </div>
 </template>
 

@@ -1,9 +1,11 @@
 import AddControl from "components/CrateCreator/SectionComponents/AddControl.component.vue";
+import RemoveControl from "components/CrateCreator/SectionComponents/RemoveControl.component.vue";
 import { debounce } from "lodash";
 
 export default {
     components: {
-        AddControl
+        AddControl,
+        RemoveControl
     },
     props: {
         input: {
@@ -25,6 +27,10 @@ export default {
             setTimeout(() => {
                 this.saved = false;
             }, 1000);
+        },
+        cancel() {
+            this.enabled = false;
+            this.$emit("cancel");
         },
         focus() {
             this.saved = false;

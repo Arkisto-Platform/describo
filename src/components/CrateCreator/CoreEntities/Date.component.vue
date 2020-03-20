@@ -6,17 +6,23 @@
             placeholder="Pick a date"
             format="MMMM d, yyyy"
             @change="save"
+            :clearable="false"
             v-if="input.required || enabled"
         >
         </el-date-picker>
-        <div v-if="saved" class="ml-2 text-green-600 pt-1">
-            <i class="far fa-check-circle fa-2x"></i>
-        </div>
         <add-control
             type="Date"
             @add="add"
             v-if="!input.required && !enabled"
         />
+        <remove-control
+            type="Text"
+            @cancel="cancel"
+            v-if="!input.required && enabled"
+        />
+        <div v-if="saved" class="ml-2 text-green-600 pt-1">
+            <i class="far fa-check-circle fa-2x"></i>
+        </div>
     </div>
 </template>
 

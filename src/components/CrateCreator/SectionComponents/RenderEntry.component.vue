@@ -27,16 +27,19 @@
             :input="input"
             v-if="input['@type'] === 'Text'"
             @save="save"
+            @cancel="cancel"
         />
         <date-component
             :input="input"
             v-if="input['@type'] === 'Date'"
             @save="save"
+            @cancel="cancel"
         />
         <select-component
             :input="input"
             v-if="input['@type'] === 'Select'"
             @save="save"
+            @cancel="cancel"
         />
         <div v-if="input['@type'] === 'Value'" @blur="add(input.value)">
             {{ input.value }}
@@ -92,11 +95,15 @@ export default {
                 this.addItems = false;
         },
         cancel(id) {
-            this.input.items = this.input.items.filter(i => i.uuid !== id);
-            this.$emit("save", {
-                property: this.property,
-                items: this.input.items
-            });
+            if (!id) {
+                this.$emit("cancel", { property: this.property });
+            } else {
+                this.input.items = this.input.items.filter(i => i.uuid !== id);
+                this.$emit("save", {
+                    property: this.property,
+                    items: this.input.items
+                });
+            }
         },
         save(value) {
             if (["Text", "Date", "Select"].includes(this.input["@type"])) {
