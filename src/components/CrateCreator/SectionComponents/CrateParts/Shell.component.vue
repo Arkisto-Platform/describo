@@ -1,10 +1,6 @@
 <template>
     <div class="flex flex-col">
         <div class="flex flex-row my-2">
-            <el-button @click="dataInspector = true" type="primary">
-                <i class="fas fa-eye"></i> inspect data
-            </el-button>
-            <div class="w-10"></div>
             <div v-show="saving" class="text-orange-600 pt-2">
                 <i class="fas fa-save"></i> saving the crate
             </div>
@@ -42,16 +38,11 @@
                 </div>
             </el-tab-pane>
         </el-tabs>
-        <data-inspector-component
-            :drawer="dataInspector"
-            @close="dataInspector = false"
-        />
     </div>
 </template>
 
 <script>
 import FileTreeComponent from "components/FileTree/FileTree.component.vue";
-import DataInspectorComponent from "components/CrateCreator/SectionComponents/DataInspector.component.vue";
 import PartsListComponent from "./PartsList.component.vue";
 import FileComponent from "components/CrateCreator/CoreEntities/File.component.vue";
 import DatasetComponent from "components/CrateCreator/CoreEntities/Dataset.component.vue";
@@ -63,7 +54,6 @@ import { writeParts } from "./part-tools";
 export default {
     components: {
         FileTreeComponent,
-        DataInspectorComponent,
         PartsListComponent,
         FileComponent,
         DatasetComponent
@@ -71,7 +61,6 @@ export default {
     data() {
         return {
             activeTab: "manage",
-            dataInspector: false,
             error: false,
             saved: false,
             saving: false,

@@ -2,9 +2,6 @@
     <div class="flex flex-col">
         <div class="style-controls-row border-b-2 pb-2">
             <div class="flex flex-row">
-                <el-button @click="dataInspector = true" type="primary">
-                    <i class="fas fa-eye"></i> inspect data
-                </el-button>
                 <div class="flex-grow"></div>
                 <div v-show="saving" class="text-orange-600 pt-2">
                     <i class="fas fa-save"></i> saving the crate
@@ -24,25 +21,18 @@
                 />
             </div>
         </div>
-        <data-inspector-component
-            :drawer="dataInspector"
-            :data="crate.dataset"
-            @close="dataInspector = false"
-        />
     </div>
 </template>
 
 <script>
 import RenderEntryComponent from "components/CrateCreator/SectionComponents/RenderEntry.component.vue";
-import DataInspectorComponent from "components/CrateCreator/SectionComponents/DataInspector.component.vue";
 import { cloneDeep } from "lodash";
 import CrateTool from "components/CrateCreator/crate-tools";
 const crateTool = new CrateTool();
 
 export default {
     components: {
-        RenderEntryComponent,
-        DataInspectorComponent
+        RenderEntryComponent
     },
     props: {
         crate: {
@@ -54,8 +44,7 @@ export default {
         return {
             saved: false,
             saving: false,
-            inputs: [],
-            dataInspector: false
+            inputs: []
         };
     },
     methods: {

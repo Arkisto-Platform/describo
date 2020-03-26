@@ -5,13 +5,23 @@
                 v-if="showRootDatasetSelector"
                 @load-selection="loadSelection"
             />
-            <div class="flex-grow"></div>
-            <div>
+            <div
+                class="flex flex-row w-full px-4"
+                v-if="!showRootDatasetSelector"
+            >
+                <el-button @click="dataInspector = true" type="primary">
+                    <i class="fas fa-eye"></i> inspect data
+                </el-button>
+                <div class="flex-grow"></div>
                 <el-button @click="loadProfile" type="danger">
                     <i class="fas fa-trash-alt"></i>
                 </el-button>
             </div>
         </div>
+        <data-inspector-component
+            :drawer="dataInspector"
+            @close="dataInspector = false"
+        />
         <el-tabs
             v-model="activeTab"
             tab-position="left"
@@ -48,6 +58,7 @@ import ProfileLoader from "./profile-loader";
 import RootDatasetComponent from "./SectionComponents/RootDataset/Shell.component.vue";
 import CratePartsComponent from "./SectionComponents/CrateParts/Shell.component.vue";
 import RootDatasetSelectorComponent from "./RootDatasetSelector.component.vue";
+import DataInspectorComponent from "components/CrateCreator/SectionComponents/DataInspector.component.vue";
 import CrateTool from "components/CrateCreator/crate-tools";
 const crateTool = new CrateTool();
 
@@ -55,10 +66,12 @@ export default {
     components: {
         RootDatasetComponent,
         CratePartsComponent,
-        RootDatasetSelectorComponent
+        RootDatasetSelectorComponent,
+        DataInspectorComponent
     },
     data() {
         return {
+            dataInspector: false,
             profile: {},
             rootDatasetProfile: {},
             showRootDatasetSelector: false,
