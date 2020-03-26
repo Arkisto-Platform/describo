@@ -50,7 +50,7 @@ export default {
         save({ property, items, value }) {
             this.updateDataset({ property, items, value });
             this.$store.commit("saveToGraph", {
-                "@type": "Dataset",
+                "@type": "RootDataset",
                 ...cloneDeep(this.crate.dataset)
             });
             this.writeCrateToDisk();
@@ -59,7 +59,7 @@ export default {
             delete this.crate.dataset[property];
             this.crate.dataset = { ...this.crate.dataset };
             this.$store.commit("saveToGraph", {
-                "@type": "Dataset",
+                "@type": "RootDataset",
                 ...cloneDeep(this.crate.dataset)
             });
             this.writeCrateToDisk();
