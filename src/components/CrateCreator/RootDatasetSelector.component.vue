@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col">
+    <div class="flex flex-col items-center w-full">
         <div class="flex flex-row">
             <div class="mr-2 pt-1">Select a profile definition:</div>
             <el-select class="style-select" v-model="selection">
@@ -20,7 +20,11 @@
                 </el-button>
             </div>
         </div>
-        <div class="my-2">About: {{ selectionHelp }}</div>
+        <div
+            class="my-4 p-8 w-3/4 text-gray-700 border-2 border-gray-200 text-center"
+        >
+            About: {{ selectionHelp }}
+        </div>
     </div>
 </template>
 
