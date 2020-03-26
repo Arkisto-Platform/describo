@@ -18,6 +18,7 @@
                 :check-strictly="!selectAllChildren"
                 :default-checked-keys="checkedNodes"
                 :default-expanded-keys="defaultExpandedKeys"
+                :default-expand-all="true"
             ></el-tree>
         </div>
         <div class="mx-2" v-if="enableFileSelector">
@@ -91,7 +92,7 @@ export default {
                     root: this.target.folder,
                     path: path.join(parentPath, nodePath)
                 });
-                resolve(content.children);
+                resolve(content.children || []);
             }
         },
         addParts() {
