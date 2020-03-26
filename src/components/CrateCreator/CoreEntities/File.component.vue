@@ -23,6 +23,9 @@
         </el-form>
 
         <div class="flex flex-row mt-2">
+            <el-button @click="cancel" type="danger">
+                <i class="fas fa-trash-alt"></i>
+            </el-button>
             <div class="flex-grow"></div>
             <el-button @click="save" type="success">
                 <i class="fas fa-check"></i>
@@ -55,6 +58,9 @@ export default {
         this.$data.properties = { ...properties };
     },
     methods: {
+        cancel() {
+            this.$emit("cancel");
+        },
         save() {
             const params = getParams({
                 properties: this.properties,

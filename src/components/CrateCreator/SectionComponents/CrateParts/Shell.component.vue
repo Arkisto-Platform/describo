@@ -22,10 +22,12 @@
                     <parts-list-component
                         class="my-2 border-2 p-4"
                         @edit-part="editPart"
+                        v-if="!selectedPart"
                     />
                     <dataset-component
                         :uuid="selectedPart.uuid"
                         @done="writeCrateToDisk"
+                        @cancel="selectedPart = undefined"
                         v-if="
                             selectedPart && selectedPart['@type'] === 'Dataset'
                         "
@@ -33,6 +35,7 @@
                     <file-component
                         :uuid="selectedPart.uuid"
                         @done="writeCrateToDisk"
+                        @cancel="selectedPart = undefined"
                         v-if="selectedPart && selectedPart['@type'] === 'File'"
                     />
                 </div>
