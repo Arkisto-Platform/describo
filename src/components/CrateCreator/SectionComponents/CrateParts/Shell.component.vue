@@ -9,7 +9,7 @@
             </div>
         </div>
         <el-tabs type="border-card" v-model="activeTab">
-            <el-tab-pane label="Add Content" name="add">
+            <el-tab-pane label="Manage Content" name="manage">
                 <file-tree-component
                     class="style-tree-component overflow-scroll"
                     :enable-file-selector="true"
@@ -17,7 +17,7 @@
                     @selected-nodes="addNodesToCrate"
                 />
             </el-tab-pane>
-            <el-tab-pane label="Manage Content" name="manage">
+            <el-tab-pane label="Annotate Content" name="annotate">
                 <div class="flex flex-col">
                     <parts-list-component
                         class="my-2 border-2 p-4"
