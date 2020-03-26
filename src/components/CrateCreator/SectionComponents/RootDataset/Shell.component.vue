@@ -2,7 +2,6 @@
     <div class="flex flex-col">
         <div class="style-controls-row border-b-2 pb-2">
             <div class="flex flex-row">
-                <div class="flex-grow"></div>
                 <div v-show="saving" class="text-orange-600 pt-2">
                     <i class="fas fa-save"></i> saving the crate
                 </div>
