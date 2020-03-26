@@ -5,6 +5,10 @@
                 <el-checkbox v-model="selectAllChildren"
                     >Select all children</el-checkbox
                 >
+                <div class="text-sm text-gray-600">
+                    Note: you must expand each subfolder to load the children
+                    when selecting all. Otherwise, you'll only get the folders.
+                </div>
             </div>
 
             <el-tree
