@@ -67,9 +67,6 @@ const crateTool = new CrateTool();
 
 export default {
     props: {
-        data: {
-            type: Object
-        },
         drawer: {
             type: Boolean,
             required: true
@@ -85,14 +82,16 @@ export default {
     },
     watch: {
         drawer: function(n, o) {
-            if (n) this.data ? this.inspect("dataset") : this.inspect("graph");
+            if (n) this.inspect("dataset");
         }
     },
     methods: {
         inspect(target) {
             switch (target) {
                 case "dataset":
-                    this.content = { ...this.data };
+                    this.content = {
+                        ...this.$store.state.itemsByType["RootDataset"][0]
+                    };
                     this.title = "Dataset";
                     break;
                 case "graph":
