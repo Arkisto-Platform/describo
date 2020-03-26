@@ -1,20 +1,26 @@
 <template>
-    <el-card type="box-card" class="flex flex-col style-card">
+    <el-card type="box-card" class="flex flex-col">
         <div slot="header" class="clearfix">
             <span>File</span>
         </div>
-        <!-- <div class="flex flex-row my-1">
-            <div class="w-32 text-right mr-1 my-auto">@id:</div>
-            <div>{{ properties.id }}</div>
-        </div> -->
-        <div class="flex flex-row my-1">
-            <div class="w-32 text-right mr-1 my-auto">name:</div>
-            <el-input v-model="properties.name"></el-input>
-        </div>
-        <div class="flex flex-row my-1">
-            <div class="w-32 text-right mr-1 my-auto">description:</div>
-            <el-input v-model="properties.description"></el-input>
-        </div>
+
+        <el-form :model="properties" label-width="120px">
+            <el-form-item label="Identifier">
+                {{ properties.uuid }}
+            </el-form-item>
+            <el-form-item label="Name">
+                <el-input v-model="properties.name"></el-input>
+            </el-form-item>
+            <el-form-item label="Description">
+                <el-input v-model="properties.description"></el-input>
+            </el-form-item>
+            <el-form-item label="Size">
+                {{ properties.contentSize }}
+            </el-form-item>
+            <el-form-item label="Date Modified">
+                {{ properties.dateModified | date }}
+            </el-form-item>
+        </el-form>
 
         <div class="flex flex-row mt-2">
             <div class="flex-grow"></div>
@@ -64,8 +70,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.style-card {
-    width: 600px;
-}
-</style>
+<style lang="scss" scoped></style>
