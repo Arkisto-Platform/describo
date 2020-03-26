@@ -15,16 +15,16 @@
         <div class="flex flex-col" v-if="!target">
             <div class="text-lg text-center">
                 Get started by selecting the content you wish to describe.
-                <span class="text-indigo-700">
-                    The RO-crate metadata file will be automatically saved to
-                    this location as you construct it.
-                </span>
             </div>
-            <div class="flex flex-row">
+            <div class="text-lg text-center text-indigo-700">
+                The RO-crate metadata file will be automatically saved to this
+                location as you construct it.
+            </div>
+            <div class="flex flex-col">
                 <el-tabs
                     tab-position="left"
                     type="border-card"
-                    class="w-2/5 mt-4 style-tab-container"
+                    class="mt-4 style-tab-container"
                 >
                     <el-tab-pane label="Local Folders">
                         <local-folder-component
@@ -44,7 +44,7 @@
                         />
                     </el-tab-pane>
                 </el-tabs>
-                <div class="w-3/5 flex flex-col p-4" v-if="browseTarget">
+                <div class="flex flex-col p-4" v-if="browseTarget">
                     <div class="text-lg">Describo Target</div>
                     <file-tree-component
                         :browse-target="browseTarget"
@@ -113,7 +113,6 @@ export default {
 
 <style lang="scss" scoped>
 .style-tab-container {
-    height: 500px;
 }
 
 .style-tree-view {
