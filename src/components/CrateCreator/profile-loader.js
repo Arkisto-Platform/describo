@@ -1,8 +1,7 @@
 import fs from "fs-extra";
 
 import defaultProfile from "components/profiles/default";
-import { compact } from "jsonld";
-import { uuidv4 } from "./tools";
+import { cloneDeep } from "lodash";
 
 const profiles = {
     default: defaultProfile
@@ -21,16 +20,16 @@ export default class ProfileLoader {
             );
         }
         this.profile = profiles[this.name];
-        const rootDatasets = Object.keys(this.profile.RootDatasets);
+        const rootDatasets = Object.keys(this.profile);
         for (let type of rootDatasets) {
-            const inputs = this.profile.RootDatasets[type].inputs.map(input => {
+            const inputs = this.profile[type].inputs.map(input => {
                 if (input.multiple) {
                     input.items = [];
                     input.addItems = true;
                 }
                 return input;
             });
-            this.profile.RootDatasets[type].inputs = [...inputs];
+            this.profile[type].inputs = cloneDeep(inputs);
         }
         return { profile: this.profile };
     }

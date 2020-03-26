@@ -8,39 +8,53 @@
             <div class="flex-grow"></div>
             <div>
                 <el-button @click="loadProfile" type="danger">
-                    <i class="fas fa-trash-alt"></i> reset
+                    <i class="fas fa-trash-alt"></i>
                 </el-button>
             </div>
         </div>
         <el-tabs
+            v-model="activeTab"
             tab-position="left"
-            :stretch="true"
             class="mt-4 border-t-2 pt-4"
-            @tab-click="tab => (activeTab = tab.label)"
             v-if="ready && !showRootDatasetSelector"
         >
-            <el-tab-pane label="RO-Crate Root Dataset" class="overflow-scroll set-tab-height m-2">
-                <root-dataset-component
+            <el-tab-pane
+                label="RO-Crate Root Dataset"
+                name="crate"
+                class="overflow-scroll set-tab-height m-2"
+            >
+                <!-- <root-dataset-component
                     :profile="rootDatasetProfile"
-                    v-if="activeTab === 'RO-Crate Root Dataset'"
-                ></root-dataset-component>
+                    v-if="activeTab === 'crate'"
+                /> -->
+                <root-dataset-component :crate.sync="crate" />
             </el-tab-pane>
-            <el-tab-pane label="People"></el-tab-pane>
-            <el-tab-pane label="Organisations"></el-tab-pane>
-            <el-tab-pane label="Parts"></el-tab-pane>
+            <el-tab-pane label="Contents" name="parts">
+                <crate-parts-component v-if="activeTab === 'parts'" />
+            </el-tab-pane>
+            <el-tab-pane label="People" name="people"></el-tab-pane>
+            <el-tab-pane
+                label="Organisations"
+                name="organisations"
+            ></el-tab-pane>
         </el-tabs>
     </div>
 </template>
 
 <script>
-import { cloneDeep } from "lodash";
+import { cloneDeep, isObject } from "lodash";
+import { generateId } from "components/CrateCreator/tools";
 import ProfileLoader from "./profile-loader";
 import RootDatasetComponent from "./SectionComponents/RootDataset/Shell.component.vue";
+import CratePartsComponent from "./SectionComponents/CrateParts/Shell.component.vue";
 import RootDatasetSelectorComponent from "./RootDatasetSelector.component.vue";
+import CrateTool from "components/CrateCreator/crate-tools";
+const crateTool = new CrateTool();
 
 export default {
     components: {
         RootDatasetComponent,
+        CratePartsComponent,
         RootDatasetSelectorComponent
     },
     data() {
@@ -48,8 +62,9 @@ export default {
             profile: {},
             rootDatasetProfile: {},
             showRootDatasetSelector: false,
-            activeTab: "RO-Crate Root Dataset",
-            ready: false
+            activeTab: "crate",
+            ready: false,
+            crate: {}
         };
     },
     beforeMount() {
@@ -61,26 +76,60 @@ export default {
                 name: this.$store.state.profile
             });
             const { profile } = await profileLoader.load();
-            this.profile = profile;
-            if (Object.keys(profile.RootDatasets).length > 1) {
+            this.profile = cloneDeep(profile);
+            const DatasetTypes = Object.keys(profile);
+            if (DatasetTypes.length > 1) {
                 this.showRootDatasetSelector = true;
             } else {
-                this.loadSelection();
+                const selection = DatasetTypes.pop();
+                this.loadSelection(selection);
             }
         },
-        loadSelection(selection) {
+        async loadSelection(selection) {
+            if (!selection) return;
+
             let rootDatasetName = {};
             let inputs = [];
-            if (!selection) {
-                selection = Object.keys(this.profile.RootDatasets).pop();
-            }
-            if (!selection) return;
-            selection = this.profile.RootDatasets[selection];
-            let profile = { ...selection };
-            this.showRootDatasetSelector = false;
-            this.rootDatasetProfile = cloneDeep(profile);
-            this.ready = true;
             this.$store.commit("reset");
+            const profile = cloneDeep(this.profile[selection]);
+            this.crate = await this.loadCrate({ profile });
+            this.showRootDatasetSelector = false;
+            this.ready = true;
+        },
+        async loadCrate({ profile }) {
+            let dataset = {
+                "@type": "RootDataset",
+                uuid: generateId()
+            };
+            let inputs = cloneDeep(profile.inputs);
+
+            const crate = await crateTool.readCrate({
+                target: this.$store.state.target
+            });
+            if (crate) {
+                crate.forEach(element => {
+                    this.$store.commit("saveToGraph", element);
+                });
+
+                const rootDataset = crate.filter(
+                    e => e["@type"] === "RootDataset"
+                )[0];
+                dataset.uuid = rootDataset.uuid;
+                inputs = inputs.map(input => {
+                    if (input["@type"] === "Value") return input;
+
+                    const item = rootDataset[input.property];
+                    if (isObject(item)) {
+                        input.items = cloneDeep(item);
+                        dataset = { ...dataset, [input.property]: item };
+                    } else {
+                        input.value = item;
+                        dataset = { ...dataset, [input.property]: input.value };
+                    }
+                    return input;
+                });
+            }
+            return { dataset, inputs };
         }
     }
 };

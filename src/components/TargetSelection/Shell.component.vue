@@ -20,24 +20,49 @@
                     this location as you construct it.
                 </span>
             </div>
-            <el-tabs
-                tab-position="left"
-                type="border-card"
-                class="mt-4 style-tab-container"
-            >
-                <el-tab-pane label="Local Folders">
-                    <local-folder-component @set-target="setTarget" />
-                </el-tab-pane>
-                <el-tab-pane label="Amazon S3">
-                    <amazon-s3-component @set-target="setTarget" />
-                </el-tab-pane>
-                <el-tab-pane label="Google Drive">
-                    <google-drive-component @set-target="setTarget" />
-                </el-tab-pane>
-                <el-tab-pane label="Microsoft OneDrive">
-                    <microsoft-one-drive-component @set-target="setTarget" />
-                </el-tab-pane>
-            </el-tabs>
+            <div class="flex flex-row">
+                <el-tabs
+                    tab-position="left"
+                    type="border-card"
+                    class="w-2/5 mt-4 style-tab-container"
+                >
+                    <el-tab-pane label="Local Folders">
+                        <local-folder-component
+                            @set-target="setTarget"
+                            @browse-target="setBrowseTarget"
+                        />
+                    </el-tab-pane>
+                    <el-tab-pane label="Amazon S3">
+                        <amazon-s3-component @set-target="setTarget" />
+                    </el-tab-pane>
+                    <el-tab-pane label="Google Drive">
+                        <google-drive-component @set-target="setTarget" />
+                    </el-tab-pane>
+                    <el-tab-pane label="Microsoft OneDrive">
+                        <microsoft-one-drive-component
+                            @set-target="setTarget"
+                        />
+                    </el-tab-pane>
+                </el-tabs>
+                <div class="w-3/5 flex flex-col p-4" v-if="browseTarget">
+                    <div class="text-lg">Describo Target</div>
+                    <file-tree-component
+                        :browse-target="browseTarget"
+                        class="style-tree-view overflow-scroll"
+                    />
+                    <div class="flex flex-row">
+                        <div class="flex-grow"></div>
+                        <el-button
+                            type="success"
+                            @click="setTarget"
+                            :disabled="!this.browseTarget"
+                        >
+                            describe this target
+                            <i class="fas fa-long-arrow-alt-right"></i
+                        ></el-button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -48,13 +73,15 @@ import AmazonS3Component from "./AmazonS3.component.vue";
 import GoogleDriveComponent from "./GoogleDrive.component.vue";
 import MicrosoftOneDriveComponent from "./MicrosoftOneDrive.component.vue";
 import RenderSelectedTargetComponent from "./RenderSelectedTarget.component.vue";
+import FileTreeComponent from "components/FileTree/FileTree.component.vue";
 export default {
     components: {
         RenderSelectedTargetComponent,
         LocalFolderComponent,
         AmazonS3Component,
         GoogleDriveComponent,
-        MicrosoftOneDriveComponent
+        MicrosoftOneDriveComponent,
+        FileTreeComponent
     },
     computed: {
         target: function() {
@@ -62,11 +89,20 @@ export default {
         }
     },
     data() {
-        return {};
+        return {
+            browseTarget: undefined
+        };
     },
     methods: {
-        setTarget(target) {
-            this.$store.commit("setTarget", target);
+        setTarget() {
+            this.$store.commit("setTarget", this.browseTarget);
+            this.browseTarget = undefined;
+        },
+        setBrowseTarget(target) {
+            this.browseTarget = undefined;
+            setTimeout(() => {
+                this.browseTarget = { ...target };
+            }, 100);
         },
         describeNewFolder() {
             this.$store.commit("setTarget", null);
@@ -78,5 +114,9 @@ export default {
 <style lang="scss" scoped>
 .style-tab-container {
     height: 500px;
+}
+
+.style-tree-view {
+    height: 400px;
 }
 </style>

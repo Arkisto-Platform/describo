@@ -85,7 +85,7 @@ export default {
     },
     watch: {
         drawer: function(n, o) {
-            if (n) this.inspect("dataset");
+            if (n) this.data ? this.inspect("dataset") : this.inspect("graph");
         }
     },
     methods: {

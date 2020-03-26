@@ -12,31 +12,14 @@
                 </el-button>
             </div>
             <div class="flex-grow"></div>
-            <div>
-                <el-button
-                    type="success"
-                    @click="describeThisFolder"
-                    :disabled="!this.folder"
-                >
-                    describe this folder
-                    <i class="fas fa-long-arrow-alt-right"></i
-                ></el-button>
-            </div>
-        </div>
-        <div class="flex flex-col my-4" v-if="folder">
-            <file-tree-component :folder="folder" />
         </div>
     </div>
 </template>
 
 <script>
-import FileTreeComponent from "./FileTree.component.vue";
 import { remote } from "electron";
 
 export default {
-    components: {
-        FileTreeComponent
-    },
     data() {
         return {
             folder: undefined,
@@ -49,6 +32,7 @@ export default {
                 properties: ["openDirectory"]
             });
             this.folder = folder.filePaths[0];
+            this.$emit("browse-target", { type: "local", folder: this.folder });
         },
         describeThisFolder() {
             this.$emit("set-target", { type: "local", folder: this.folder });

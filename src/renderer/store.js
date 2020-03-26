@@ -30,7 +30,7 @@ export const mutations = {
         let cache = {};
         if (state.itemsById[payload.uuid])
             cache = state.itemsById[payload.uuid];
-        state.itemsById[payload.uuid] = { ...payload };
+        state.itemsById[payload.uuid] = { ...cache, ...payload };
         if (cache["@reverse"] && payload["@reverse"])
             state.itemsById[payload.uuid]["@reverse"] = {
                 ...cache["@reverse"],

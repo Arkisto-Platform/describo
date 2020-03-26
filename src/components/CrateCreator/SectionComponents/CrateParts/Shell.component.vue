@@ -1,0 +1,116 @@
+<template>
+    <div class="flex flex-col">
+        <div class="flex flex-row my-2">
+            <el-button @click="dataInspector = true" type="primary">
+                <i class="fas fa-eye"></i> inspect data
+            </el-button>
+            <div class="w-10"></div>
+            <div v-show="saving" class="text-orange-600 pt-2">
+                <i class="fas fa-save"></i> saving the crate
+            </div>
+            <div v-show="saved" class="text-green-600 pt-2">
+                <i class="fas fa-check"></i> saved
+            </div>
+        </div>
+        <el-tabs type="border-card" v-model="activeTab">
+            <el-tab-pane label="Add Content" name="add">
+                <file-tree-component
+                    class="style-tree-component overflow-scroll"
+                    :enable-file-selector="true"
+                    :checked-nodes="checkedNodes"
+                    @selected-nodes="addNodesToCrate"
+                />
+            </el-tab-pane>
+            <el-tab-pane label="Manage Content" name="manage">
+                <div class="flex flex-col">
+                    <parts-list-component
+                        class="my-2 border-2 p-4"
+                        @edit-part="editPart"
+                    />
+                    <dataset-component
+                        :uuid="selectedPart.uuid"
+                        @done="writeCrateToDisk"
+                        v-if="
+                            selectedPart && selectedPart['@type'] === 'Dataset'
+                        "
+                    />
+                    <file-component
+                        :uuid="selectedPart.uuid"
+                        @done="writeCrateToDisk"
+                        v-if="selectedPart && selectedPart['@type'] === 'File'"
+                    />
+                </div>
+            </el-tab-pane>
+        </el-tabs>
+        <data-inspector-component
+            :drawer="dataInspector"
+            @close="dataInspector = false"
+        />
+    </div>
+</template>
+
+<script>
+import FileTreeComponent from "components/FileTree/FileTree.component.vue";
+import DataInspectorComponent from "components/CrateCreator/SectionComponents/DataInspector.component.vue";
+import PartsListComponent from "./PartsList.component.vue";
+import FileComponent from "components/CrateCreator/CoreEntities/File.component.vue";
+import DatasetComponent from "components/CrateCreator/CoreEntities/Dataset.component.vue";
+import CrateTool from "components/CrateCreator/crate-tools";
+const crateTool = new CrateTool();
+
+import { writeParts } from "./part-tools";
+
+export default {
+    components: {
+        FileTreeComponent,
+        DataInspectorComponent,
+        PartsListComponent,
+        FileComponent,
+        DatasetComponent
+    },
+    data() {
+        return {
+            activeTab: "manage",
+            dataInspector: false,
+            error: false,
+            saved: false,
+            saving: false,
+            selectedPart: undefined
+        };
+    },
+    computed: {
+        checkedNodes: function() {
+            const state = this.$store.state.itemsByType;
+            let parts = state.File ? state.File : [];
+            parts = state.Dataset ? [...parts, ...state.Dataset] : parts;
+            return parts.map(p => p.name);
+        }
+    },
+    methods: {
+        addNodesToCrate(nodes) {
+            writeParts({ store: this.$store, nodes });
+            this.writeCrateToDisk();
+        },
+        writeCrateToDisk() {
+            this.selectedPart = undefined;
+            this.saved = false;
+            this.saving = true;
+            crateTool.assembleCrate({ data: this.$store.state.graph });
+            crateTool.writeCrate({ target: this.$store.state.target });
+            setTimeout(() => {
+                this.saving = false;
+                this.saved = true;
+            }, 1000);
+        },
+        editPart(part) {
+            this.selectedPart = part;
+        }
+    }
+};
+</script>
+
+<style lang="scss" scoped>
+.style-tree-component {
+    height: 600px;
+}
+</style>

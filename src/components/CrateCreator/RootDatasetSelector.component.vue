@@ -38,7 +38,7 @@ export default {
     computed: {
         selectionHelp: function() {
             if (this.profile && this.selection)
-                return this.profile.RootDatasets[this.selection].metadata.about;
+                return this.profile[this.selection].metadata.about;
         }
     },
     async mounted() {
@@ -46,7 +46,7 @@ export default {
             name: this.$store.state.profile
         });
         const { profile } = await profileLoader.load();
-        this.rootDatasetOptions = Object.keys(profile.RootDatasets);
+        this.rootDatasetOptions = Object.keys(profile);
         this.profile = profile;
     },
     methods: {
