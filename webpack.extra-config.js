@@ -49,6 +49,10 @@ module.exports = config => {
     }
     config.module.rules = compact(config.module.rules);
     config.module.rules.push(...cssRules);
+    config.module.rules.push({
+        test: /\.worker\.js$/,
+        use: { loader: "worker-loader", options: { inline: true } }
+    });
 
     config = merge(config, {
         resolve: {

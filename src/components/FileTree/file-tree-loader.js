@@ -1,8 +1,7 @@
-import { platform } from "os";
-import path from "path";
-import fs from "fs-extra";
-import { spawn } from "child_process";
-import { mapKeys, camelCase } from "lodash";
+const path = require("path");
+const { platform } = require("os");
+const { spawn } = require("child_process");
+const { mapKeys, camelCase } = require("lodash");
 
 export default class FileTreeLoader {
     constructor({ target }) {
@@ -26,7 +25,7 @@ export default class FileTreeLoader {
                 resolve();
             });
         });
-        await new Promise(resolve => setTimeout(resolve, 300));
+        // await new Promise(resolve => setTimeout(resolve, 300));
 
         if (!content) return {};
         return {

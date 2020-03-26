@@ -9,17 +9,16 @@
 
             <el-tree
                 ref="tree"
-                :data="data"
                 :props="props"
-                lazy
                 node-key="name"
-                :load="loadNode"
                 :show-checkbox="enableFileSelector"
                 :check-strictly="!selectAllChildren"
                 :default-checked-keys="checkedNodes"
                 :default-expanded-keys="defaultExpandedKeys"
-                :default-expand-all="true"
+                lazy
+                :load="loadNode"
             ></el-tree>
+            <!-- :default-expand-all="true" -->
         </div>
         <div class="mx-2" v-if="enableFileSelector">
             <el-button @click="addParts" type="success">
@@ -31,7 +30,8 @@
 </template>
 
 <script>
-import FileTreeLoader from "./file-tree-loader";
+// import FileTreeLoader from "./file-tree-loader";
+import Worker from "./file-tree.worker.js";
 import path from "path";
 import { flattenDeep, uniq, compact } from "lodash";
 
@@ -50,9 +50,9 @@ export default {
     data() {
         return {
             target: this.browseTarget || this.$store.state.target,
-            ftloader: new FileTreeLoader({
-                target: this.browseTarget || this.$store.state.target
-            }),
+            // ftloader: new FileTreeLoader({
+            //     target: this.browseTarget || this.$store.state.target
+            // }),
             data: [
                 {
                     path: "",
@@ -69,28 +69,36 @@ export default {
         };
     },
     methods: {
-        async loadRootNode(node) {
-            this.data = [
-                {
-                    path: this.folder
-                }
-            ];
+        async loadRootNode() {
+            return await new Promise(resolve => {
+                const worker = new Worker();
+                worker.postMessage({
+                    target: this.target,
+                    root: this.target.folder,
+                    path: this.target.folder
+                });
+                worker.addEventListener("message", m => resolve(m.data));
+            });
         },
         async loadNode(node, resolve) {
-            const nodePath = node.data.path || node.data[0].path;
             let content;
-            if (!nodePath) {
-                content = await this.ftloader.load({
-                    path: this.target.folder,
-                    root: this.target.folder
-                });
-                // this.defaultExpandedKeys = [content.path];
-                resolve([content]);
+            if (node.level === 0) {
+                content = await this.loadRootNode();
+                content.name = content.path;
+                this.defaultExpandedKeys = [this.target.folder];
+                return resolve([content]);
+            } else if (node.level === 1) {
+                return resolve(node.data.children);
             } else {
                 const parentPath = node.parent.data.path || "";
-                content = await this.ftloader.load({
-                    root: this.target.folder,
-                    path: path.join(parentPath, nodePath)
+                content = await new Promise(resolve => {
+                    const worker = new Worker();
+                    worker.postMessage({
+                        target: this.target,
+                        root: this.target.folder,
+                        path: path.join(parentPath, node.data.path)
+                    });
+                    worker.addEventListener("message", m => resolve(m.data));
                 });
                 resolve(content.children || []);
             }

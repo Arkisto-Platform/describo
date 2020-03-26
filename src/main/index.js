@@ -15,7 +15,8 @@ function createMainWindow() {
         width: 1300,
         height: 1100,
         webPreferences: {
-            nodeIntegration: true
+            nodeIntegration: true,
+            nodeIntegrationInWorker: true
         }
     });
     window.webContents.session.clearCache(() => {});
