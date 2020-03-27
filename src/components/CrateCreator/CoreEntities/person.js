@@ -15,7 +15,9 @@ export function save({ store, params }) {
         "@type": "Person",
         name: params.name,
         identifier: params.identifierId,
-        "@reverse": params["@reverse"]
+        "@reverse": {
+            [params.reference.property]: { "@id": params.reference.id }
+        }
     };
     store.commit("saveToGraph", person);
 
@@ -36,7 +38,6 @@ export function restore({ store, id }) {
         const identifier = cloneDeep(store.state.itemsById[person.identifier]);
 
         props.uuid = person.uuid;
-        props.id = person["@id"];
         props.name = person.name;
         props.identifierId = identifier["@id"];
         props.idType = identifier.name;
@@ -52,7 +53,11 @@ export function restore({ store, id }) {
 }
 
 export function remove({ store, params }) {
+    params["@reverse"] = {
+        [params.reference.property]: { "@id": params.reference.id }
+    };
     store.commit("removeFromGraph", params);
+
     if (!store.state.itemsById[params.uuid]) {
         // go ahead and remove all related things
         store.commit("removeFromGraph", { uuid: params.identifierId });
