@@ -5,19 +5,26 @@
             type="success"
             @click="properties.visible = true"
             v-if="!properties.visible"
-        >{{ this.properties.name }}</el-tag>
-        <el-card type="box-card" class="flex flex-col style-card" v-if="properties.visible">
+        >
+            {{ this.properties.name }}
+        </el-tag>
+        <el-card
+            type="box-card"
+            class="flex flex-col style-card"
+            v-if="properties.visible"
+        >
             <div class="flex flex-col">
-                <div class="text-sm text-gray-500">select an existing person</div>
-                <select-existing-entry type="Person" @selection="mergeSelection" />
+                <div class="text-sm text-gray-500">
+                    select an existing person
+                </div>
+                <select-existing-entry
+                    type="Person"
+                    @selection="mergeSelection"
+                />
             </div>
             <div class="flex flex-col mt-4">
                 <div class="text-sm text-gray-500">or create a new person</div>
 
-                <div class="flex flex-row">
-                    <div class="w-20 text-right mr-1 my-auto">@id:</div>
-                    <el-input v-model="properties.id"></el-input>
-                </div>
                 <div class="flex flex-row mt-2">
                     <div class="w-20 text-right mr-1 my-auto">id type:</div>
                     <el-select v-model="properties.idType" placeholder="Select">
@@ -62,7 +69,7 @@ export default {
             required: true
         },
         reference: {
-            type: String,
+            type: Object,
             required: true
         }
     },
