@@ -124,6 +124,7 @@ export default {
             });
             this.properties = { ...properties };
             this.properties.visible = false;
+            this.save();
         }
     }
 };
