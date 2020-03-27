@@ -1,12 +1,6 @@
 <template>
     <div>
-        <div>
-            {{ input }}
-        </div>
-        <el-button @click="cancel" type="danger"
-            ><i class="fas fa-trash-alt"></i
-        ></el-button>
-        <!-- <el-tag
+        <el-tag
             class="cursor-pointer"
             type="success"
             @click="properties.visible = true"
@@ -18,34 +12,39 @@
             class="flex flex-col style-card"
             v-if="properties.visible"
         >
-            <div class="flex flex-col">
+            <div class="flex flex-col my-4">
                 <div class="text-sm text-gray-500">
-                    select an existing person
+                    lookup an organisation
+                </div>
+                <lookup-ror-component @selected-organisation="saveSelection" />
+            </div>
+            <div class="flex flex-col my-4">
+                <div class="text-sm text-gray-500">
+                    or select an existing organisation
                 </div>
                 <select-existing-entry
-                    type="Person"
+                    type="Organisation"
                     @selection="mergeSelection"
                 />
             </div>
             <div class="flex flex-col mt-4">
                 <div class="text-sm text-gray-500">
-                    or create a new person
+                    or create a new organisation
                 </div>
 
-                <div class="flex flex-row">
-                    <div class="w-20 text-right mr-1 my-auto">@id:</div>
-                    <el-input v-model="properties.id"></el-input>
-                </div>
                 <div class="flex flex-row mt-2">
                     <div class="w-20 text-right mr-1 my-auto">id type:</div>
-                    <el-select v-model="properties.idType" placeholder="Select">
+                    <el-select
+                        v-model="properties.idType"
+                        placeholder="Select"
+                        class="w-full"
+                    >
                         <el-option
                             v-for="(type, idx) in idTypes"
                             :key="idx"
                             :label="type"
                             :value="type"
-                        >
-                        </el-option>
+                        ></el-option>
                     </el-select>
                 </div>
                 <div class="flex flex-row mt-2">
@@ -53,27 +52,29 @@
                     <el-input v-model="properties.name"></el-input>
                 </div>
                 <div class="flex flex-row mt-2">
-                    <el-button @click="cancel" type="danger"
-                        ><i class="fas fa-trash-alt"></i
-                    ></el-button>
+                    <el-button @click="cancel" type="danger">
+                        <i class="fas fa-trash-alt"></i>
+                    </el-button>
                     <div class="flex-grow"></div>
-                    <el-button @click="save" type="success"
-                        ><i class="fas fa-check"></i
-                    ></el-button>
+                    <el-button @click="save" type="success">
+                        <i class="fas fa-check"></i>
+                    </el-button>
                 </div>
             </div>
-        </el-card> -->
+        </el-card>
     </div>
 </template>
 
 <script>
-import { save, restore } from "./organisation.js";
+import { save, restore, remove } from "./organisation.js";
 import { getParams } from "components/CrateCreator/tools";
 import SelectExistingEntry from "./SelectExistingEntry.component.vue";
+import LookupRorComponent from "./LookupROR.component.vue";
 
 export default {
     components: {
-        SelectExistingEntry
+        SelectExistingEntry,
+        LookupRorComponent
     },
     props: {
         input: {
@@ -81,7 +82,7 @@ export default {
             required: true
         },
         reference: {
-            type: String,
+            type: Object,
             required: true
         }
     },
@@ -89,7 +90,8 @@ export default {
         return {
             properties: {
                 visible: false
-            }
+            },
+            idTypes: ["Research Organisation Registry (ROR)", "other"]
         };
     },
     created() {
@@ -101,35 +103,62 @@ export default {
     },
     methods: {
         cancel() {
-            console.log(this.properties);
-            // const params = getParams({
-            //     properties: this.properties,
-            //     reference: this.reference
-            // });
-            // remove({
-            //     store: this.$store,
-            //     params
-            // });
+            const params = getParams({
+                properties: this.properties,
+                reference: this.reference
+            });
+            remove({
+                store: this.$store,
+                params
+            });
             this.$emit("cancel", this.properties.uuid);
             this.properties.visible = false;
         },
         save() {
-            // let params = Object.keys(this.$data.properties).map(p => {
-            //     return { k: p, v: this.properties[p] };
-            // });
-            // params = params.reduce(
-            //     (map, obj) => ((map[obj.k] = obj.v), map),
-            //     {}
-            // );
-            // save({
-            //     store: this.$store,
-            //     params
-            // });
-            // this.$emit("save", this.properties.id);
-            // this.properties.visible = false;
+            const params = getParams({
+                properties: this.properties,
+                reference: this.reference
+            });
+            save({
+                store: this.$store,
+                params
+            });
+            this.$emit("save", this.properties.uuid);
+            this.properties.visible = false;
+        },
+        saveSelection(selection) {
+            this.$emit("replace", {
+                old: this.properties.uuid,
+                new: selection.id
+            });
+            this.cancel();
+            const properties = {
+                ...this.properties,
+                name: selection.name,
+                uuid: selection.id
+            };
+            this.properties = { ...properties };
+            this.save();
+        },
+        mergeSelection(selection) {
+            this.$emit("replace", {
+                old: this.properties.uuid,
+                new: selection.uuid
+            });
+            const properties = restore({
+                store: this.$store,
+                id: selection.uuid
+            });
+            this.properties = { ...properties };
+            this.properties.visible = false;
+            this.save();
         }
     }
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.style-card {
+    width: 600px;
+}
+</style>
