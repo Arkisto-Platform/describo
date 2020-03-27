@@ -1,3 +1,4 @@
+import "regenerator-runtime/runtime";
 import CrateTool from "./crate-tools";
 import { isPlainObject, isArray } from "lodash";
 
@@ -6,25 +7,40 @@ const graph = [
         "@type": "RootDataset",
         uuid: "#1",
         name: "dataset",
-        author: {
-            uuid: "#2"
-        },
+        author: [{ uuid: "#2" }, { uuid: "#3" }],
         elephants: [{ uuid: "#5", "@id": "/large" }],
         participant: [{ uuid: "#3" }, { uuid: "#4" }]
     },
     {
         "@type": "Person",
-        uuid: "#2"
+        uuid: "#2",
+        "@reverse": {
+            author: [{ "@id": "#1" }]
+        }
     },
     {
         "@type": "Person",
-        uuid: "#3"
+        uuid: "#3",
+        "@reverse": {
+            author: [{ "@id": "#1" }],
+            participant: [{ "@id": "#1" }]
+        }
     },
     {
         "@type": "Person",
-        uuid: "#4"
+        uuid: "#4",
+        "@reverse": {
+            participant: [{ "@id": "#1" }]
+        }
     },
-    { uuid: "#5", "@type": "Elephant", "@id": "/large" }
+    {
+        "@type": "Elephant",
+        uuid: "#5",
+        "@id": "/large",
+        "@reverse": {
+            elephants: [{ "@id": "#1" }]
+        }
+    }
 ];
 
 test("it should be able to map UUID to @id if @id not defined", () => {
@@ -37,6 +53,7 @@ test("it should be able to map UUID to @id if @id not defined", () => {
         expect(p["@id"]).toBe(p.uuid);
     }
     expect(data.elephants[0]).toHaveProperty("@id");
+    expect(data.elephants[0]["@id"]).toBe("/large");
 });
 
 test("it should be able to find the root dataset", () => {
@@ -70,6 +87,7 @@ test("it should be able to remove all UUID refs", () => {
     const crateTool = new CrateTool();
     let data = crateTool.mapIdentifiers({ data: graph });
     data = crateTool.cleanup({ data });
+    // console.log(JSON.stringify(data, null, 2));
     for (let element of data) {
         ensureNoUUID(element);
         for (let property of Object.keys(element)) {
@@ -88,6 +106,7 @@ test("it should be able to get a crate", () => {
     const crateTool = new CrateTool();
     crateTool.assembleCrate({ data: graph });
     let data = crateTool.crate;
+    // console.log(JSON.stringify(data, null, 2));
     expect(data["@graph"].length).toBe(6);
 });
 
@@ -117,34 +136,62 @@ test("it should be able to load a crate", () => {
                 },
                 elephants: [
                     {
-                        "@id": "#1"
+                        "@id": "/large"
                     }
                 ],
                 participant: [
                     {
-                        "@id": "#1"
+                        "@id": "#3"
                     },
                     {
-                        "@id": "#1"
+                        "@id": "#4"
                     }
                 ],
                 "@id": "./"
             },
             {
                 "@type": "Person",
-                "@id": "#2"
+                "@id": "#2",
+                "@reverse": {
+                    author: [
+                        {
+                            "@id": "./"
+                        }
+                    ]
+                }
             },
             {
                 "@type": "Person",
-                "@id": "#3"
+                "@id": "#3",
+                "@reverse": {
+                    participant: [
+                        {
+                            "@id": "./"
+                        }
+                    ]
+                }
             },
             {
                 "@type": "Person",
-                "@id": "#4"
+                "@id": "#4",
+                "@reverse": {
+                    participant: [
+                        {
+                            "@id": "./"
+                        }
+                    ]
+                }
             },
             {
                 "@type": "Elephant",
-                "@id": "/large"
+                "@id": "/large",
+                "@reverse": {
+                    author: [
+                        {
+                            "@id": "./"
+                        }
+                    ]
+                }
             }
         ]
     };

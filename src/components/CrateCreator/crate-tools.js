@@ -51,12 +51,25 @@ export default class CrateTool {
         elements = elements.filter(
             e => e["@id"] != "/ro-crate-metadata.jsonld"
         );
+        const rootDatasetUUID = generateId();
         elements = elements.map(element => {
             if (element["@id"] === "./") {
-                element.uuid = generateId();
+                element.uuid = rootDatasetUUID;
                 element["@type"] = "RootDataset";
             } else {
                 element.uuid = element["@id"];
+            }
+
+            if (element["@reverse"]) {
+                for (let property of Object.keys(element["@reverse"])) {
+                    element["@reverse"][property] = element["@reverse"][
+                        property
+                    ].map(entry => {
+                        if (entry["@id"] === "./")
+                            entry["@id"] = rootDatasetUUID;
+                        return entry;
+                    });
+                }
             }
 
             for (let property of Object.keys(element)) {
@@ -69,6 +82,7 @@ export default class CrateTool {
                     });
                 }
             }
+
             return element;
         });
         return elements;
@@ -77,19 +91,41 @@ export default class CrateTool {
     assembleCrate({ data }) {
         data = cloneDeep(data);
         data = this.mapIdentifiers({ data });
-        data = this.cleanup({ data });
+        // data = this.cleanup({ data });
 
         let graph = [this.getCrateMetadataFileDescriptor()];
 
         const rootDataset = this.getRootDataset({ data });
+        // console.log(rootDataset);
         graph = [...graph, rootDataset];
 
-        const elements = data.filter(d => d["@type"] !== "RootDataset");
+        let elements = data.filter(d => d["@type"] !== "RootDataset");
+        elements = this.remapReverseReferences({ rootDataset, elements });
+
         graph = [...graph, ...elements];
+        data = this.cleanup({ data: graph });
         this.crate = {
             "@context": "https://w3id.org/ro/crate/1.0/context",
             "@graph": graph
         };
+    }
+
+    remapReverseReferences({ rootDataset, elements }) {
+        elements = elements.map(element => {
+            if (element["@reverse"]) {
+                for (let property of Object.keys(element["@reverse"])) {
+                    element["@reverse"][property] = element["@reverse"][
+                        property
+                    ].map(entry => {
+                        if (entry["@id"] === rootDataset.uuid)
+                            entry["@id"] = "./";
+                        return entry;
+                    });
+                }
+            }
+            return element;
+        });
+        return elements;
     }
 
     getCrateMetadataFileDescriptor() {
@@ -148,7 +184,7 @@ export default class CrateTool {
             for (let property of Object.keys(element)) {
                 if (isPlainObject(element[property])) {
                     item = elementsByUUID[element.uuid];
-                    if (item) entry["@id"] = item[0]["@id"];
+                    if (item) element["@id"] = item[0]["@id"];
                 } else if (isArray(element[property])) {
                     element[property] = element[property].map(entry => {
                         item = elementsByUUID[entry.uuid];
