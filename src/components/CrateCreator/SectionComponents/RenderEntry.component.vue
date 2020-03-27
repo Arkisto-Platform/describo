@@ -135,7 +135,7 @@ export default {
             });
         },
         generateParentId() {
-            return `${this.reference}-${this.property}`;
+            return { property: this.property, id: this.reference };
         }
     }
 };

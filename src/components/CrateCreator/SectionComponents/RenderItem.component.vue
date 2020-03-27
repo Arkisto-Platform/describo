@@ -19,7 +19,7 @@ export default {
             required: true
         },
         reference: {
-            type: String,
+            type: Object,
             required: true
         }
     },
