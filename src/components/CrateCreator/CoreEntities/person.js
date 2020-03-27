@@ -11,7 +11,7 @@ export const properties = {
 export function save({ store, params }) {
     const person = {
         uuid: params.uuid,
-        "@id": params.id,
+        "@id": params.uuid,
         "@type": "Person",
         name: params.name,
         identifier: params.identifierId,
@@ -26,7 +26,7 @@ export function save({ store, params }) {
         "@id": params.identifierId,
         "@type": "PropertyValue",
         name: params.idType,
-        value: params.id
+        value: params.uuid
     };
     store.commit("saveToGraph", identifier);
 }
