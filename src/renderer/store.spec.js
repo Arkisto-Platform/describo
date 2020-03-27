@@ -95,31 +95,8 @@ test("it should not create two of the same item in the store", () => {
     expect(Object.keys(state.itemsById).length).toBe(1);
     expect(state.itemsByType.Person.length).toBe(1);
 });
-test("it should be able to create an object with two back references", () => {
-    let item = {
-        uuid: "#1",
-        "@type": "Person",
-        name: "one",
-        "@reverse": {
-            author: { "@id": "./" }
-        }
-    };
-    store.commit("saveToGraph", item);
-
-    item = {
-        uuid: "#1",
-        "@type": "Person",
-        name: "one",
-        "@reverse": {
-            participant: { "@id": "./" }
-        }
-    };
-    store.commit("saveToGraph", item);
-    expect(state.graph.length).toBe(1);
-    const person = state.graph.pop();
-    expect(Object.keys(person["@reverse"]).length).toBe(2);
-});
-test("it should not remove the object when there's still a back reference", () => {
+test("it should handle @reverse inputs sensibly - including adding and removing back ref's", () => {
+    // add ref author = ./
     let ref1 = {
         uuid: "#1",
         "@type": "Person",
@@ -129,9 +106,24 @@ test("it should not remove the object when there's still a back reference", () =
         }
     };
     store.commit("saveToGraph", ref1);
-    // console.log(JSON.stringify(state, null, 2));
+    expect(Object.keys(state.itemsById["#1"]["@reverse"]).length).toBe(1);
+    expect(state.itemsById["#1"]["@reverse"].author.length).toBe(1);
 
-    let ref2 = {
+    // add ref author = #4
+    ref1 = {
+        uuid: "#1",
+        "@type": "Person",
+        name: "one",
+        "@reverse": {
+            author: { "@id": "#4" }
+        }
+    };
+    store.commit("saveToGraph", ref1);
+    expect(Object.keys(state.itemsById["#1"]["@reverse"]).length).toBe(1);
+    expect(state.itemsById["#1"]["@reverse"].author.length).toBe(2);
+
+    // add ref participant = ./
+    ref1 = {
         uuid: "#1",
         "@type": "Person",
         name: "one",
@@ -139,22 +131,27 @@ test("it should not remove the object when there's still a back reference", () =
             participant: { "@id": "./" }
         }
     };
-    store.commit("saveToGraph", ref2);
+    store.commit("saveToGraph", ref1);
+    expect(Object.keys(state.itemsById["#1"]["@reverse"]).length).toBe(2);
+    expect(state.itemsById["#1"]["@reverse"].author.length).toBe(2);
+    expect(state.itemsById["#1"]["@reverse"].participant.length).toBe(1);
 
-    store.commit("removeFromGraph", ref1);
-    expect(state.graph.length).toBe(1);
-    expect(Object.keys(state.graph[0]["@reverse"]).length).toBe(1);
-
-    // should do nothing
-    store.commit("removeFromGraph", ref1);
-    expect(state.graph[0]["@reverse"]).toEqual({
-        participant: {
-            "@id": "./"
+    // add ref participant = #elephants
+    ref1 = {
+        uuid: "#1",
+        "@type": "Person",
+        name: "one",
+        "@reverse": {
+            participant: { "@id": "#elephants" }
         }
-    });
-});
-test("it should remove the object when there are no back references", () => {
-    let ref1 = {
+    };
+    store.commit("saveToGraph", ref1);
+    expect(Object.keys(state.itemsById["#1"]["@reverse"]).length).toBe(2);
+    expect(state.itemsById["#1"]["@reverse"].author.length).toBe(2);
+    expect(state.itemsById["#1"]["@reverse"].participant.length).toBe(2);
+
+    // re-add ref author = ./
+    ref1 = {
         uuid: "#1",
         "@type": "Person",
         name: "one",
@@ -163,9 +160,54 @@ test("it should remove the object when there are no back references", () => {
         }
     };
     store.commit("saveToGraph", ref1);
-    // console.log(JSON.stringify(state, null, 2));
+    expect(Object.keys(state.itemsById["#1"]["@reverse"]).length).toBe(2);
+    expect(state.itemsById["#1"]["@reverse"].author.length).toBe(2);
+    expect(state.itemsById["#1"]["@reverse"].participant.length).toBe(2);
 
-    let ref2 = {
+    // remove ref author = ./
+    ref1 = {
+        uuid: "#1",
+        "@type": "Person",
+        name: "one",
+        "@reverse": {
+            author: { "@id": "./" }
+        }
+    };
+    store.commit("removeFromGraph", ref1);
+    expect(Object.keys(state.itemsById["#1"]["@reverse"]).length).toBe(2);
+    expect(state.itemsById["#1"]["@reverse"].author.length).toBe(1);
+    expect(state.itemsById["#1"]["@reverse"].participant.length).toBe(2);
+
+    // remove ref author = #4
+    ref1 = {
+        uuid: "#1",
+        "@type": "Person",
+        name: "one",
+        "@reverse": {
+            author: { "@id": "#4" }
+        }
+    };
+    store.commit("removeFromGraph", ref1);
+    expect(Object.keys(state.itemsById["#1"]["@reverse"]).length).toBe(1);
+    expect(state.itemsById["#1"]["@reverse"].author).toBeUndefined;
+    expect(state.itemsById["#1"]["@reverse"].participant.length).toBe(2);
+
+    // remove ref participant = #4 (doesn't exist so no changes)
+    ref1 = {
+        uuid: "#1",
+        "@type": "Person",
+        name: "one",
+        "@reverse": {
+            participant: { "@id": "#4" }
+        }
+    };
+    store.commit("removeFromGraph", ref1);
+    expect(Object.keys(state.itemsById["#1"]["@reverse"]).length).toBe(1);
+    expect(state.itemsById["#1"]["@reverse"].author).toBeUndefined;
+    expect(state.itemsById["#1"]["@reverse"].participant.length).toBe(2);
+
+    // remove ref participant = ./
+    ref1 = {
         uuid: "#1",
         "@type": "Person",
         name: "one",
@@ -173,22 +215,43 @@ test("it should remove the object when there are no back references", () => {
             participant: { "@id": "./" }
         }
     };
-    store.commit("saveToGraph", ref2);
-
     store.commit("removeFromGraph", ref1);
-    expect(state.graph.length).toBe(1);
-    expect(Object.keys(state.graph[0]["@reverse"]).length).toBe(1);
+    expect(Object.keys(state.itemsById["#1"]["@reverse"]).length).toBe(1);
+    expect(state.itemsById["#1"]["@reverse"].participant.length).toBe(1);
 
-    // should do nothing
-    store.commit("removeFromGraph", ref1);
-    expect(state.graph[0]["@reverse"]).toEqual({
-        participant: {
-            "@id": "./"
+    // remove ref participant = #elephants
+    ref1 = {
+        uuid: "#1",
+        "@type": "Person",
+        name: "one",
+        "@reverse": {
+            participant: { "@id": "#elephants" }
         }
-    });
+    };
+    store.commit("removeFromGraph", ref1);
+    expect(state.itemsById["#1"]).toBeUndefined;
+});
+test("it should be able to merge an item with a reverse with an existing version without", () => {
+    // add ref author = ./
+    let ref1 = {
+        uuid: "#1",
+        "@type": "Person",
+        name: "one"
+    };
+    store.commit("saveToGraph", ref1);
 
-    store.commit("removeFromGraph", ref2);
-    expect(state.graph.length).toBe(0);
+    // add ref author = #4
+    ref1 = {
+        uuid: "#1",
+        "@type": "Person",
+        name: "one",
+        "@reverse": {
+            author: { "@id": "#4" }
+        }
+    };
+    store.commit("saveToGraph", ref1);
+    expect(Object.keys(state.itemsById["#1"]["@reverse"]).length).toBe(1);
+    expect(state.itemsById["#1"]["@reverse"].author.length).toBe(1);
 });
 test("it should remove an item without an @reverse property", () => {
     let ref1 = {
