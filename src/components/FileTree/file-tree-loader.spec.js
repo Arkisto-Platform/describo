@@ -19,6 +19,7 @@ test("it should be able to get the path to an rclone binary", async () => {
             break;
     }
 });
+
 test("it should be able to get a directory listing", async () => {
     const ftl = new FileTreeLoader({ target: "local" });
     const content = await ftl.load({ root: __dirname, path: __dirname });
