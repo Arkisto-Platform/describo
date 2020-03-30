@@ -74,7 +74,9 @@ export default class CrateTool {
 
             for (let property of Object.keys(element)) {
                 if (isPlainObject(element[property])) {
-                    element[property].uuid = element[property]["@id"];
+                    if (element[property]["@id"]) {
+                        element[property].uuid = element[property]["@id"];
+                    }
                 } else if (isArray(element[property])) {
                     element[property] = element[property].map(entry => {
                         entry.uuid = entry["@id"];
@@ -82,7 +84,6 @@ export default class CrateTool {
                     });
                 }
             }
-
             return element;
         });
         return elements;
