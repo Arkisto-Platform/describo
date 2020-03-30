@@ -34,7 +34,7 @@ export default {
             {
                 property: "description",
                 label: "Description",
-                "@type": "Text"
+                "@type": "TextArea"
             },
             {
                 // If you want to add properties with values from a controlled vocab
