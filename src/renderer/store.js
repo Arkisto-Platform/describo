@@ -4,7 +4,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 Vue.use(Vuex);
 
-import { groupBy, cloneDeep, uniqBy, merge } from "lodash";
+import { groupBy, cloneDeep, uniqBy, merge, isArray } from "lodash";
 import { stat } from "fs";
 import { reverse } from "dns";
 
@@ -31,8 +31,10 @@ export const mutations = {
         payload = cloneDeep(payload);
         if ("@reverse" in payload) {
             for (let prop of Object.keys(payload["@reverse"])) {
-                // convert @reverse prop's to arrays
-                payload["@reverse"][prop] = [payload["@reverse"][prop]];
+                // convert @reverse prop's to arrays if not already
+                if (!isArray(payload["@reverse"][prop])) {
+                    payload["@reverse"][prop] = [payload["@reverse"][prop]];
+                }
             }
         }
 
