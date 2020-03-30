@@ -1,12 +1,7 @@
 <template>
     <div class="flex flex-col mt-1 mb-4">
-        <div class="my-auto text-left text-sm pr-2">
-            {{ label }}
-        </div>
-        <div
-            class="flex flex-col flex-grow pl-2 border-l-2 border-gray-400"
-            v-if="input.addItems"
-        >
+        <div class="my-auto text-left text-sm pr-2">{{ label }}</div>
+        <div class="flex flex-col flex-grow pl-2 border-l-2 border-gray-400" v-if="input.addItems">
             <div class="my-2">
                 <add-control :type="input['@type']" @add="add" />
             </div>
@@ -29,6 +24,12 @@
             @save="save"
             @cancel="cancel"
         />
+        <text-area-component
+            :input="input"
+            v-if="input['@type'] === 'TextArea'"
+            @save="save"
+            @cancel="cancel"
+        />
         <date-component
             :input="input"
             v-if="input['@type'] === 'Date'"
@@ -41,12 +42,8 @@
             @save="save"
             @cancel="cancel"
         />
-        <div v-if="input['@type'] === 'Value'" @blur="add(input.value)">
-            {{ input.value }}
-        </div>
-        <div class="text-sm text-gray-600" v-if="input.help">
-            {{ input.help }}
-        </div>
+        <div v-if="input['@type'] === 'Value'" @blur="add(input.value)">{{ input.value }}</div>
+        <div class="text-sm text-gray-600" v-if="input.help">{{ input.help }}</div>
     </div>
 </template>
 
@@ -54,6 +51,7 @@
 import AddControl from "./AddControl.component.vue";
 import RenderItemComponent from "./RenderItem.component.vue";
 import TextComponent from "components/CrateCreator/CoreEntities/Text.component.vue";
+import TextAreaComponent from "components/CrateCreator/CoreEntities/TextArea.component.vue";
 import DateComponent from "components/CrateCreator/CoreEntities/Date.component.vue";
 import SelectComponent from "components/CrateCreator/CoreEntities/Select.component.vue";
 import { generateId } from "components/CrateCreator/tools";
@@ -65,6 +63,7 @@ export default {
         AddControl,
         RenderItemComponent,
         TextComponent,
+        TextAreaComponent,
         DateComponent,
         SelectComponent
     },
@@ -106,7 +105,11 @@ export default {
             }
         },
         save(value) {
-            if (["Text", "Date", "Select"].includes(this.input["@type"])) {
+            if (
+                ["Text", "TextArea", "Date", "Select"].includes(
+                    this.input["@type"]
+                )
+            ) {
                 this.$emit("save", {
                     property: this.property,
                     value
