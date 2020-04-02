@@ -3,6 +3,7 @@
         <div class="flex flex-row">
             <root-dataset-selector-component
                 v-if="showRootDatasetSelector"
+                :profile="profile"
                 @load-selection="loadSelection"
             />
             <div

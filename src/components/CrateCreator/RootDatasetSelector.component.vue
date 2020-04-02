@@ -32,9 +32,14 @@
 import ProfileLoader from "./profile-loader";
 
 export default {
+    props: {
+        profile: {
+            type: Object,
+            required: true
+        }
+    },
     data() {
         return {
-            profile: undefined,
             selection: undefined,
             rootDatasetOptions: []
         };
@@ -46,12 +51,7 @@ export default {
         }
     },
     async mounted() {
-        const profileLoader = new ProfileLoader({
-            name: this.$store.state.profile
-        });
-        const { profile } = await profileLoader.load();
-        this.rootDatasetOptions = Object.keys(profile);
-        this.profile = profile;
+        this.rootDatasetOptions = Object.keys(this.profile);
     },
     methods: {
         emitSelection() {
