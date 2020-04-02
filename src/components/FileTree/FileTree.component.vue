@@ -1,6 +1,12 @@
 <template>
     <div class="flex flex-row">
         <div class="flex flex-col w-3/4">
+            <div v-if="enableFileSelector">
+                <el-button @click="addParts" type="success">
+                    update crate content
+                    <!-- <i class="fas fa-long-arrow-alt-right"></i> -->
+                </el-button>
+            </div>
             <div class="my-2 pb-2 border-b-2" v-if="enableFileSelector">
                 <el-checkbox v-model="selectAllChildren"
                     >Select all children</el-checkbox
@@ -23,12 +29,6 @@
                 :load="loadNode"
             ></el-tree>
             <!-- :default-expand-all="true" -->
-        </div>
-        <div class="mx-2" v-if="enableFileSelector">
-            <el-button @click="addParts" type="success">
-                add selections
-                <i class="fas fa-long-arrow-alt-right"></i>
-            </el-button>
         </div>
     </div>
 </template>
@@ -69,7 +69,7 @@ export default {
                 isLeaf: "isLeaf"
             },
             defaultExpandedKeys: [],
-            selectAllChildren: false
+            selectAllChildren: true
         };
     },
     methods: {

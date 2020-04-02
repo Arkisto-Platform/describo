@@ -1,5 +1,8 @@
 <template>
-    <div>
+    <div class="flex flex-col my-4">
+        <div class="text-sm text-gray-500">
+            Select an existing {{ type.toLowerCase() }}
+        </div>
         <el-select
             v-model="selection"
             placeholder="Select"
@@ -14,14 +17,14 @@
                 :value="item.uuid"
             >
                 <div class="flex flex-row">
-                    <div class="text-lg gray-600">name:{{ item.name }}</div>
+                    <div class="text-lg gray-600">{{ item.name }}</div>
                     <div class="flex-grow"></div>
-                    <div class="text-xs">id: {{ item["@id"] }}</div>
+                    <div class="text-xs">id: {{ item.uuid }}</div>
                 </div>
             </el-option>
         </el-select>
         <div v-if="!entries || !entries.length">
-            No {{ type }} entries available yet.
+            No {{ type.toLowerCase() }} entries available yet.
         </div>
     </div>
 </template>

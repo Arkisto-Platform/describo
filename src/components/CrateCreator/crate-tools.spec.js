@@ -7,54 +7,50 @@ const graph = [
         "@type": "RootDataset",
         uuid: "#1",
         name: "dataset",
-        author: [{ uuid: "#2" }, { uuid: "#3" }],
-        elephants: [{ uuid: "#5", "@id": "/large" }],
+        author: [
+            { uuid: "#2", "@type": "Person" },
+            { uuid: "#3", "@type": "Person" }
+        ],
+        elephants: [{ uuid: "/large" }],
         participant: [{ uuid: "#3" }, { uuid: "#4" }]
     },
     {
         "@type": "Person",
         uuid: "#2",
         "@reverse": {
-            author: [{ "@id": "#1" }]
+            author: [
+                {
+                    uuid: "#1",
+                    something: {
+                        uuid: "#4"
+                    }
+                }
+            ]
         }
     },
     {
         "@type": "Person",
         uuid: "#3",
         "@reverse": {
-            author: [{ "@id": "#1" }],
-            participant: [{ "@id": "#1" }]
+            author: [{ uuid: "#1" }],
+            participant: [{ uuid: "#1" }]
         }
     },
     {
         "@type": "Person",
         uuid: "#4",
         "@reverse": {
-            participant: [{ "@id": "#1" }]
+            participant: [{ uuid: "#1" }]
         }
     },
     {
         "@type": "Elephant",
-        uuid: "#5",
-        "@id": "/large",
+        uuid: "/large",
         "@reverse": {
-            elephants: [{ "@id": "#1" }]
+            elephants: [{ uuid: "#1" }]
         }
     }
 ];
-
-test("it should be able to map UUID to @id if @id not defined", () => {
-    const crateTool = new CrateTool();
-    let data = crateTool.mapIdentifiers({ data: graph });
-    data = data.shift();
-    expect(data["@id"]).toBe(data.uuid);
-    expect(data.author["@id"]).toBe(data.author.uuid);
-    for (let p of data.participant) {
-        expect(p["@id"]).toBe(p.uuid);
-    }
-    expect(data.elephants[0]).toHaveProperty("@id");
-    expect(data.elephants[0]["@id"]).toBe("/large");
-});
 
 test("it should be able to find the root dataset", () => {
     const crateTool = new CrateTool();
@@ -81,25 +77,6 @@ test("it should not be able to find the root dataset", () => {
     expect(() => {
         let rootDataset = crateTool.getRootDataset({ data: graph });
     }).toThrow();
-});
-
-test("it should be able to remove all UUID refs", () => {
-    const crateTool = new CrateTool();
-    let data = crateTool.mapIdentifiers({ data: graph });
-    data = crateTool.cleanup({ data });
-    // console.log(JSON.stringify(data, null, 2));
-    for (let element of data) {
-        ensureNoUUID(element);
-        for (let property of Object.keys(element)) {
-            if (isPlainObject(element[property])) {
-                ensureNoUUID(element[property]);
-            } else if (isArray(element[property])) {
-                for (let entry of element[property]) {
-                    ensureNoUUID(entry);
-                }
-            }
-        }
-    }
 });
 
 test("it should be able to get a crate", () => {
@@ -198,19 +175,6 @@ test("it should be able to load a crate", () => {
     const crateTool = new CrateTool();
     const data = crateTool.loadCrate({ crate });
     // console.log(JSON.stringify(data, null, 2));
-
-    for (let element of data) {
-        ensureUUID(element);
-        for (let property of Object.keys(element)) {
-            if (isPlainObject(element[property])) {
-                ensureUUID(element[property]);
-            } else if (isArray(element[property])) {
-                for (let entry of element[property]) {
-                    ensureUUID(entry);
-                }
-            }
-        }
-    }
 });
 
 function ensureNoUUID(element) {

@@ -102,12 +102,13 @@ test("it should handle @reverse inputs sensibly - including adding and removing 
         "@type": "Person",
         name: "one",
         "@reverse": {
-            author: { "@id": "./" }
+            author: { uuid: "./" }
         }
     };
     store.commit("saveToGraph", ref1);
     expect(Object.keys(state.itemsById["#1"]["@reverse"]).length).toBe(1);
     expect(state.itemsById["#1"]["@reverse"].author.length).toBe(1);
+    // console.log(JSON.stringify(state.graph, null, 2));
 
     // add ref author = #4
     ref1 = {
@@ -115,12 +116,13 @@ test("it should handle @reverse inputs sensibly - including adding and removing 
         "@type": "Person",
         name: "one",
         "@reverse": {
-            author: { "@id": "#4" }
+            author: { uuid: "#4" }
         }
     };
     store.commit("saveToGraph", ref1);
     expect(Object.keys(state.itemsById["#1"]["@reverse"]).length).toBe(1);
     expect(state.itemsById["#1"]["@reverse"].author.length).toBe(2);
+    // console.log(JSON.stringify(state.graph, null, 2));
 
     // add ref participant = ./
     ref1 = {
@@ -128,13 +130,14 @@ test("it should handle @reverse inputs sensibly - including adding and removing 
         "@type": "Person",
         name: "one",
         "@reverse": {
-            participant: { "@id": "./" }
+            participant: { uuid: "./" }
         }
     };
     store.commit("saveToGraph", ref1);
     expect(Object.keys(state.itemsById["#1"]["@reverse"]).length).toBe(2);
     expect(state.itemsById["#1"]["@reverse"].author.length).toBe(2);
     expect(state.itemsById["#1"]["@reverse"].participant.length).toBe(1);
+    // console.log(JSON.stringify(state.graph, null, 2));
 
     // add ref participant = #elephants
     ref1 = {
@@ -142,13 +145,14 @@ test("it should handle @reverse inputs sensibly - including adding and removing 
         "@type": "Person",
         name: "one",
         "@reverse": {
-            participant: { "@id": "#elephants" }
+            participant: { uuid: "#elephants" }
         }
     };
     store.commit("saveToGraph", ref1);
     expect(Object.keys(state.itemsById["#1"]["@reverse"]).length).toBe(2);
     expect(state.itemsById["#1"]["@reverse"].author.length).toBe(2);
     expect(state.itemsById["#1"]["@reverse"].participant.length).toBe(2);
+    // console.log(JSON.stringify(state.graph, null, 2));
 
     // re-add ref author = ./
     ref1 = {
@@ -156,7 +160,7 @@ test("it should handle @reverse inputs sensibly - including adding and removing 
         "@type": "Person",
         name: "one",
         "@reverse": {
-            author: { "@id": "./" }
+            author: { uuid: "./" }
         }
     };
     store.commit("saveToGraph", ref1);
@@ -170,7 +174,7 @@ test("it should handle @reverse inputs sensibly - including adding and removing 
         "@type": "Person",
         name: "one",
         "@reverse": {
-            author: { "@id": "./" }
+            author: { uuid: "./" }
         }
     };
     store.commit("removeFromGraph", ref1);
@@ -184,7 +188,7 @@ test("it should handle @reverse inputs sensibly - including adding and removing 
         "@type": "Person",
         name: "one",
         "@reverse": {
-            author: { "@id": "#4" }
+            author: { uuid: "#4" }
         }
     };
     store.commit("removeFromGraph", ref1);
@@ -198,7 +202,7 @@ test("it should handle @reverse inputs sensibly - including adding and removing 
         "@type": "Person",
         name: "one",
         "@reverse": {
-            participant: { "@id": "#4" }
+            participant: { uuid: "#4" }
         }
     };
     store.commit("removeFromGraph", ref1);
@@ -212,7 +216,7 @@ test("it should handle @reverse inputs sensibly - including adding and removing 
         "@type": "Person",
         name: "one",
         "@reverse": {
-            participant: { "@id": "./" }
+            participant: { uuid: "./" }
         }
     };
     store.commit("removeFromGraph", ref1);
@@ -225,7 +229,7 @@ test("it should handle @reverse inputs sensibly - including adding and removing 
         "@type": "Person",
         name: "one",
         "@reverse": {
-            participant: { "@id": "#elephants" }
+            participant: { uuid: "#elephants" }
         }
     };
     store.commit("removeFromGraph", ref1);
@@ -246,7 +250,7 @@ test("it should be able to merge an item with a reverse with an existing version
         "@type": "Person",
         name: "one",
         "@reverse": {
-            author: { "@id": "#4" }
+            author: { uuid: "#4" }
         }
     };
     store.commit("saveToGraph", ref1);

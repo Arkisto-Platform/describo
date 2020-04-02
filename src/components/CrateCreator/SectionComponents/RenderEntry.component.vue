@@ -1,7 +1,10 @@
 <template>
     <div class="flex flex-col mt-1 mb-4">
         <div class="my-auto text-left text-sm pr-2">{{ label }}</div>
-        <div class="flex flex-col flex-grow pl-2 border-l-2 border-gray-400" v-if="input.addItems">
+        <div
+            class="flex flex-col flex-grow pl-2 border-l-2 border-gray-400"
+            v-if="input.addItems"
+        >
             <div class="my-2">
                 <add-control :type="input['@type']" @add="add" />
             </div>
@@ -42,8 +45,12 @@
             @save="save"
             @cancel="cancel"
         />
-        <div v-if="input['@type'] === 'Value'" @blur="add(input.value)">{{ input.value }}</div>
-        <div class="text-sm text-gray-600" v-if="input.help">{{ input.help }}</div>
+        <div v-if="input['@type'] === 'Value'" @blur="add(input.value)">
+            {{ input.value }}
+        </div>
+        <div class="text-sm text-gray-600" v-if="input.help">
+            {{ input.help }}
+        </div>
     </div>
 </template>
 
@@ -138,7 +145,7 @@ export default {
             });
         },
         generateParentId() {
-            return { property: this.property, id: this.reference };
+            return { property: this.property, uuid: this.reference };
         }
     }
 };

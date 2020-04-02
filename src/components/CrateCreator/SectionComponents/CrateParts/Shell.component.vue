@@ -17,7 +17,7 @@
                     @selected-nodes="addNodesToCrate"
                 />
             </el-tab-pane>
-            <el-tab-pane label="Annotate Content" name="annotate">
+            <el-tab-pane label="Describe Content" name="describe">
                 <div class="flex flex-col">
                     <parts-list-component
                         class="my-2 border-2 p-4"

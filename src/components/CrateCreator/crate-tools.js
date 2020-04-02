@@ -47,86 +47,115 @@ export default class CrateTool {
 
     loadCrate({ crate }) {
         // remove metadata element
-        let elements = crate["@graph"];
-        elements = elements.filter(
-            e => e["@id"] != "/ro-crate-metadata.jsonld"
-        );
+        let data = crate["@graph"];
+        data = data.filter(e => e["@id"] !== "/ro-crate-metadata.jsonld");
+        const elementsById = groupBy(data, "@id");
         const rootDatasetUUID = generateId();
-        elements = elements.map(element => {
-            if (element["@id"] === "./") {
-                element.uuid = rootDatasetUUID;
+        data = mapIdentifiers({ data, rootDatasetUUID });
+        data = data.map(element => {
+            if (element.uuid === rootDatasetUUID)
                 element["@type"] = "RootDataset";
-            } else {
-                element.uuid = element["@id"];
-            }
-
-            if (element["@reverse"]) {
-                for (let property of Object.keys(element["@reverse"])) {
-                    element["@reverse"][property] = element["@reverse"][
-                        property
-                    ].map(entry => {
-                        if (entry["@id"] === "./")
-                            entry["@id"] = rootDatasetUUID;
-                        return entry;
-                    });
-                }
-            }
-
-            for (let property of Object.keys(element)) {
-                if (isPlainObject(element[property])) {
-                    if (element[property]["@id"]) {
-                        element[property].uuid = element[property]["@id"];
-                    }
-                } else if (isArray(element[property])) {
-                    element[property] = element[property].map(entry => {
-                        entry.uuid = entry["@id"];
-                        return entry;
-                    });
-                }
-            }
             return element;
         });
-        return elements;
+        return data;
+
+        function mapIdentifiers({ data, rootDatasetUUID }) {
+            return data.map(element => {
+                element = mapIdToUuid(element);
+                return walkObject(element);
+            });
+
+            function walkObject(obj) {
+                obj = mapIdToUuid(obj);
+                for (let prop of Object.keys(obj)) {
+                    if (isPlainObject(obj[prop])) {
+                        obj[prop] = walkObject(obj[prop]);
+                    } else if (isArray(obj[prop])) {
+                        obj[prop] = walkArray(obj[prop]);
+                    }
+                }
+                return obj;
+            }
+
+            function walkArray(obj) {
+                return obj.map(element => {
+                    mapIdToUuid(element);
+                    if (isPlainObject(element)) {
+                        return walkObject(element);
+                    } else if (isArray(element)) {
+                        return walkArray(element);
+                    }
+                });
+            }
+
+            function mapIdToUuid(element) {
+                if (element["@id"]) {
+                    element["@type"] = elementsById[element["@id"]][0]["@type"];
+                    element.uuid =
+                        element["@id"] === "./"
+                            ? rootDatasetUUID
+                            : element["@id"];
+                    delete element["@id"];
+                }
+                return element;
+            }
+        }
     }
 
     assembleCrate({ data }) {
         data = cloneDeep(data);
-        data = this.mapIdentifiers({ data });
-        // data = this.cleanup({ data });
-
-        let graph = [this.getCrateMetadataFileDescriptor()];
-
-        const rootDataset = this.getRootDataset({ data });
-        // console.log(rootDataset);
-        graph = [...graph, rootDataset];
+        const rootDatasetUUID = this.getRootDataset({ data }).uuid;
+        data = mapIdentifiers({ data, rootDatasetUUID });
 
         let elements = data.filter(d => d["@type"] !== "RootDataset");
-        elements = this.remapReverseReferences({ rootDataset, elements });
+        let rootDataset = this.getRootDataset({ data });
+        rootDataset["@type"] = "Dataset";
 
-        graph = [...graph, ...elements];
-        data = this.cleanup({ data: graph });
+        let graph = [this.getCrateMetadataFileDescriptor()];
+        graph = [...graph, rootDataset, ...elements];
         this.crate = {
             "@context": "https://w3id.org/ro/crate/1.0/context",
             "@graph": graph
         };
-    }
 
-    remapReverseReferences({ rootDataset, elements }) {
-        elements = elements.map(element => {
-            if (element["@reverse"]) {
-                for (let property of Object.keys(element["@reverse"])) {
-                    element["@reverse"][property] = element["@reverse"][
-                        property
-                    ].map(entry => {
-                        if (entry["@id"] === rootDataset.uuid)
-                            entry["@id"] = "./";
-                        return entry;
-                    });
+        function mapIdentifiers({ data, rootDatasetUUID }) {
+            return data.map(element => {
+                element = mapUuidToId(element);
+                return walkObject(element);
+            });
+
+            function walkObject(obj) {
+                obj = mapUuidToId(obj);
+                for (let prop of Object.keys(obj)) {
+                    if (isPlainObject(obj[prop])) {
+                        obj[prop] = walkObject(obj[prop]);
+                    } else if (isArray(obj[prop])) {
+                        obj[prop] = walkArray(obj[prop]);
+                    }
                 }
+                return obj;
             }
-            return element;
-        });
-        return elements;
+
+            function walkArray(obj) {
+                return obj.map(element => {
+                    mapUuidToId(element);
+                    if (isPlainObject(element)) {
+                        return walkObject(element);
+                    } else if (isArray(element)) {
+                        return walkArray(element);
+                    }
+                });
+            }
+
+            function mapUuidToId(element) {
+                if (element.uuid && !element["@id"]) {
+                    element["@id"] =
+                        element.uuid === rootDatasetUUID ? "./" : element.uuid;
+                }
+                delete element.uuid;
+                return element;
+            }
+        }
     }
 
     getCrateMetadataFileDescriptor() {
@@ -142,68 +171,6 @@ export default class CrateTool {
                 "@id": "https://creativecommons.org/licenses/by-sa/3.0"
             }
         };
-    }
-
-    cleanup({ data }) {
-        data = data.map(element => {
-            for (let property of Object.keys(element)) {
-                if (element.uuid) delete element.uuid;
-                if (isPlainObject(element[property])) {
-                    if (element[property].uuid) delete element[property].uuid;
-                } else if (isArray(element[property])) {
-                    element[property] = element[property].map(entry => {
-                        if (entry.uuid) delete entry.uuid;
-                        return entry;
-                    });
-                }
-            }
-            return element;
-        });
-        return data;
-    }
-
-    mapIdentifiers({ data }) {
-        data = data.map(element => {
-            for (let property of Object.keys(element)) {
-                element = mapUuidToId({ element });
-                if (isPlainObject(element[property])) {
-                    element[property] = mapUuidToId({
-                        element: element[property]
-                    });
-                } else if (isArray(element[property])) {
-                    element[property] = element[property].map(entry => {
-                        return mapUuidToId({ element: entry });
-                    });
-                }
-            }
-            return element;
-        });
-
-        const elementsByUUID = groupBy(data, "uuid");
-        let item;
-        data = data.map(element => {
-            for (let property of Object.keys(element)) {
-                if (isPlainObject(element[property])) {
-                    item = elementsByUUID[element.uuid];
-                    if (item) element["@id"] = item[0]["@id"];
-                } else if (isArray(element[property])) {
-                    element[property] = element[property].map(entry => {
-                        item = elementsByUUID[entry.uuid];
-                        if (item) entry["@id"] = item[0]["@id"];
-                        return entry;
-                    });
-                }
-            }
-            return element;
-        });
-        return data;
-
-        function mapUuidToId({ element }) {
-            if (element.uuid && !element["@id"]) {
-                element["@id"] = element.uuid;
-            }
-            return element;
-        }
     }
 
     getRootDataset({ data }) {

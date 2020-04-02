@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import ComponentMixins from "components/CrateCreator/CoreEntities/component.mixins";
+import ComponentMixins from "./component.mixins";
 export default {
     mixins: [ComponentMixins],
     props: {

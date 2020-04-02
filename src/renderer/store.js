@@ -60,7 +60,7 @@ export const mutations = {
                         // then ensure uniq entries only
                         payload["@reverse"][prop] = uniqBy(
                             payload["@reverse"][prop],
-                            "@id"
+                            "uuid"
                         );
                     }
 
@@ -80,6 +80,7 @@ export const mutations = {
             state.itemsById[payload.uuid] = payload;
         }
 
+        state.itemsById = { ...state.itemsById };
         state.graph = Object.keys(state.itemsById).map(
             key => state.itemsById[key]
         );
@@ -104,10 +105,13 @@ export const mutations = {
         if (payload["@reverse"] && item["@reverse"]) {
             for (let prop of Object.keys(payload["@reverse"])) {
                 let reference = payload["@reverse"][prop];
-                if (item["@reverse"][prop])
+                if (item["@reverse"][prop]) {
                     item["@reverse"][prop] = item["@reverse"][prop].filter(
-                        i => i["@id"] !== reference["@id"]
+                        i => {
+                            return i.uuid !== reference.uuid;
+                        }
                     );
+                }
             }
             state.itemsById[uuid] = { ...item };
 
@@ -134,12 +138,29 @@ export const mutations = {
     }
 };
 
+export const getters = {
+    getItemById: state => id => {
+        try {
+            return cloneDeep(state.itemsById[id]);
+        } catch (error) {
+            return undefined;
+        }
+    },
+    getItemsByType: state => type => {
+        try {
+            return cloneDeep(state.itemsByType[type]);
+        } catch (error) {
+            return undefined;
+        }
+    }
+};
+
 const configuration = {
     strict: process.env.NODE_ENV !== "production",
     state,
     mutations,
     actions: {},
-    getters: {}
+    getters: getters
 };
 export const store = new Vuex.Store(configuration);
 

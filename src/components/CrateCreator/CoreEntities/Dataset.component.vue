@@ -1,18 +1,23 @@
 <template>
     <el-card type="box-card" class="flex flex-col">
         <div slot="header" class="clearfix">
-            <span>Dataset</span>
+            <span>Folder: {{ properties.uuid }}</span>
         </div>
 
         <el-form :model="properties" label-width="120px">
-            <el-form-item label="Identifier">{{ properties.uuid }}</el-form-item>
             <el-form-item label="Name">
                 <el-input v-model="properties.name"></el-input>
             </el-form-item>
             <el-form-item label="Description">
-                <el-input v-model="properties.description" type="textarea" rows="5"></el-input>
+                <el-input
+                    v-model="properties.description"
+                    type="textarea"
+                    rows="5"
+                ></el-input>
             </el-form-item>
-            <el-form-item label="Date Modified">{{ properties.dateModified | date }}</el-form-item>
+            <el-form-item label="Date Modified">{{
+                properties.dateModified | date
+            }}</el-form-item>
         </el-form>
 
         <div class="flex flex-row mt-2">

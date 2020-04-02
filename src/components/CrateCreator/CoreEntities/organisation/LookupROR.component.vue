@@ -1,5 +1,8 @@
 <template>
-    <div>
+    <div class="flex flex-col my-4">
+        <div class="text-sm text-gray-500">
+            Lookup an organisation by name or acronym
+        </div>
         <el-alert
             title="oops - this isn't working right now!"
             type="error"
@@ -11,14 +14,18 @@
             class="w-full"
             v-model="value"
             v-loading="loading"
+            :trigger-on-focus="false"
             :clearable="true"
             :fetch-suggestions="debouncedLookup"
-            placeholder="Lookup organisation by name"
+            placeholder=""
             @select="handleSelect"
             v-if="!error"
         >
             <template slot-scope="{ item }">
-                {{ item.name }} ({{ item.links[0] }})
+                <div class="flex flex-row">
+                    <div>{{ item.name }}, {{ item.country.country_name }}</div>
+                    <div class="mx-2 text-xs">({{ item.links[0] }})</div>
+                </div>
             </template>
         </el-autocomplete>
     </div>
@@ -32,7 +39,7 @@ export default {
             error: false,
             loading: false,
             value: undefined,
-            debouncedLookup: debounce(this.lookup, 300),
+            debouncedLookup: debounce(this.lookup, 800),
             api: "https://api.ror.org/organizations"
         };
     },
@@ -56,7 +63,10 @@ export default {
             }, 500);
         },
         handleSelect(selection) {
-            this.$emit("selected-organisation", selection);
+            this.$emit("selected-organisation", {
+                uuid: selection.id,
+                ...selection
+            });
         }
     }
 };

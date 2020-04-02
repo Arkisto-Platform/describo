@@ -33,20 +33,19 @@
                 name="crate"
                 class="overflow-scroll set-tab-height m-2"
             >
-                <!-- <root-dataset-component
-                    :profile="rootDatasetProfile"
-                    v-if="activeTab === 'crate'"
-                /> -->
                 <root-dataset-component :crate.sync="crate" />
             </el-tab-pane>
             <el-tab-pane label="Contents" name="parts">
                 <crate-parts-component v-if="activeTab === 'parts'" />
             </el-tab-pane>
-            <el-tab-pane label="People" name="people"></el-tab-pane>
-            <el-tab-pane
-                label="Organisations"
-                name="organisations"
-            ></el-tab-pane>
+            <el-tab-pane label="People" name="people">
+                <people-management-component v-if="activeTab === 'people'" />
+            </el-tab-pane>
+            <el-tab-pane label="Organisations" name="organisations">
+                <organisation-management-component
+                    v-if="activeTab === 'organisations'"
+                />
+            </el-tab-pane>
         </el-tabs>
     </div>
 </template>
@@ -58,6 +57,8 @@ import ProfileLoader from "./profile-loader";
 import RootDatasetComponent from "./SectionComponents/RootDataset/Shell.component.vue";
 import CratePartsComponent from "./SectionComponents/CrateParts/Shell.component.vue";
 import RootDatasetSelectorComponent from "./RootDatasetSelector.component.vue";
+import PeopleManagementComponent from "./SectionComponents/PeopleManagement/Shell.component.vue";
+import OrganisationManagementComponent from "./SectionComponents/OrganisationManagement/Shell.component.vue";
 import DataInspectorComponent from "components/CrateCreator/SectionComponents/DataInspector.component.vue";
 import CrateTool from "components/CrateCreator/crate-tools";
 const crateTool = new CrateTool();
@@ -66,6 +67,8 @@ export default {
     components: {
         RootDatasetComponent,
         CratePartsComponent,
+        PeopleManagementComponent,
+        OrganisationManagementComponent,
         RootDatasetSelectorComponent,
         DataInspectorComponent
     },
