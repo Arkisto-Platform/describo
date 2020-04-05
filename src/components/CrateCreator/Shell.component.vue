@@ -5,6 +5,7 @@
                 :title="error"
                 type="error"
                 effect="dark"
+                :center="true"
                 :closable="false"
             >
             </el-alert>
@@ -113,6 +114,11 @@ export default {
                 name: this.$store.state.profile
             });
             const { profile } = await profileLoader.load();
+            let { valid, errors } = profileLoader.verify();
+            if (!valid) {
+                this.error = `The profile is invalid and can't be loaded.`;
+                return;
+            }
             this.profile = cloneDeep(profile);
             const DatasetTypes = Object.keys(profile);
             if (DatasetTypes.length > 1) {
