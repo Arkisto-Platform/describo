@@ -62,6 +62,12 @@
                         v-if="activeTab === 'organisations'"
                     />
                 </el-tab-pane>
+                <el-tab-pane label="Contact Points" name="contactPoints">
+                    <type-management-component
+                        type="ContactPoint"
+                        v-if="activeTab === 'contactPoints'"
+                    />
+                </el-tab-pane>
             </el-tabs>
         </div>
     </div>

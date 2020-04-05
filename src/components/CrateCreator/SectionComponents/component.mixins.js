@@ -24,6 +24,10 @@ export const components = {
         OrganisationComponent: () =>
             import(
                 "components/CrateCreator/CoreEntities/organisation/Organisation.component.vue"
+            ),
+        ContactPointComponent: () =>
+            import(
+                "components/CrateCreator/CoreEntities/contactPoint/ContactPoint.component.vue"
             )
     }
 };

@@ -88,6 +88,13 @@ export default {
                 "@type": "Organisation",
 
                 required: true
+            },
+            {
+                property: "contactPoint",
+                label: "Contact Point",
+                "@type": "ContactPoint",
+                required: true,
+                multiple: true
             }
         ]
     },
