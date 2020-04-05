@@ -5,9 +5,7 @@ import { cloneDeep, compact } from "lodash";
 
 export function writeParts({ store, nodes }) {
     // get the root dataset
-    const rootDataset = cloneDeep(
-        store.state.graph.filter(e => e["@type"] === "RootDataset")[0]
-    );
+    const rootDataset = store.getters.getItemsByType("RootDataset")[0];
 
     // remove existing parts
     if (rootDataset.hasPart) {

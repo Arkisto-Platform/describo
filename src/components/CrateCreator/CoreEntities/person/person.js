@@ -1,5 +1,6 @@
 import { generateId } from "components/CrateCreator/tools";
 import { cloneDeep } from "lodash";
+import { addReferenceToDataset, removeReferenceFromDataset } from "../helpers";
 
 export const properties = {
     uuid: undefined,
@@ -7,26 +8,35 @@ export const properties = {
 };
 
 export function save({ store, reference, person }) {
-    // console.log(JSON.stringify(params, null, 2));
     let item = store.getters.getItemById(person.uuid);
     if (item) {
         // overwrite existing item
         const identifierId = item.identifier;
         person = {
-            uuid: item.uuid,
-            "@type": "Person",
+            ...item,
             name: person.name,
-            identifier: identifierId,
-            "@reverse": reference
+            "@reverse": reference.uuid
                 ? {
                       [reference.property]: { uuid: reference.uuid }
                   }
                 : person["@reverse"]
         };
         store.commit("saveToGraph", person);
+        addReferenceToDataset({
+            store,
+            reference,
+            uuid: item.uuid,
+            type: "Person"
+        });
     } else {
         // doesn't already exist - go ahead and create it
         createPerson({ store, reference, person });
+        addReferenceToDataset({
+            store,
+            reference,
+            uuid: person.uuid,
+            type: "Person"
+        });
     }
 
     function createPerson({ store, reference, person }) {
@@ -82,6 +92,7 @@ export function restore({ store, uuid }) {
 
 export function remove({ store, reference, person }) {
     // load the item so we get a complete internal state
+    if (!person) return;
     person = store.getters.getItemById(person.uuid);
     // console.log(JSON.stringify(params, null, 2));
 
@@ -90,10 +101,12 @@ export function remove({ store, reference, person }) {
     person["@reverse"] = {
         [reference.property]: { uuid: reference.uuid }
     };
+
     store.commit("removeFromGraph", person);
 
     if (!store.state.itemsById[person.uuid]) {
         // go ahead and remove all related things
         store.commit("removeFromGraph", { uuid: person.identifier });
     }
+    removeReferenceFromDataset({ store, reference, uuid: person.uuid });
 }

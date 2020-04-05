@@ -12,6 +12,7 @@ const graph = [
             { uuid: "#3", "@type": "Person" }
         ],
         elephants: [{ uuid: "/large" }],
+        languages: ["english", "french"],
         participant: [{ uuid: "#3" }, { uuid: "#4" }]
     },
     {
@@ -79,12 +80,20 @@ test("it should not be able to find the root dataset", () => {
     }).toThrow();
 });
 
-test("it should be able to get a crate", () => {
+test("it should be able to create an ro-crate", () => {
     const crateTool = new CrateTool();
     crateTool.assembleCrate({ data: graph });
     let data = crateTool.crate;
     // console.log(JSON.stringify(data, null, 2));
     expect(data["@graph"].length).toBe(6);
+    // console.log(JSON.stringify(data["@graph"], null, 2));
+
+    let ensureNoUUID = ensureNot("uuid");
+    let ensureATID = ensure("@id");
+    let rootDataset = crateTool.getRootDatasetFromCrate({
+        data: data["@graph"]
+    });
+    walkObject({ obj: rootDataset, tests: [ensureNoUUID, ensureATID] });
 });
 
 test("it should be able to load a crate", () => {
@@ -116,6 +125,7 @@ test("it should be able to load a crate", () => {
                         "@id": "/large"
                     }
                 ],
+                languages: ["english", "french"],
                 participant: [
                     {
                         "@id": "#3"
@@ -175,12 +185,39 @@ test("it should be able to load a crate", () => {
     const crateTool = new CrateTool();
     const data = crateTool.loadCrate({ crate });
     // console.log(JSON.stringify(data, null, 2));
+
+    let ensureUUID = ensure("uuid");
+    let ensureNotATID = ensureNot("@id");
+    let rootDataset = data.filter(d => d["@type"] === "RootDataset")[0];
+    walkObject({ obj: rootDataset, tests: [ensureUUID, ensureNotATID] });
 });
 
-function ensureNoUUID(element) {
-    expect(element).not.toHaveProperty("uuid");
+function ensureNot(property) {
+    return element => expect(element).not.toHaveProperty(property);
 }
 
-function ensureUUID(element) {
-    expect(element).toHaveProperty("uuid");
+function ensure(property) {
+    return element => expect(element).toHaveProperty(property);
+}
+
+function walkObject({ obj, tests }) {
+    for (let prop of Object.keys(obj)) {
+        if (isPlainObject(obj[prop])) {
+            walkObject({ obj: obj[prop], tests });
+        } else if (isArray(obj[prop])) {
+            walkArray({ arr: obj[prop], tests });
+        } else {
+            tests.forEach(test => test(obj));
+        }
+    }
+}
+
+function walkArray({ arr, tests }) {
+    arr.forEach(entry => {
+        if (isPlainObject(entry)) {
+            walkObject({ obj: entry, tests });
+        } else if (isArray(entry)) {
+            walkArray({ arr: entry, tests });
+        }
+    });
 }

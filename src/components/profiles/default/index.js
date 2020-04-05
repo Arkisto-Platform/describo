@@ -4,7 +4,8 @@ export default {
     Dataset: {
         metadata: {
             about:
-                "Some pithy text about what this is and why the user should select it"
+                "Some pithy text about what this is and why the user should select it",
+            version: 1
         },
         inputs: [
             {
@@ -40,10 +41,17 @@ export default {
                 // If you want to add properties with values from a controlled vocab
                 // set @type = "Select"
                 // and specify the options
-                property: "language",
-                label: "Language",
+                property: "languages",
+                label: "Languages",
                 "@type": "Select",
-                options: ["English", "French", "Spanish", "Other"]
+                options: ["English", "French", "Spanish", "Other"],
+                multiple: true
+            },
+            {
+                property: "colours",
+                label: "Colours",
+                "@type": "Select",
+                options: ["Red", "Green", "Blue", "Other"]
             },
             {
                 property: "datePublished",
@@ -71,13 +79,23 @@ export default {
 
                 // can there be multiple authors?
                 multiple: true
+            },
+            {
+                property: "publisher",
+                label: "Publisher",
+
+                // the type of element: one of the core types in components/CrateCreator/components
+                "@type": "Organisation",
+
+                required: true
             }
         ]
     },
     Collection: {
         metadata: {
             about:
-                "Some pithy text about what this is and why the LINGUIST user should select it"
+                "Some pithy text about what this is and why the LINGUIST user should select it",
+            version: 1
         },
         inputs: [
             {

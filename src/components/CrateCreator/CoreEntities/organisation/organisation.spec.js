@@ -1,6 +1,5 @@
 import { mutations, getters } from "src/renderer/store";
 import { save, restore, remove } from "./organisation";
-import { cloneDeep } from "lodash";
 
 import Vue from "vue";
 import Vuex from "vuex";
@@ -10,6 +9,10 @@ let state = {};
 let store = {};
 let organisation = {};
 let reference = {};
+let rootDataset = {
+    uuid: "#dataset",
+    "@type": "RootDataset"
+};
 
 beforeEach(() => {
     state = {
@@ -24,6 +27,7 @@ beforeEach(() => {
         actions: {},
         getters: getters
     });
+
     organisation = {
         uuid: "#1",
         name: "organisation",
@@ -33,11 +37,12 @@ beforeEach(() => {
         property: "author",
         uuid: "#dataset"
     };
+    store.commit("saveToGraph", rootDataset);
 });
 
 test("it should be able to save a new organisation to the store", () => {
     save({ store, reference, organisation });
-    expect(state.graph.length).toBe(2);
+    expect(state.graph.length).toBe(3);
     expect(state.itemsById["#1"]["@reverse"]).toEqual({
         author: [{ uuid: "#dataset" }]
     });
@@ -49,7 +54,7 @@ test("it should be able to save a ROR organisation to the store", () => {
     organisation.uuid = uuid;
 
     save({ store, reference, organisation });
-    expect(state.graph.length).toBe(2);
+    expect(state.graph.length).toBe(3);
     expect(state.itemsById[uuid]["@reverse"]).toEqual({
         author: [{ uuid: "#dataset" }]
     });
@@ -113,5 +118,5 @@ test("it should be able to remove organisations from the store sensibly", () => 
         organisation
     });
     // console.log(JSON.stringify(state.graph, null, 2));
-    expect(state.graph.length).toBe(0);
+    expect(state.graph.length).toBe(1);
 });

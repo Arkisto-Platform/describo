@@ -4,20 +4,19 @@
             class="style-text-input"
             @focus="focus"
             @input="debouncedSave"
-            @change="save"
             v-model="value"
-            :required="input.required"
-            v-if="input.required || enabled"
+            :required="template.required"
+            v-if="template.required || enabled"
         ></el-input>
         <add-control
             type="Text"
             @add="add"
-            v-if="!input.required && !enabled"
+            v-if="!template.required && !enabled"
         />
         <remove-control
             type="Text"
             @cancel="cancel"
-            v-if="!input.required && enabled"
+            v-if="!template.required && enabled"
         />
         <div v-if="saved" class="ml-2 text-green-600 pt-1">
             <i class="far fa-check-circle fa-2x"></i>
@@ -34,7 +33,6 @@ export default {
 
 <style lang="scss" scoped>
 .style-text-input {
-    @apply transition ease-in-out duration-1000;
     width: 500px;
 }
 </style>

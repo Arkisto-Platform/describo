@@ -45,7 +45,7 @@
 
 <script>
 import { save, restore, remove } from "./person.js";
-import { getParams } from "components/CrateCreator/tools";
+import { generateId } from "components/CrateCreator/tools";
 import CreatePersonComponent from "./CreatePerson.component.vue";
 import SelectExistingEntry from "../SelectExistingEntry.component.vue";
 
@@ -55,13 +55,14 @@ export default {
         SelectExistingEntry
     },
     props: {
-        input: {
+        template: {
             type: Object,
             required: true
         },
         reference: {
-            type: Object
+            type: String
         },
+        data: {},
         mode: {
             type: Object
         }
@@ -73,19 +74,9 @@ export default {
             }
         };
     },
-    computed: {
-        itemInStore: function() {
-            return this.$store.getters.getItemById(this.properties.uuid);
-        }
-    },
-    watch: {
-        itemInStore: function() {
-            const properties = this.restore({ uuid: this.properties.uuid });
-            this.properties.name = properties.name;
-        }
-    },
     created() {
         this.$data.properties = this.restore();
+        if (!this.data) this.$data.properties.uuid = generateId();
     },
     mounted() {
         if (this.mode) {
@@ -96,48 +87,56 @@ export default {
         restore() {
             return restore({
                 store: this.$store,
-                uuid: this.input.uuid
+                uuid: (this.data && this.data.uuid) || undefined
             });
         },
         cancel() {
             remove({
                 store: this.$store,
-                person: this.properties,
-                reference: this.reference
+                person: this.data,
+                reference: {
+                    uuid: this.reference,
+                    property: this.template.property
+                }
             });
-            this.$emit("cancel", this.properties.uuid);
             this.properties.mode = {
                 edit: false,
                 create: false,
                 visible: false
             };
+            this.$emit("done");
         },
         save(selection) {
             if (selection) {
-                // tell the dataset to replace the ref and save
-                this.$emit("replace", {
-                    old: this.properties.uuid,
-                    new: selection.uuid
-                });
                 save({
                     store: this.$store,
-                    reference: this.reference,
+                    reference: {
+                        uuid: this.reference,
+                        property: this.template.property
+                    },
                     person: selection
                 });
             } else {
+                if (
+                    this.properties.mode.edit &&
+                    this.properties.uuid !== this.data.uuid
+                )
+                    this.cancel();
                 save({
                     store: this.$store,
-                    reference: this.reference,
+                    reference: {
+                        uuid: this.reference,
+                        property: this.template.property
+                    },
                     person: this.properties
                 });
-                // tell the dataset to save
-                this.$emit("save", this.properties.uuid);
             }
             this.properties.mode = {
                 edit: false,
                 create: false,
                 visible: false
             };
+            this.$emit("done");
         },
         toggleEdit() {
             this.properties.mode.visible = true;
@@ -150,6 +149,6 @@ export default {
 
 <style lang="scss" scoped>
 .style-card {
-    width: 600px;
+    min-width: 500px;
 }
 </style>

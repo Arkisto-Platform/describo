@@ -9,6 +9,10 @@ let state = {};
 let store = {};
 let person = {};
 let reference = {};
+let rootDataset = {
+    uuid: "#dataset",
+    "@type": "RootDataset"
+};
 
 beforeEach(() => {
     state = {
@@ -31,11 +35,12 @@ beforeEach(() => {
         property: "author",
         uuid: "#dataset"
     };
+    store.commit("saveToGraph", rootDataset);
 });
 
 test("it should be able to save a new person to the store", () => {
     save({ store, reference, person });
-    expect(state.graph.length).toBe(2);
+    expect(state.graph.length).toBe(3);
     expect(state.itemsById["#1"]["@reverse"]).toEqual({
         author: [{ uuid: "#dataset" }]
     });
@@ -97,5 +102,5 @@ test("it should be able to remove people from the store sensibly", () => {
         person
     });
     // console.log(JSON.stringify(state.graph, null, 2));
-    expect(state.graph.length).toBe(0);
+    expect(state.graph.length).toBe(1);
 });

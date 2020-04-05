@@ -1,5 +1,9 @@
-import { mutations } from "src/renderer/store";
+import { mutations, getters } from "src/renderer/store";
 import { writeParts } from "./part-tools";
+
+import Vue from "vue";
+import Vuex from "vuex";
+Vue.use(Vuex);
 
 let state = {};
 let store = {};
@@ -40,12 +44,13 @@ beforeEach(() => {
         itemsById: {},
         itemsByType: {}
     };
-    store = {
+    store = new Vuex.Store({
+        strict: process.env.NODE_ENV !== "production",
         state,
-        commit: (method, payload) => {
-            mutations[method](state, payload);
-        }
-    };
+        mutations,
+        actions: {},
+        getters: getters
+    });
     store.commit("saveToGraph", rootDataset);
 });
 

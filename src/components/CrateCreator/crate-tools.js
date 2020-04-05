@@ -1,4 +1,4 @@
-import { cloneDeep, isPlainObject, isArray, groupBy } from "lodash";
+import { cloneDeep, groupBy, isPlainObject, isArray, isString } from "lodash";
 import { writeFile, readJSON } from "fs-extra";
 import { generateId } from "components/CrateCreator/tools";
 import path from "path";
@@ -9,18 +9,18 @@ export default class CrateTool {
         this.crate = undefined;
     }
 
-    writeCrate({ target }) {
+    async writeCrate({ target }) {
         switch (target.type) {
             case "local":
-                writeToLocalFolder({
+                await writeToLocalFolder({
                     folder: target.folder,
                     crate: this.crate
                 });
                 break;
         }
-        function writeToLocalFolder({ folder, crate }) {
+        async function writeToLocalFolder({ folder, crate }) {
             const file = path.join(folder, roCrateMetadataFile);
-            writeFile(file, JSON.stringify(crate));
+            await writeFile(file, JSON.stringify(crate));
         }
     }
 
@@ -84,12 +84,14 @@ export default class CrateTool {
                         return walkObject(element);
                     } else if (isArray(element)) {
                         return walkArray(element);
+                    } else {
+                        return element;
                     }
                 });
             }
 
             function mapIdToUuid(element) {
-                if (element["@id"]) {
+                if (element && element["@id"]) {
                     element["@type"] = elementsById[element["@id"]][0]["@type"];
                     element.uuid =
                         element["@id"] === "./"
@@ -143,6 +145,8 @@ export default class CrateTool {
                         return walkObject(element);
                     } else if (isArray(element)) {
                         return walkArray(element);
+                    } else {
+                        return element;
                     }
                 });
             }
@@ -189,5 +193,17 @@ export default class CrateTool {
         };
 
         return rootDataset;
+    }
+
+    getRootDatasetFromCrate({ data }) {
+        let rootDataset = data
+            .filter(d => d["@type"] === "Dataset")
+            .filter(d => d["@id"] === "./");
+        if (rootDataset.length !== 1) {
+            throw new Error(
+                `The crate doesn't seem to be right. Expecting one root dataset. Found ${rootDataset.length}`
+            );
+        }
+        return rootDataset.pop();
     }
 }

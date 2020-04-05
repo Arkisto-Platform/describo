@@ -15,8 +15,8 @@
 <script>
 export default {
     props: {
-        type: {
-            type: String | Array,
+        template: {
+            type: Object,
             required: true
         }
     },
@@ -26,14 +26,17 @@ export default {
         };
     },
     mounted() {
-        this.types = this.type;
-        if (typeof this.type === "string") {
-            this.types = [this.type];
+        this.types = this.template["@type"];
+        if (typeof this.template["@type"] === "string") {
+            this.types = [this.template["@type"]];
         }
     },
     methods: {
         add(type) {
-            this.$emit("add", type);
+            this.$emit("add", {
+                template: this.template,
+                type
+            });
         }
     }
 };

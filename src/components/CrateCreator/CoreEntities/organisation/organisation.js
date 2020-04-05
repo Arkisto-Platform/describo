@@ -1,5 +1,6 @@
 import { generateId } from "components/CrateCreator/tools";
 import { cloneDeep } from "lodash";
+import { addReferenceToDataset, removeReferenceFromDataset } from "../helpers";
 
 export const properties = {
     uuid: undefined,
@@ -11,23 +12,32 @@ export function save({ store, reference, organisation }) {
     let item = store.getters.getItemById(organisation.uuid);
     if (item) {
         // overwrite existing item
-        const identifierId = item.identifier;
         organisation = {
-            uuid: item.uuid,
-            "@type": "Organisation",
+            ...item,
             name: organisation.name,
             description: organisation.description,
-            identifier: identifierId,
-            "@reverse": reference
+            "@reverse": reference.uuid
                 ? {
                       [reference.property]: { uuid: reference.uuid }
                   }
                 : organisation["@reverse"]
         };
         store.commit("saveToGraph", organisation);
+        addReferenceToDataset({
+            store,
+            reference,
+            uuid: item.uuid,
+            type: "Organisation"
+        });
     } else {
         // doesn't already exist - go ahead and create it
         createOrganisation({ store, reference, organisation });
+        addReferenceToDataset({
+            store,
+            reference,
+            uuid: organisation.uuid,
+            type: "Organisation"
+        });
     }
 
     function createOrganisation({ store, reference, organisation }) {
@@ -84,6 +94,8 @@ export function restore({ store, uuid }) {
 }
 
 export function remove({ store, reference, organisation }) {
+    if (!organisation) return;
+
     // load the item so we get a complete internal state
     organisation = store.getters.getItemById(organisation.uuid);
     // console.log(JSON.stringify(organisation, null, 2));
@@ -101,6 +113,7 @@ export function remove({ store, reference, organisation }) {
         // go ahead and remove all related things
         store.commit("removeFromGraph", { uuid: organisation.identifier });
     }
+    removeReferenceFromDataset({ store, reference, uuid: organisation.uuid });
 }
 
 function isRORIdentifier(value) {

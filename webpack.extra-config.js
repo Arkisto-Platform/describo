@@ -3,7 +3,10 @@ const merge = require("webpack-merge");
 const { compact } = require("lodash");
 
 module.exports = config => {
-    config.devtool = process.env.NODE_ENV === "development" ? "eval" : "";
+    config.devtool =
+        process.env.NODE_ENV === "development"
+            ? "eval-cheap-module-source-map"
+            : "";
     let cssRules;
     if (process.env.NODE_ENV === "development") {
         config.module.rules = config.module.rules.map(rule => {

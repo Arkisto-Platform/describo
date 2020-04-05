@@ -16,6 +16,9 @@ export const mutations = {
     setProfile(state, payload) {
         state.profile = payload.profile;
     },
+    saveProfileInputs(state, payload) {
+        state.profileInputs = [...payload];
+    },
     saveToGraph(state, payload) {
         // payload = {
         //     'uuid': 'xxx',
@@ -73,7 +76,6 @@ export const mutations = {
             }
             // update the item
             state.itemsById[payload.uuid] = {
-                hasPart: item.hasPart,
                 ...payload
             };
         } else {
@@ -168,6 +170,7 @@ function reset() {
     return {
         target: null,
         profile: null,
+        profileInputs: [],
         graph: [],
         itemsByType: {},
         itemsById: {}

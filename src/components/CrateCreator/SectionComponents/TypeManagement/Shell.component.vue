@@ -1,8 +1,6 @@
 <template>
     <div>
-        <!-- show person list -->
-        <!-- <pre>{{ people }}</pre> -->
-        <el-table :data="people" class="w-full">
+        <el-table :data="items" class="w-full">
             <el-table-column
                 prop="uuid"
                 label="Identifier"
@@ -11,51 +9,60 @@
             <el-table-column prop="name" label="Name"></el-table-column>
             <el-table-column prop="name" label="Actions" width="180">
                 <template slot-scope="scope">
-                    <el-button type="success" @click="editPerson(scope.row)">
+                    <el-button type="success" @click="editEntity(scope.row)">
                         <i class="fas fa-edit"></i>
                     </el-button>
                 </template>
             </el-table-column>
         </el-table>
 
-        <!-- add person -->
         <div class="mt-4">
-            <person-component
-                :input="person"
+            <render-item-component
+                v-if="entity"
+                class="m-1"
+                :template="template"
+                reference=""
+                :data="entity"
                 :mode="mode"
-                v-if="person"
-                @save="person = undefined"
+                @done="entity = undefined"
             />
         </div>
     </div>
 </template>
 
 <script>
+import RenderItemComponent from "components/CrateCreator/SectionComponents/RenderItem.component.vue";
+
 export default {
+    props: {
+        type: {
+            type: String,
+            required: true
+        }
+    },
     components: {
-        PersonComponent: () =>
-            import(
-                "components/CrateCreator/CoreEntities/person/Person.component.vue"
-            )
+        RenderItemComponent
     },
     data() {
         return {
-            person: undefined,
+            entity: undefined,
+            template: {},
             mode: {}
         };
     },
     computed: {
-        people: function() {
+        items: function() {
             try {
-                return this.$store.state.itemsByType.Person;
+                return this.$store.state.itemsByType[this.type];
             } catch (error) {
                 return [];
             }
         }
     },
     methods: {
-        editPerson(person) {
-            this.person = person;
+        editEntity(entity) {
+            this.entity = entity;
+            this.template = { "@type": entity["@type"] };
             this.mode = {
                 disableDelete: true,
                 visible: true,

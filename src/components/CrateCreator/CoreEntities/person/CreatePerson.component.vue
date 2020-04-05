@@ -13,6 +13,9 @@
             label-width="120px"
             @submit.native.prevent
         >
+            <el-form-item label="Identifier">
+                <el-input v-model="properties.uuid"></el-input>
+            </el-form-item>
             <el-form-item label="Name">
                 <el-input v-model="properties.name"></el-input>
             </el-form-item>

@@ -1,26 +1,32 @@
 <template>
-    <component
-        v-bind:is="component"
-        :input="item"
-        :reference="reference"
-        @cancel="cancel"
-        @save="save"
-        @replace="replace"
-    ></component>
+    <div>
+        <component
+            v-bind:is="component"
+            :template="template"
+            :reference="reference"
+            :data="data"
+            :mode="mode"
+            @done="$emit('done')"
+        ></component>
+    </div>
 </template>
 
 <script>
-import ComponentMixins from "./component.mixins";
+import { components as ComponentMixins } from "./component.mixins";
 export default {
     mixins: [ComponentMixins],
     props: {
-        item: {
+        template: {
             type: Object,
             required: true
         },
         reference: {
-            type: Object,
+            type: String,
             required: true
+        },
+        data: {},
+        mode: {
+            type: Object
         }
     },
     data() {
@@ -29,19 +35,8 @@ export default {
         };
     },
     mounted() {
-        if (this.item["@type"])
-            this.component = `${this.item["@type"]}Component`;
-    },
-    methods: {
-        cancel(id) {
-            this.$emit("cancel", id);
-        },
-        save(payload) {
-            this.$emit("save", payload);
-        },
-        replace(payload) {
-            this.$emit("replace", payload);
-        }
+        if (this.template["@type"])
+            this.component = `${this.template["@type"]}Component`;
     }
 };
 </script>

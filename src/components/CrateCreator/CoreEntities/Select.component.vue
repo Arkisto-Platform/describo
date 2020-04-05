@@ -1,28 +1,24 @@
 <template>
     <div class="flex flex-row">
         <el-select
+            class="w-full"
             v-model="value"
             placeholder="Select"
             @change="save"
-            v-if="input.required || enabled"
+            v-if="template.required || enabled"
         >
             <el-option
-                v-for="(option, idx) in input.options"
+                v-for="(option, idx) in template.options"
                 :key="idx"
                 :label="option"
                 :value="option"
             >
             </el-option>
         </el-select>
-        <add-control
-            type="Select"
-            @add="add"
-            v-if="!input.required && !enabled"
-        />
         <remove-control
             type="Text"
             @cancel="cancel"
-            v-if="!input.required && enabled"
+            v-if="!template.required && enabled"
         />
         <div v-if="saved" class="ml-2 text-green-600 pt-1">
             <i class="far fa-check-circle fa-2x"></i>
