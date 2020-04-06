@@ -9,12 +9,12 @@ export function writeParts({ store, nodes }) {
 
     // remove existing parts
     if (rootDataset.hasPart) {
-        rootDataset.hasPart.forEach(part =>
+        rootDataset.hasPart.forEach((part) =>
             store.commit("removeFromGraph", part)
         );
     }
-    let files = store.state.graph.filter(e => e["@type"] === "File");
-    files.forEach(file => store.commit("removeFromGraph", file));
+    let files = store.state.graph.filter((e) => e["@type"] === "File");
+    files.forEach((file) => store.commit("removeFromGraph", file));
 
     const target = store.state.target;
     let identifiers;
@@ -23,28 +23,35 @@ export function writeParts({ store, nodes }) {
             identifiers = writeLocalFilesToGraph({
                 store,
                 folder: target.folder,
-                nodes
+                nodes,
             });
     }
 
     // get all datasets and tie them to the root dataset
     const datasets = cloneDeep(
-        store.state.graph.filter(e => e["@type"] === "Dataset")
+        store.state.graph.filter((e) => e["@type"] === "Dataset")
     );
-    files = cloneDeep(store.state.graph.filter(e => e["@type"] === "File"));
-    rootDataset.hasPart = datasets.map(d => {
+    files = cloneDeep(store.state.graph.filter((e) => e["@type"] === "File"));
+    const datasetParts = datasets.map((d) => {
         return {
-            uuid: d.uuid
+            uuid: d.uuid,
         };
     });
+    const fileParts = files.map((f) => {
+        if (f.parent === "/")
+            return {
+                uuid: f.uuid,
+            };
+    });
+    rootDataset.hasPart = [...datasetParts, ...compact(fileParts)];
     store.commit("saveToGraph", rootDataset);
 
-    datasets.forEach(dataset => {
+    datasets.forEach((dataset) => {
         dataset.hasPart = files
-            .filter(f => f.parent === dataset.uuid)
-            .map(f => {
+            .filter((f) => f.parent === dataset.uuid)
+            .map((f) => {
                 return {
-                    uuid: f.uuid
+                    uuid: f.uuid,
                 };
             });
         store.commit("saveToGraph", dataset);
@@ -52,7 +59,7 @@ export function writeParts({ store, nodes }) {
 }
 
 function writeLocalFilesToGraph({ store, folder, nodes }) {
-    let identifiers = nodes.map(node => {
+    let identifiers = nodes.map((node) => {
         if (node.isLeaf) {
             node = {
                 uuid: node.uuid,
@@ -60,7 +67,7 @@ function writeLocalFilesToGraph({ store, folder, nodes }) {
                 parent: node.parent,
                 "@type": "File",
                 contentSize: node.size,
-                dateModified: parseISO(node.modTime).toISOString()
+                dateModified: parseISO(node.modTime).toISOString(),
             };
             store.commit("saveToGraph", node);
             return node["@id"];
@@ -71,7 +78,7 @@ function writeLocalFilesToGraph({ store, folder, nodes }) {
                 parent: node.parent,
                 "@type": "Dataset",
                 dateModified: parseISO(node.modTime).toISOString(),
-                hasPart: []
+                hasPart: [],
             };
             store.commit("saveToGraph", node);
             return node["@id"];
