@@ -19,8 +19,9 @@
             </div>
         </div>
 
-        <el-table :data="parts" class="cursor-pointer">
-            <el-table-column prop="uuid" label="Identifier" width="400" />
+        <el-table :data="parts" class="cursor-pointer" @row-click="editPart">
+            <el-table-column prop="uuid" label="Identifier" width="400">
+            </el-table-column>
             <el-table-column prop="" label="Type" width="80" align="center">
                 <template slot-scope="scope" class="text-center">
                     <div
@@ -56,23 +57,23 @@ export default {
             total: 0,
             page: 0,
             pageSize: 5,
-            filterItems: undefined
+            filterItems: undefined,
         };
     },
     computed: {
-        parts: function() {
+        parts: function () {
             const itemsByType = this.$store.state.itemsByType;
             let parts = itemsByType["File"] || [];
             parts = itemsByType["Dataset"]
                 ? [...parts, ...itemsByType["Dataset"]]
                 : parts;
-            parts = parts.filter(part => part.uuid.match(this.filterItems));
+            parts = parts.filter((part) => part.uuid.match(this.filterItems));
             this.total = parts.length;
             return orderBy(parts, "uuid").slice(
                 this.page * this.pageSize,
                 this.page * this.pageSize + this.pageSize
             );
-        }
+        },
     },
     methods: {
         editPart(part) {
@@ -80,7 +81,7 @@ export default {
         },
         currentChange(page) {
             this.page = page - 1;
-        }
-    }
+        },
+    },
 };
 </script>
