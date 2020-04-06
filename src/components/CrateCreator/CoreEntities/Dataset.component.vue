@@ -1,6 +1,6 @@
 <template>
-    <el-card type="box-card" class="flex flex-col">
-        <div slot="header" class="clearfix">
+    <div>
+        <div class="border-b-2 m-2 p-2">
             <span>Folder: {{ properties.uuid }}</span>
         </div>
 
@@ -23,13 +23,14 @@
         <div class="flex flex-row mt-2">
             <el-button @click="cancel" type="danger">
                 <i class="fas fa-trash-alt"></i>
+                discard changes
             </el-button>
             <div class="flex-grow"></div>
             <el-button @click="save" type="success">
                 <i class="fas fa-check"></i>
             </el-button>
         </div>
-    </el-card>
+    </div>
 </template>
 
 <script>

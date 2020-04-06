@@ -7,6 +7,7 @@ import "source-map-support/register";
 import "assets/tailwind.scss";
 import "element-ui/lib/theme-chalk/index.css";
 import "assets/global-styles.scss";
+import "iv-viewer/dist/iv-viewer.css";
 
 // import "leaflet/dist/leaflet.css";
 // import { Icon } from "leaflet";

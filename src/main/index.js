@@ -16,7 +16,8 @@ function createMainWindow() {
         height: 1100,
         webPreferences: {
             nodeIntegration: true,
-            nodeIntegrationInWorker: true
+            nodeIntegrationInWorker: true,
+            webSecurity: process.env.NODE_ENV !== "development"
         }
     });
     window.webContents.session.clearCache(() => {});
