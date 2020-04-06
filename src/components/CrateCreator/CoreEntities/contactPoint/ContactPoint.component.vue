@@ -13,10 +13,9 @@
             class="flex flex-col style-card"
             v-if="properties.mode.visible"
         >
-            <span v-if="properties.mode.create">
-                <!-- select existing -->
-                <select-existing-entry type="Person" @selection="save" />
-            </span>
+            <!-- <span v-if="properties.mode.create">
+                <select-existing-entry type="ContactPoint" @selection="save" />
+            </span> -->
             <!-- create / edit contact point -->
             <create-contact-point-component
                 :properties.sync="properties"
@@ -51,26 +50,26 @@ import SelectExistingEntry from "../SelectExistingEntry.component.vue";
 export default {
     components: {
         CreateContactPointComponent,
-        SelectExistingEntry
+        SelectExistingEntry,
     },
     props: {
         template: {
             type: Object,
-            required: true
+            required: true,
         },
         reference: {
-            type: String
+            type: String,
         },
         data: {},
         mode: {
-            type: Object
-        }
+            type: Object,
+        },
     },
     data() {
         return {
             properties: {
-                visible: false
-            }
+                visible: false,
+            },
         };
     },
     created() {
@@ -86,7 +85,7 @@ export default {
         restore() {
             return restore({
                 store: this.$store,
-                uuid: (this.data && this.data.uuid) || undefined
+                uuid: (this.data && this.data.uuid) || undefined,
             });
         },
         cancel() {
@@ -95,13 +94,13 @@ export default {
                 contactPoint: this.data,
                 reference: {
                     uuid: this.reference,
-                    property: this.template.property
-                }
+                    property: this.template.property,
+                },
             });
             this.properties.mode = {
                 edit: false,
                 create: false,
-                visible: false
+                visible: false,
             };
             this.$emit("done");
         },
@@ -111,9 +110,9 @@ export default {
                     store: this.$store,
                     reference: {
                         uuid: this.reference,
-                        property: this.template.property
+                        property: this.template.property,
                     },
-                    contactPoint: selection
+                    contactPoint: selection,
                 });
             } else {
                 if (
@@ -125,15 +124,15 @@ export default {
                     store: this.$store,
                     reference: {
                         uuid: this.reference,
-                        property: this.template.property
+                        property: this.template.property,
                     },
-                    contactPoint: this.properties
+                    contactPoint: this.properties,
                 });
             }
             this.properties.mode = {
                 edit: false,
                 create: false,
-                visible: false
+                visible: false,
             };
             this.$emit("done");
         },
@@ -141,8 +140,8 @@ export default {
             this.properties.mode.visible = true;
             this.properties.mode.create = false;
             this.properties.mode.edit = true;
-        }
-    }
+        },
+    },
 };
 </script>
 
