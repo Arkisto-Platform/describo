@@ -18,7 +18,11 @@
                 class="flex flex-col"
                 :class="{ 'w-1/2': showContent, 'w-full': !showContent }"
             >
-                <el-form :model="properties" label-width="120px">
+                <el-form
+                    :model="properties"
+                    label-width="120px"
+                    @submit.native.prevent
+                >
                     <el-form-item label="Name">
                         <el-input v-model="properties.name"></el-input>
                     </el-form-item>
@@ -61,24 +65,24 @@ import ContentViewerComponent from "components/CrateCreator/ContentViewer/Shell.
 
 export default {
     components: {
-        ContentViewerComponent
+        ContentViewerComponent,
     },
     props: {
         uuid: {
             type: String,
-            required: true
-        }
+            required: true,
+        },
     },
     data() {
         return {
             properties: {},
-            showContent: true
+            showContent: true,
         };
     },
     created() {
         const properties = restore({
             store: this.$store,
-            id: this.uuid
+            id: this.uuid,
         });
         this.$data.properties = { ...properties };
     },
@@ -89,15 +93,15 @@ export default {
         save() {
             const params = getParams({
                 properties: this.properties,
-                reference: this.reference
+                reference: this.reference,
             });
             save({
                 store: this.$store,
-                file: params
+                file: params,
             });
             this.$emit("done");
-        }
-    }
+        },
+    },
 };
 </script>
 

@@ -4,7 +4,7 @@
             <span>Folder: {{ properties.uuid }}</span>
         </div>
 
-        <el-form :model="properties" label-width="120px">
+        <el-form :model="properties" label-width="120px" @submit.native.prevent>
             <el-form-item label="Name">
                 <el-input v-model="properties.name"></el-input>
             </el-form-item>
@@ -41,18 +41,18 @@ export default {
     props: {
         uuid: {
             type: String,
-            required: true
-        }
+            required: true,
+        },
     },
     data() {
         return {
-            properties: {}
+            properties: {},
         };
     },
     created() {
         const properties = restore({
             store: this.$store,
-            id: this.uuid
+            id: this.uuid,
         });
         this.$data.properties = { ...properties };
     },
@@ -63,15 +63,15 @@ export default {
         save() {
             const params = getParams({
                 properties: this.properties,
-                reference: this.reference
+                reference: this.reference,
             });
             save({
                 store: this.$store,
-                dataset: params
+                dataset: params,
             });
             this.$emit("done");
-        }
-    }
+        },
+    },
 };
 </script>
 
