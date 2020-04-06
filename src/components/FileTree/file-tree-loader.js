@@ -1,4 +1,4 @@
-const path = require("path");
+const nodePath = require("path");
 const { platform } = require("os");
 const { spawn } = require("child_process");
 const { mapKeys, camelCase } = require("lodash");
@@ -13,14 +13,14 @@ export default class FileTreeLoader {
         // console.log("PATH", path);
         // console.log("RCLONE BINARY", rclone, await fs.pathExists(rclone));
 
-        let content = await new Promise(resolve => {
+        let content = await new Promise((resolve) => {
             let content = "";
             const s = spawn(rclone, ["lsjson", path]);
 
-            s.stdout.on("data", function(msg) {
+            s.stdout.on("data", function (msg) {
                 content += msg.toString();
             });
-            s.on("close", code => {
+            s.on("close", (code) => {
                 if (!code) resolve(JSON.parse(content));
                 resolve();
             });
@@ -30,30 +30,31 @@ export default class FileTreeLoader {
         if (!content) return {};
         return {
             path,
-            children: content.map(child => {
+            children: content.map((child) => {
                 child = mapKeys(child, (val, key) => camelCase(key));
                 child.parent = path === root ? "/" : path.replace(root, "");
                 child.isLeaf = !child.isDir;
+                child.uuid = nodePath.join(child.parent, child.name);
                 return child;
-            })
+            }),
         };
     }
 
     rclone() {
         let rclone;
         if (process.env.NODE_ENV === "production") {
-            return path.join(__dirname, "..", "bin", "rclone");
+            return nodePath.join(__dirname, "..", "bin", "rclone");
         } else {
             const backPath = [__dirname, "..", "..", "..", "rclone-binaries"];
             switch (platform()) {
                 case "darwin":
-                    rclone = path.join(...backPath, "mac", "rclone");
+                    rclone = nodePath.join(...backPath, "mac", "rclone");
                     break;
                 case "linux":
-                    rclone = path.join(...backPath, "linux", "rclone");
+                    rclone = nodePath.join(...backPath, "linux", "rclone");
                     break;
                 case "win32":
-                    rclone = path.join(...backPath, "win", "rclone.exe");
+                    rclone = nodePath.join(...backPath, "win", "rclone.exe");
                     break;
             }
             return rclone;

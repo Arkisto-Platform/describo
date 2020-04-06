@@ -20,7 +20,7 @@
                 <el-tree
                     ref="tree"
                     :props="props"
-                    node-key="name"
+                    node-key="uuid"
                     :show-checkbox="enableFileSelector"
                     :check-strictly="!selectAllChildren"
                     :default-checked-keys="checkedNodes"
@@ -112,21 +112,16 @@ export default {
             let selectedNodes = this.$refs.tree.getCheckedNodes();
             selectedNodes = selectedNodes.filter((n) => n.path !== this.target);
             selectedNodes = selectedNodes.map((node) => [
-                node.name,
-                node.parent.split("/").pop(),
+                node.uuid,
+                node.parent,
             ]);
             selectedNodes = flattenDeep(selectedNodes);
             selectedNodes = uniq(selectedNodes);
             selectedNodes = compact(selectedNodes);
+            selectedNodes = selectedNodes.filter((n) => n != "/");
             selectedNodes = selectedNodes.map(
                 (node) => this.$refs.tree.getNode(node).data
             );
-            selectedNodes = selectedNodes.map((node) => {
-                return {
-                    ...node,
-                    uuid: path.join(node.parent, node.path),
-                };
-            });
             this.$emit("selected-nodes", selectedNodes);
         },
     },

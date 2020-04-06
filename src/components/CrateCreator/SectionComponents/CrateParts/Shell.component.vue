@@ -59,7 +59,7 @@ export default {
         FileTreeComponent,
         PartsListComponent,
         FileComponent,
-        DatasetComponent
+        DatasetComponent,
     },
     data() {
         return {
@@ -67,16 +67,16 @@ export default {
             error: false,
             saved: false,
             saving: false,
-            selectedPart: undefined
+            selectedPart: undefined,
         };
     },
     computed: {
-        checkedNodes: function() {
+        checkedNodes: function () {
             const state = this.$store.state.itemsByType;
             let parts = state.File ? state.File : [];
             parts = state.Dataset ? [...parts, ...state.Dataset] : parts;
-            return parts.map(p => p.name);
-        }
+            return parts.map((p) => p.uuid);
+        },
     },
     methods: {
         addNodesToCrate(nodes) {
@@ -96,8 +96,8 @@ export default {
         },
         editPart(part) {
             this.selectedPart = part;
-        }
-    }
+        },
+    },
 };
 </script>
 
