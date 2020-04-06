@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-row">
-        <div class="flex flex-col w-3/4">
+        <div class="flex flex-col w-full">
             <div v-if="enableFileSelector">
                 <el-button @click="addParts" type="success">
                     update crate content
@@ -16,18 +16,19 @@
                     when selecting all. Otherwise, you'll only get the folders.
                 </div>
             </div>
-
-            <el-tree
-                ref="tree"
-                :props="props"
-                node-key="name"
-                :show-checkbox="enableFileSelector"
-                :check-strictly="!selectAllChildren"
-                :default-checked-keys="checkedNodes"
-                :default-expanded-keys="defaultExpandedKeys"
-                lazy
-                :load="loadNode"
-            ></el-tree>
+            <div class="overflow-scroll">
+                <el-tree
+                    ref="tree"
+                    :props="props"
+                    node-key="name"
+                    :show-checkbox="enableFileSelector"
+                    :check-strictly="!selectAllChildren"
+                    :default-checked-keys="checkedNodes"
+                    :default-expanded-keys="defaultExpandedKeys"
+                    lazy
+                    :load="loadNode"
+                ></el-tree>
+            </div>
             <!-- :default-expand-all="true" -->
         </div>
     </div>
@@ -42,14 +43,14 @@ import { flattenDeep, uniq, compact } from "lodash";
 export default {
     props: {
         browseTarget: {
-            type: Object
+            type: Object,
         },
         enableFileSelector: {
-            type: Boolean
+            type: Boolean,
         },
         checkedNodes: {
-            type: Array
-        }
+            type: Array,
+        },
     },
     data() {
         return {
@@ -60,28 +61,28 @@ export default {
             data: [
                 {
                     path: "",
-                    children: []
-                }
+                    children: [],
+                },
             ],
             props: {
                 children: "children",
                 label: "path",
-                isLeaf: "isLeaf"
+                isLeaf: "isLeaf",
             },
             defaultExpandedKeys: [],
-            selectAllChildren: true
+            selectAllChildren: true,
         };
     },
     methods: {
         async loadRootNode() {
-            return await new Promise(resolve => {
+            return await new Promise((resolve) => {
                 const worker = new Worker();
                 worker.postMessage({
                     target: this.target,
                     root: this.target.folder,
-                    path: this.target.folder
+                    path: this.target.folder,
                 });
-                worker.addEventListener("message", m => resolve(m.data));
+                worker.addEventListener("message", (m) => resolve(m.data));
             });
         },
         async loadNode(node, resolve) {
@@ -95,40 +96,40 @@ export default {
                 return resolve(node.data.children);
             } else {
                 const parentPath = node.parent.data.path || "";
-                content = await new Promise(resolve => {
+                content = await new Promise((resolve) => {
                     const worker = new Worker();
                     worker.postMessage({
                         target: this.target,
                         root: this.target.folder,
-                        path: path.join(parentPath, node.data.path)
+                        path: path.join(parentPath, node.data.path),
                     });
-                    worker.addEventListener("message", m => resolve(m.data));
+                    worker.addEventListener("message", (m) => resolve(m.data));
                 });
                 resolve(content.children || []);
             }
         },
         addParts() {
             let selectedNodes = this.$refs.tree.getCheckedNodes();
-            selectedNodes = selectedNodes.filter(n => n.path !== this.target);
-            selectedNodes = selectedNodes.map(node => [
+            selectedNodes = selectedNodes.filter((n) => n.path !== this.target);
+            selectedNodes = selectedNodes.map((node) => [
                 node.name,
-                node.parent.split("/").pop()
+                node.parent.split("/").pop(),
             ]);
             selectedNodes = flattenDeep(selectedNodes);
             selectedNodes = uniq(selectedNodes);
             selectedNodes = compact(selectedNodes);
             selectedNodes = selectedNodes.map(
-                node => this.$refs.tree.getNode(node).data
+                (node) => this.$refs.tree.getNode(node).data
             );
-            selectedNodes = selectedNodes.map(node => {
+            selectedNodes = selectedNodes.map((node) => {
                 return {
                     ...node,
-                    uuid: path.join(node.parent, node.path)
+                    uuid: path.join(node.parent, node.path),
                 };
             });
             this.$emit("selected-nodes", selectedNodes);
-        }
-    }
+        },
+    },
 };
 </script>
 
