@@ -1,7 +1,7 @@
 <template>
     <div>
         <component v-bind:is="component" :path="filePath"></component>
-        <div class="text-center">
+        <div class="text-center" v-if="!component">
             There is currently no viewer available to display this content.
         </div>
     </div>
