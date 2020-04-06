@@ -15,18 +15,18 @@ export default {
     components: {
         RenderImageComponent: () => import("./RenderImage.component.vue"),
         RenderAudioComponent: () => import("./RenderAudio.component.vue"),
-        RenderVideoComponent: () => import("./RenderVideo.component.vue")
+        RenderVideoComponent: () => import("./RenderVideo.component.vue"),
     },
     props: {
         properties: {
             type: Object,
-            required: true
-        }
+            required: true,
+        },
     },
     data() {
         return {
             component: undefined,
-            imageTypes: ["jpg", "jpeg", "png", "svg"],
+            imageTypes: ["jpg", "jpeg", "png", "gif", "svg"],
             audioTypes: ["mp3"],
             videoTypes: ["mov", "mp4"],
             documentFileExtensions: [
@@ -36,13 +36,13 @@ export default {
                 "xls",
                 "xlsx",
                 "ppt",
-                "pptx"
+                "pptx",
             ],
-            transcriptionFileExtensions: ["eaf", "trs", "ixt", "flextext"]
+            transcriptionFileExtensions: ["eaf", "trs", "ixt", "flextext"],
         };
     },
     computed: {
-        filePath: function() {
+        filePath: function () {
             if (this.$store.state.target.type === "local") {
                 return path.join(
                     "file://",
@@ -52,7 +52,7 @@ export default {
             } else {
                 return undefined;
             }
-        }
+        },
     },
     mounted() {
         this.displayContent();
@@ -67,8 +67,8 @@ export default {
             } else if (this.videoTypes.includes(extension)) {
                 this.component = `RenderVideoComponent`;
             }
-        }
-    }
+        },
+    },
 };
 </script>
 
