@@ -1,13 +1,6 @@
 <template>
     <div class="flex flex-col">
         <div class="flex flex-row">
-            <el-pagination
-                layout="prev, pager, next"
-                :page-size="pageSize"
-                :total="total"
-                @current-change="currentChange"
-            >
-            </el-pagination>
             <div class="flex flex-col">
                 <el-input
                     placeholder="Filter items"
@@ -17,6 +10,15 @@
                     This filter supports simple regular expressions.
                 </div>
             </div>
+            <div class="flex-grow"></div>
+            <el-pagination
+                v-if="total > pageSize + 1"
+                layout="prev, pager, next"
+                :page-size="pageSize"
+                :total="total"
+                @current-change="currentChange"
+            >
+            </el-pagination>
         </div>
 
         <el-table :data="parts" class="cursor-pointer" @row-click="editPart">
