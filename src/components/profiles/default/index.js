@@ -5,18 +5,9 @@ export default {
         metadata: {
             about:
                 "Some pithy text about what this is and why the user should select it",
-            version: 1
+            version: 1,
         },
         inputs: [
-            {
-                // If you want to add a property with a specific value
-                //  set @type = "Value"
-                //  and specify the value
-                property: "additionalType",
-                label: "Additional Type",
-                "@type": "Value",
-                value: "item"
-            },
             {
                 // the schema element to write this data against
                 property: "name",
@@ -29,36 +20,21 @@ export default {
 
                 // whether this element is required - used by strict
                 required: true,
-                help:
-                    "Some meaningful help text because this property really needs the explainer."
+                help: "A name for this crate.",
             },
             {
                 property: "description",
                 label: "Description",
-                "@type": "TextArea"
-            },
-            {
-                // If you want to add properties with values from a controlled vocab
-                // set @type = "Select"
-                // and specify the options
-                property: "languages",
-                label: "Languages",
-                "@type": "Select",
-                options: ["English", "French", "Spanish", "Other"],
-                multiple: true
-            },
-            {
-                property: "colours",
-                label: "Colours",
-                "@type": "Select",
-                options: ["Red", "Green", "Blue", "Other"]
+                "@type": "TextArea",
+                help: "A description of the content of this crate.",
             },
             {
                 property: "datePublished",
-                label: "Date Published (your local date)",
+                label: "Date Published",
 
                 // the type of element: one of the core types in components/CrateCreator/components
-                "@type": "Date"
+                "@type": "Date",
+                help: "The date of publication crate.",
             },
             {
                 property: "author",
@@ -68,17 +44,7 @@ export default {
                 "@type": ["Person", "Organisation"],
 
                 // can there be multiple authors?
-                multiple: true
-            },
-            {
-                property: "participant",
-                label: "Participant",
-
-                // the type of element: one of the core types in components/CrateCreator/components
-                "@type": ["Person", "Organisation"],
-
-                // can there be multiple authors?
-                multiple: true
+                multiple: true,
             },
             {
                 property: "publisher",
@@ -87,36 +53,15 @@ export default {
                 // the type of element: one of the core types in components/CrateCreator/components
                 "@type": "Organisation",
 
-                required: true
+                required: true,
             },
             {
                 property: "contactPoint",
                 label: "Contact Point",
                 "@type": "ContactPoint",
                 required: true,
-                multiple: true
-            }
-        ]
-    },
-    Collection: {
-        metadata: {
-            about:
-                "Some pithy text about what this is and why the LINGUIST user should select it",
-            version: 1
-        },
-        inputs: [
-            {
-                property: "additionalType",
-                label: "Additional Type",
-                "@type": "Value",
-                value: "item"
+                multiple: true,
             },
-            {
-                property: "name",
-                label: "Name",
-                "@type": "Text",
-                required: true
-            }
-        ]
-    }
+        ],
+    },
 };
