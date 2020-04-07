@@ -17,9 +17,13 @@
                 <!-- select existing -->
                 <select-existing-entry type="Person" @selection="save" />
             </span>
+
             <!-- create /edit person -->
             <create-person-component
-                :properties.sync="properties"
+                :properties="properties"
+                @update:name="properties.name = $event"
+                @update:uuid="properties.uuid = $event"
+                @update:isValid="isValid = $event"
                 v-if="properties.mode.create || properties.mode.edit"
             />
             <div v-else class="mb-4">
@@ -35,7 +39,7 @@
                     <i class="fas fa-trash-alt"></i>
                 </el-button>
                 <div class="flex-grow"></div>
-                <el-button @click="save()" type="success">
+                <el-button @click="save()" type="success" :disabled="!isValid">
                     <i class="fas fa-check"></i>
                 </el-button>
             </div>
@@ -52,31 +56,32 @@ import SelectExistingEntry from "../SelectExistingEntry.component.vue";
 export default {
     components: {
         CreatePersonComponent,
-        SelectExistingEntry
+        SelectExistingEntry,
     },
     props: {
         template: {
             type: Object,
-            required: true
+            required: true,
         },
         reference: {
-            type: String
+            type: String,
         },
         data: {},
         mode: {
-            type: Object
-        }
+            type: Object,
+        },
     },
     data() {
         return {
+            isValid: false,
             properties: {
-                visible: false
-            }
+                visible: false,
+            },
         };
     },
     created() {
         this.$data.properties = this.restore();
-        if (!this.data) this.$data.properties.uuid = generateId();
+        // if (!this.data) this.$data.properties.uuid = generateId();
     },
     mounted() {
         if (this.mode) {
@@ -87,7 +92,7 @@ export default {
         restore() {
             return restore({
                 store: this.$store,
-                uuid: (this.data && this.data.uuid) || undefined
+                uuid: (this.data && this.data.uuid) || undefined,
             });
         },
         cancel() {
@@ -96,13 +101,13 @@ export default {
                 person: this.data,
                 reference: {
                     uuid: this.reference,
-                    property: this.template.property
-                }
+                    property: this.template.property,
+                },
             });
             this.properties.mode = {
                 edit: false,
                 create: false,
-                visible: false
+                visible: false,
             };
             this.$emit("done");
         },
@@ -112,9 +117,9 @@ export default {
                     store: this.$store,
                     reference: {
                         uuid: this.reference,
-                        property: this.template.property
+                        property: this.template.property,
                     },
-                    person: selection
+                    person: selection,
                 });
             } else {
                 if (
@@ -126,15 +131,15 @@ export default {
                     store: this.$store,
                     reference: {
                         uuid: this.reference,
-                        property: this.template.property
+                        property: this.template.property,
                     },
-                    person: this.properties
+                    person: this.properties,
                 });
             }
             this.properties.mode = {
                 edit: false,
                 create: false,
-                visible: false
+                visible: false,
             };
             this.$emit("done");
         },
@@ -142,8 +147,8 @@ export default {
             this.properties.mode.visible = true;
             this.properties.mode.create = false;
             this.properties.mode.edit = true;
-        }
-    }
+        },
+    },
 };
 </script>
 
