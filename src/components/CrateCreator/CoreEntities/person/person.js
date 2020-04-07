@@ -4,7 +4,7 @@ import { addReferenceToDataset, removeReferenceFromDataset } from "../helpers";
 
 export const properties = {
     uuid: undefined,
-    name: undefined
+    name: undefined,
 };
 
 export function save({ store, reference, person }) {
@@ -17,25 +17,34 @@ export function save({ store, reference, person }) {
             name: person.name,
             "@reverse": reference.uuid
                 ? {
-                      [reference.property]: { uuid: reference.uuid }
+                      [reference.property]: { uuid: reference.uuid },
                   }
-                : person["@reverse"]
+                : person["@reverse"],
         };
         store.commit("saveToGraph", person);
         addReferenceToDataset({
             store,
             reference,
             uuid: item.uuid,
-            type: "Person"
+            type: "Person",
         });
     } else {
         // doesn't already exist - go ahead and create it
+        let id = person.uuid;
+        if (
+            !person.uuid.match(
+                /^(http:\/\/|https:\/\/)[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/
+            )
+        ) {
+            id = `#${person.uuid}`;
+        }
+        person.uuid = id;
         createPerson({ store, reference, person });
         addReferenceToDataset({
             store,
             reference,
             uuid: person.uuid,
-            type: "Person"
+            type: "Person",
         });
     }
 
@@ -50,9 +59,9 @@ export function save({ store, reference, person }) {
             identifier: identifierId,
             "@reverse": reference
                 ? {
-                      [reference.property]: { uuid: reference.uuid }
+                      [reference.property]: { uuid: reference.uuid },
                   }
-                : person["@reverse"]
+                : person["@reverse"],
         };
         store.commit("saveToGraph", person);
 
@@ -60,7 +69,7 @@ export function save({ store, reference, person }) {
             uuid: identifierId,
             "@type": "PropertyValue",
             name: "other",
-            value: person.uuid
+            value: person.uuid,
         };
         store.commit("saveToGraph", identifier);
     }
@@ -73,7 +82,7 @@ export function restore({ store, uuid }) {
         props.mode = {
             visible: false,
             edit: false,
-            create: false
+            create: false,
         };
         props.uuid = person.uuid;
         props.name = person.name;
@@ -83,7 +92,7 @@ export function restore({ store, uuid }) {
         props.mode = {
             visible: true,
             edit: false,
-            create: true
+            create: true,
         };
         props.uuid = uuid;
         return props;
@@ -99,7 +108,7 @@ export function remove({ store, reference, person }) {
     if (!person) return;
     // rewrite the reverse property based on this state
     person["@reverse"] = {
-        [reference.property]: { uuid: reference.uuid }
+        [reference.property]: { uuid: reference.uuid },
     };
 
     store.commit("removeFromGraph", person);
