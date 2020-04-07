@@ -16,6 +16,7 @@ export default {
         RenderImageComponent: () => import("./RenderImage.component.vue"),
         RenderAudioComponent: () => import("./RenderAudio.component.vue"),
         RenderVideoComponent: () => import("./RenderVideo.component.vue"),
+        RenderDocumentComponent: () => import("./RenderDocument.component.vue"),
     },
     props: {
         properties: {
@@ -27,18 +28,10 @@ export default {
         return {
             component: undefined,
             imageTypes: ["jpg", "jpeg", "png", "gif", "svg"],
-            audioTypes: ["mp3"],
+            audioTypes: ["mp3", "wav"],
             videoTypes: ["mov", "mp4"],
-            documentFileExtensions: [
-                "pdf",
-                "doc",
-                "docx",
-                "xls",
-                "xlsx",
-                "ppt",
-                "pptx",
-            ],
-            transcriptionFileExtensions: ["eaf", "trs", "ixt", "flextext"],
+            documentTypes: ["pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx"],
+            transcriptionTypes: ["eaf", "trs", "ixt", "flextext"],
         };
     },
     computed: {
@@ -67,6 +60,9 @@ export default {
             } else if (this.videoTypes.includes(extension)) {
                 this.component = `RenderVideoComponent`;
             }
+            // } else if (this.documentTypes.includes(extension)) {
+            //     this.component = `RenderDocumentComponent`;
+            // }
         },
     },
 };

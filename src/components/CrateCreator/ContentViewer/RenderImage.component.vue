@@ -19,19 +19,18 @@ export default {
     props: {
         path: {
             type: String,
-            required: true
-        }
+            required: true,
+        },
     },
     data() {
         return {};
     },
     methods: {
         toggleFullScreen() {
-            console.log("here");
             const viewer = new FullScreenViewer({});
             viewer.show(this.path);
-        }
-    }
+        },
+    },
 };
 </script>
 

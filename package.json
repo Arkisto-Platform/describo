@@ -63,6 +63,7 @@
         "fs-extra": "^8.1.0",
         "iv-viewer": "^2.0.1",
         "lodash": "^4.17.15",
+        "prismjs": "^1.20.0",
         "regenerator-runtime": "^0.13.3",
         "sha.js": "^2.4.11",
         "source-map-support": "^0.5.16",
