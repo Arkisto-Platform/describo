@@ -17,6 +17,7 @@ export default {
         RenderAudioComponent: () => import("./RenderAudio.component.vue"),
         RenderVideoComponent: () => import("./RenderVideo.component.vue"),
         RenderDocumentComponent: () => import("./RenderDocument.component.vue"),
+        RenderXmlComponent: () => import("./RenderXML.component.vue"),
     },
     props: {
         properties: {
@@ -32,13 +33,13 @@ export default {
             videoTypes: ["mov", "mp4"],
             documentTypes: ["pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx"],
             transcriptionTypes: ["eaf", "trs", "ixt", "flextext"],
+            xmlTypes: ["xml", "eaf", "trs", "ixt", "flextext"],
         };
     },
     computed: {
-        filePath: function () {
+        filePath: function() {
             if (this.$store.state.target.type === "local") {
                 return path.join(
-                    "file://",
                     this.$store.state.target.folder,
                     this.properties.uuid
                 );
@@ -59,6 +60,8 @@ export default {
                 this.component = `RenderAudioComponent`;
             } else if (this.videoTypes.includes(extension)) {
                 this.component = `RenderVideoComponent`;
+            } else if (this.xmlTypes.includes(extension)) {
+                this.component = `RenderXmlComponent`;
             }
             // } else if (this.documentTypes.includes(extension)) {
             //     this.component = `RenderDocumentComponent`;
