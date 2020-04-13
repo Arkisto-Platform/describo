@@ -11,29 +11,29 @@ let person = {};
 let reference = {};
 let rootDataset = {
     uuid: "#dataset",
-    "@type": "RootDataset"
+    "@type": "RootDataset",
 };
 
 beforeEach(() => {
     state = {
         graph: [],
         itemsById: {},
-        itemsByType: {}
+        itemsByType: {},
     };
     store = new Vuex.Store({
         strict: process.env.NODE_ENV !== "production",
         state,
         mutations,
         actions: {},
-        getters: getters
+        getters: getters,
     });
     person = {
         uuid: "#1",
-        name: "person"
+        name: "person",
     };
     reference = {
         property: "author",
-        uuid: "#dataset"
+        uuid: "#dataset",
     };
     store.commit("saveToGraph", rootDataset);
 });
@@ -42,7 +42,7 @@ test("it should be able to save a new person to the store", () => {
     save({ store, reference, person });
     expect(state.graph.length).toBe(3);
     expect(state.itemsById["#1"]["@reverse"]).toEqual({
-        author: [{ uuid: "#dataset" }]
+        author: [{ uuid: "#dataset" }],
     });
     // console.log(JSON.stringify(state.graph, null, 2));
 });
@@ -58,7 +58,7 @@ test("it should be able to update an existing organisation in the store", () => 
 
     reference = {
         property: "participant",
-        uuid: "#dataset"
+        uuid: "#dataset",
     };
     save({ store, reference, person });
     expect(state.itemsById["#1"]["@reverse"]).toHaveProperty("author");
@@ -69,24 +69,24 @@ test("it should be able to remove people from the store sensibly", () => {
     save({
         store,
         reference,
-        person
+        person,
     });
     // console.log(JSON.stringify(state.graph, null, 2));
 
     let reference2 = {
         property: "participant",
-        uuid: "#dataset"
+        uuid: "#dataset",
     };
     save({
         store,
         reference: reference2,
-        person
+        person,
     });
     // console.log(JSON.stringify(state.graph, null, 2));
     remove({
         store,
         reference,
-        person
+        person,
     });
     // console.log(JSON.stringify(state.graph, null, 2));
     expect(store.getters.getItemById("#1")["@reverse"]).toHaveProperty(
@@ -99,7 +99,7 @@ test("it should be able to remove people from the store sensibly", () => {
     remove({
         store,
         reference: reference2,
-        person
+        person,
     });
     // console.log(JSON.stringify(state.graph, null, 2));
     expect(state.graph.length).toBe(1);
