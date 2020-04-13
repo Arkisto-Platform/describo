@@ -4,6 +4,8 @@
         <div class="my-2" v-if="enableAdd">
             <add-control :template="template" @add="add" />
         </div>
+
+        <!-- Dialog to add something  -->
         <render-item-component
             class="border-2 border-gray-200 p-4 bg-teal-100"
             v-if="addItem"
@@ -12,7 +14,7 @@
             @done="addItem = false"
         />
 
-        <!-- Simple entry type -->
+        <!-- View: Simple entry type -->
         <div v-if="isSimpleType">
             <render-item-component
                 :template="template"
@@ -21,7 +23,7 @@
             />
         </div>
 
-        <!-- Compound simple type -->
+        <!-- View: Compound simple type -->
         <div v-if="isCompoundType">
             <compound-component
                 :template="template"
@@ -30,7 +32,7 @@
             />
         </div>
 
-        <!-- Custom (entity) types -->
+        <!-- View: Custom (entity) types -->
         <div v-if="!isSimpleType && !isCompoundType">
             <div class="flex flex-row flex-wrap">
                 <render-item-component
@@ -63,29 +65,35 @@ export default {
     components: {
         AddControl,
         RenderItemComponent,
-        CompoundComponent
+        CompoundComponent,
     },
     props: {
         template: {
             type: Object,
-            required: true
+            required: true,
         },
         reference: {
             type: String,
-            required: true
+            required: true,
         },
-        data: {}
+        data: {},
     },
     data() {
         return {
             // property: this.input.property,
             label: this.template.label || shortName(this.template.property),
-            addItem: false
+            addItem: false,
         };
     },
     computed: {
         enableAdd: function() {
             if (this.template["@type"] === "Value") return false;
+            if (
+                SimpleTypes.includes(this.template["@type"]) &&
+                this.template.required &&
+                !this.template.multiple
+            )
+                return false;
             if (
                 this.template.multiple ||
                 (!this.template.multiple && !this.data)
@@ -104,95 +112,21 @@ export default {
                 SimpleTypes.includes(this.template["@type"]) &&
                 this.template.multiple
             );
-        }
+        },
     },
     methods: {
-        // generateParentId() {
-        //     return { property: this.property, uuid: this.reference };
-        // },
-        // cancel(payload) {
-        //     console.log("cancel", JSON.stringify(payload, null, 2));
-        // },
-        // save(payload) {
-        //     console.log("save", JSON.stringify(payload, null, 2));
-        // },
         add(payload) {
             const item = {
                 template: {
                     ...payload.template,
                     "@type": payload.type,
-                    enabled: true
-                }
+                    enabled: true,
+                },
             };
             // console.log(JSON.stringify(item, null, 2));
             this.addItem = item;
-        }
-        // add(type) {
-        //     const add = {
-        //         uuid: generateId(),
-        //         "@type": type
-        //     };
-        //     this.input.items.push(add);
-        //     if (
-        //         !this.input.multiple &&
-        //         this.input.items &&
-        //         this.input.items.length === 1
-        //     ) {
-        //         this.input.disableAdd = true;
-        //     }
-        // },
-        // cancel(id) {
-        //     if (!id) {
-        //         this.$emit("cancel", { property: this.property });
-        //     } else {
-        //         this.input.items = this.input.items.filter(i => i.uuid !== id);
-        //         this.$emit("save", {
-        //             property: this.property,
-        //             items: this.input.items
-        //         });
-        //     }
-        //     if (
-        //         !this.input.multiple &&
-        //         !this.isSimpleType &&
-        //         this.input.items.length === 0
-        //     )
-        //         this.input.disableAdd = false;
-        // },
-        // save(value) {
-        //     console.log("@type", value);
-        //     if (
-        //         ["Text", "TextArea", "Date", "Select"].includes(
-        //             this.input["@type"]
-        //         )
-        //     ) {
-        //         this.$emit("save", {
-        //             property: this.property,
-        //             value
-        //         });
-        //     } else {
-        //         this.$emit("save", {
-        //             property: this.property,
-        //             items: this.input.items
-        //         });
-        //     }
-        // },
-        // replace(payload) {
-        //     this.input.items = this.input.items.map(item => {
-        //         if (item.uuid === payload.old) {
-        //             return {
-        //                 ...item,
-        //                 uuid: payload.new
-        //             };
-        //         }
-        //         return item;
-        //     });
-        //     this.input.items = uniqBy(this.input.items, "uuid");
-        //     this.$emit("save", {
-        //         property: this.property,
-        //         items: this.input.items
-        //     });
-        // },
-    }
+        },
+    },
 };
 </script>
 
