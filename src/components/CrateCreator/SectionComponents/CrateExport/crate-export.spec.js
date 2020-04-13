@@ -3,29 +3,29 @@ import CrateExporter from "./crate-export";
 import path from "path";
 import fs from "fs-extra";
 
-test.only("it should be able to create a zip export", async () => {
-    const targetFolder = path.join(__dirname, "..");
+test("it should be able to create a zip export", async () => {
+    const source = __dirname;
+    const target = path.join(__dirname, "..");
     const zipFileName = "example.zip";
-    const crate = __dirname;
 
-    const exporter = new CrateExporter({ targetFolder, crate });
+    const exporter = new CrateExporter({ source, target });
     await exporter.exportZip({ zipFileName });
-    let stat = await fs.stat(path.join(targetFolder, zipFileName));
+    let stat = await fs.stat(path.join(target, zipFileName));
     expect(stat.isFile()).toBeTrue;
-    await fs.remove(path.join(targetFolder, zipFileName));
+    await fs.remove(path.join(target, zipFileName));
 });
 
 test("it should not be able to create a zip export as a child of the zipped folder", async () => {
-    const targetFolder = path.join(__dirname);
+    const source = __dirname;
+    const target = path.join(__dirname);
     const zipFileName = "example.zip";
-    const crate = __dirname;
 
-    const exporter = new CrateExporter({ targetFolder, crate });
+    const exporter = new CrateExporter({ source, target });
     try {
         await exporter.exportZip({ zipFileName });
     } catch (error) {
         expect(error.message).toBe(
-            `You can't save the archive to the same folder that you're archiving.`
+            `You can't export the archive to the path that you're archiving.`
         );
     }
 });

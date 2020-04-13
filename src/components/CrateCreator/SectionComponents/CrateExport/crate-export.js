@@ -5,29 +5,29 @@ import path from "path";
 import EventBus from "./eventbus";
 
 export default class CrateExporter {
-    constructor({ crate, targetFolder }) {
-        this.targetFolder = targetFolder;
-        this.crate = crate;
+    constructor({ source, target }) {
+        this.source = source;
+        this.target = target;
     }
 
     async exportZip({ zipFileName }) {
-        const relative = path.relative(this.crate, this.targetFolder);
         if (
-            relative &&
-            !relative.startsWith("..") &&
-            !path.isAbsolute(relative)
+            !isAcceptableTarget({
+                source: this.source,
+                target: this.target,
+            })
         ) {
             throw new Error(
-                `You can't save the archive to the same folder that you're archiving.`
+                `You can't export the archive to the path that you're archiving.`
             );
         }
 
         // create a file to stream archive data to.
         const output = await createWriteStream(
-            path.join(this.targetFolder, zipFileName)
+            path.join(this.target, zipFileName)
         );
         const archive = archiver("zip", {
-            zlib: { level: 9 } // Sets the compression level.
+            zlib: { level: 9 }, // Sets the compression level.
         });
         EventBus.$on("abort", () => {
             archive.abort();
@@ -65,11 +65,23 @@ export default class CrateExporter {
             archive.pipe(output);
 
             // append files from a sub-directory, putting its contents at the root of archive
-            archive.directory(this.crate, false);
+            archive.directory(this.source, false);
 
             // finalize the archive (ie we are done appending files but streams have to finish yet)
             // 'close', 'end' or 'finish' may be fired right after calling this method so register to them beforehand
             archive.finalize();
         });
+    }
+}
+
+export function isAcceptableTarget({ source, target }) {
+    const relative = path.relative(source, target);
+    if (
+        source === target ||
+        (relative && !relative.startsWith("..") && !path.isAbsolute(relative))
+    ) {
+        return false;
+    } else {
+        return true;
     }
 }
