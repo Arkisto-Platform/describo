@@ -56,6 +56,7 @@
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.12.0",
         "@fortawesome/fontawesome-svg-core": "^1.2.26",
+        "archiver": "^3.1.1",
         "core-js": "^3.4.0",
         "date-fns": "^2.9.0",
         "electron-updater": "^4.2.0",

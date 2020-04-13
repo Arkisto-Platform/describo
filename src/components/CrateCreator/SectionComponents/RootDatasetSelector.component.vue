@@ -11,26 +11,18 @@
                 ></el-option>
             </el-select>
             <div class="mx-4">
-                <el-button
-                    type="success"
-                    @click="emitSelection"
-                    :disabled="!selection"
-                >
+                <el-button type="success" @click="emitSelection" :disabled="!selection">
                     <i class="fas fa-long-arrow-alt-right"></i>
                 </el-button>
             </div>
         </div>
         <div
             class="my-4 p-8 w-3/4 text-gray-700 border-2 border-gray-200 text-center"
-        >
-            About: {{ selectionHelp }}
-        </div>
+        >About: {{ selectionHelp }}</div>
     </div>
 </template>
 
 <script>
-import ProfileLoader from "./profile-loader";
-
 export default {
     props: {
         profile: {

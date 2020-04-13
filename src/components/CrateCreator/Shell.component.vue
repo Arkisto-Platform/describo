@@ -1,14 +1,7 @@
 <template>
     <div class="flex flex-col">
         <div v-if="error">
-            <el-alert
-                :title="error"
-                type="error"
-                effect="dark"
-                :center="true"
-                :closable="false"
-            >
-            </el-alert>
+            <el-alert :title="error" type="error" effect="dark" :center="true" :closable="false"></el-alert>
         </div>
 
         <div class="flex flex-col" v-if="!error">
@@ -18,23 +11,19 @@
                     :profile="profile"
                     @load-selection="loadSelection"
                 />
-                <div
-                    class="flex flex-row w-full px-4"
-                    v-if="!showRootDatasetSelector"
-                >
+                <div class="flex flex-row w-full px-4" v-if="!showRootDatasetSelector">
                     <el-button @click="dataInspector = true" type="primary">
                         <i class="fas fa-eye"></i> inspect data
                     </el-button>
                     <div class="flex-grow"></div>
-                    <!-- <el-button @click="loadProfile" type="danger">
-                        <i class="fas fa-trash-alt"></i>
-                    </el-button> -->
+                    <el-button @click="crateExport = true" type="success">
+                        <i class="fas fa-upload"></i>
+                        export crate
+                    </el-button>
                 </div>
             </div>
-            <data-inspector-component
-                :drawer="dataInspector"
-                @close="dataInspector = false"
-            />
+            <data-inspector-component :drawer="dataInspector" @close="dataInspector = false" />
+            <crate-export-component :drawer="crateExport" @close="crateExport = false" />
             <el-tabs
                 v-model="activeTab"
                 tab-position="left"
@@ -52,10 +41,7 @@
                     <crate-parts-component v-if="activeTab === 'parts'" />
                 </el-tab-pane>
                 <el-tab-pane label="People" name="people">
-                    <type-management-component
-                        type="Person"
-                        v-if="activeTab === 'people'"
-                    />
+                    <type-management-component type="Person" v-if="activeTab === 'people'" />
                 </el-tab-pane>
                 <el-tab-pane label="Organisations" name="organisations">
                     <type-management-component
@@ -80,9 +66,10 @@ import { generateId } from "components/CrateCreator/tools";
 import ProfileLoader from "./profile-loader";
 import RootDatasetComponent from "./SectionComponents/RootDataset/Shell.component.vue";
 import CratePartsComponent from "./SectionComponents/CrateParts/Shell.component.vue";
-import RootDatasetSelectorComponent from "./RootDatasetSelector.component.vue";
+import RootDatasetSelectorComponent from "./SectionComponents/RootDatasetSelector.component.vue";
 import TypeManagementComponent from "./SectionComponents/TypeManagement/Shell.component.vue";
-import DataInspectorComponent from "components/CrateCreator/SectionComponents/DataInspector.component.vue";
+import DataInspectorComponent from "./SectionComponents/DataInspector.component.vue";
+import CrateExportComponent from "./SectionComponents/CrateExport/CrateExport.component.vue";
 import CrateTool from "components/CrateCreator/crate-tools";
 const crateTool = new CrateTool();
 
@@ -92,11 +79,13 @@ export default {
         CratePartsComponent,
         TypeManagementComponent,
         RootDatasetSelectorComponent,
-        DataInspectorComponent
+        DataInspectorComponent,
+        CrateExportComponent
     },
     data() {
         return {
             dataInspector: false,
+            crateExport: false,
             rootDatasetProfile: {},
             showRootDatasetSelector: false,
             activeTab: "crate",

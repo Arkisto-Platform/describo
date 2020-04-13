@@ -33,9 +33,6 @@ export default {
             });
             this.folder = folder.filePaths[0];
             this.$emit("browse-target", { type: "local", folder: this.folder });
-        },
-        describeThisFolder() {
-            this.$emit("set-target", { type: "local", folder: this.folder });
         }
     }
 };
