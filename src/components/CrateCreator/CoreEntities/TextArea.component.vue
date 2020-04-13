@@ -23,10 +23,16 @@
 
 <script>
 import SimpleComponentMixins from "./SimpleComponentMixins";
+import { debounce } from "lodash";
+
 export default {
-    mixins: [SimpleComponentMixins]
+    mixins: [SimpleComponentMixins],
+    data() {
+        return {
+            debouncedSave: debounce(this.save, 2000),
+        };
+    },
 };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>
