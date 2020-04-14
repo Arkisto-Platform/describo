@@ -1,10 +1,10 @@
 <template>
     <div
         class="flex flex-col my-1 pl-2 border-l-2 border-gray-400 py-2"
-        :class="{ 'border-orange-600': template.required }"
+        :class="{ 'border-orange-600 bg-red-100': showAlert }"
     >
         <div class="my-auto text-left text-sm pr-2">
-            <span v-if="template.required" class="text-orange-600"
+            <span v-if="showAlert" class="text-orange-600"
                 ><i class="fas fa-asterisk"></i
             ></span>
             {{ label }}
@@ -118,6 +118,12 @@ export default {
             return (
                 SimpleTypes.includes(this.template["@type"]) &&
                 this.template.multiple
+            );
+        },
+        showAlert: function() {
+            return (
+                this.template.required &&
+                ((isArray(this.data) && isEmpty(this.data)) || !this.data)
             );
         },
     },
