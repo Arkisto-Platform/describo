@@ -1,8 +1,11 @@
 // require modules
-import { createWriteStream } from "fs-extra";
+import { createWriteStream, readJSON, writeFile } from "fs-extra";
 import archiver from "archiver";
 import path from "path";
 import EventBus from "./eventbus";
+import { Preview, HtmlFile, Defaults } from "ro-crate-html-js";
+import { ROCrate } from "ro-crate";
+import fs from "fs-extra";
 
 export default class CrateExporter {
     constructor({ source, target }) {
@@ -21,6 +24,8 @@ export default class CrateExporter {
                 `You can't export the archive to the path that you're archiving.`
             );
         }
+
+        await this.renderCrateHTML();
 
         // create a file to stream archive data to.
         const output = await createWriteStream(
@@ -71,6 +76,22 @@ export default class CrateExporter {
             // 'close', 'end' or 'finish' may be fired right after calling this method so register to them beforehand
             archive.finalize();
         });
+    }
+
+    async renderCrateHTML() {
+        const metadataFile = path.join(this.source, Defaults.roCrateMetadataID);
+        const crateScript =
+            "https://data.research.uts.edu.au/examples/ro-crate/examples/src/crate.js";
+
+        const json = await readJSON(metadataFile);
+        const crate = new ROCrate(json);
+        const preview = new Preview(crate);
+        const f = new HtmlFile(preview);
+        const htmlOutputFile = path.join(
+            path.dirname(metadataFile),
+            Defaults.roCratePreviewFileName
+        );
+        await writeFile(htmlOutputFile, await f.render());
     }
 }
 

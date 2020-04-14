@@ -132,6 +132,7 @@ export default {
             let folder = await remote.dialog.showOpenDialog({
                 properties: ["openDirectory"],
             });
+            if (folder.canceled) return;
             folder = folder.filePaths[0];
             if (
                 isAcceptableTarget({
@@ -168,6 +169,7 @@ export default {
                 this.aborted = false;
                 this.folder = undefined;
                 this.progressPercentage = 0;
+                this.archiveName = undefined;
             }, 1500);
         },
         cancelExport() {
