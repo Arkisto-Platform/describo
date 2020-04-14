@@ -65,7 +65,7 @@ import AddControl from "./AddControl.component.vue";
 import RenderItemComponent from "./RenderItem.component.vue";
 import CompoundComponent from "components/CrateCreator/CoreEntities/Compound.component.vue";
 import { generateId } from "components/CrateCreator/tools";
-import { cloneDeep, uniqBy, isArray, isString } from "lodash";
+import { cloneDeep, uniqBy, isArray, isString, isEmpty } from "lodash";
 import { shortName } from "src/renderer/filters";
 import { SimpleTypes } from "./component.mixins";
 
@@ -95,19 +95,18 @@ export default {
     },
     computed: {
         enableAdd: function() {
-            if (this.template["@type"] === "Value") return false;
-            if (
-                SimpleTypes.includes(this.template["@type"]) &&
-                this.template.required &&
-                !this.template.multiple
-            )
+            if (this.template["@type"] === "Value") {
                 return false;
-            if (
-                this.template.multiple ||
-                (!this.template.multiple && !this.data)
-            )
+            } else if (this.template.multiple) {
                 return true;
-            return false;
+            } else if (
+                (isArray(this.data) && isEmpty(this.data)) ||
+                !this.data
+            ) {
+                return true;
+            } else {
+                return false;
+            }
         },
         isSimpleType: function() {
             return (
