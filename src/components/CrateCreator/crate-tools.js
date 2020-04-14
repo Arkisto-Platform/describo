@@ -14,7 +14,7 @@ export default class CrateTool {
             case "local":
                 await writeToLocalFolder({
                     folder: target.folder,
-                    crate: this.crate
+                    crate: this.crate,
                 });
                 break;
         }
@@ -30,7 +30,7 @@ export default class CrateTool {
             switch (target.type) {
                 case "local":
                     crate = await readFromLocalFolder({
-                        folder: target.folder
+                        folder: target.folder,
                     });
                     break;
             }
@@ -48,11 +48,11 @@ export default class CrateTool {
     loadCrate({ crate }) {
         // remove metadata element
         let data = crate["@graph"];
-        data = data.filter(e => e["@id"] !== "/ro-crate-metadata.jsonld");
+        data = data.filter((e) => e["@id"] !== "/ro-crate-metadata.jsonld");
         const elementsById = groupBy(data, "@id");
         const rootDatasetUUID = generateId();
         data = mapIdentifiers({ data, rootDatasetUUID });
-        data = data.map(element => {
+        data = data.map((element) => {
             if (element.uuid === rootDatasetUUID)
                 element["@type"] = "RootDataset";
             return element;
@@ -60,7 +60,7 @@ export default class CrateTool {
         return data;
 
         function mapIdentifiers({ data, rootDatasetUUID }) {
-            return data.map(element => {
+            return data.map((element) => {
                 element = mapIdToUuid(element);
                 return walkObject(element);
             });
@@ -78,7 +78,7 @@ export default class CrateTool {
             }
 
             function walkArray(obj) {
-                return obj.map(element => {
+                return obj.map((element) => {
                     mapIdToUuid(element);
                     if (isPlainObject(element)) {
                         return walkObject(element);
@@ -109,7 +109,7 @@ export default class CrateTool {
         const rootDatasetUUID = this.getRootDataset({ data }).uuid;
         data = mapIdentifiers({ data, rootDatasetUUID });
 
-        let elements = data.filter(d => d["@type"] !== "RootDataset");
+        let elements = data.filter((d) => d["@type"] !== "RootDataset");
         let rootDataset = this.getRootDataset({ data });
         rootDataset["@type"] = "Dataset";
 
@@ -117,34 +117,37 @@ export default class CrateTool {
         graph = [...graph, rootDataset, ...elements];
         this.crate = {
             "@context": "https://w3id.org/ro/crate/1.0/context",
-            "@graph": graph
+            "@graph": graph,
         };
 
         function mapIdentifiers({ data, rootDatasetUUID }) {
-            return data.map(element => {
+            let level = 0;
+            return data.map((element) => {
                 element = mapUuidToId(element);
-                return walkObject(element);
+                return walkObject(element, level);
             });
 
-            function walkObject(obj) {
+            function walkObject(obj, level) {
                 obj = mapUuidToId(obj);
                 for (let prop of Object.keys(obj)) {
                     if (isPlainObject(obj[prop])) {
-                        obj[prop] = walkObject(obj[prop]);
+                        if (level !== 0) delete obj["@type"];
+                        obj[prop] = walkObject(obj[prop], (level += 1));
                     } else if (isArray(obj[prop])) {
-                        obj[prop] = walkArray(obj[prop]);
+                        obj[prop] = walkArray(obj[prop], (level += 1));
                     }
                 }
                 return obj;
             }
 
-            function walkArray(obj) {
-                return obj.map(element => {
+            function walkArray(obj, level) {
+                return obj.map((element) => {
                     mapUuidToId(element);
                     if (isPlainObject(element)) {
-                        return walkObject(element);
+                        if (level !== 0) delete element["@type"];
+                        return walkObject(element, (level += 1));
                     } else if (isArray(element)) {
-                        return walkArray(element);
+                        return walkArray(element, (level += 1));
                     } else {
                         return element;
                     }
@@ -167,18 +170,18 @@ export default class CrateTool {
             "@id": "/ro-crate-metadata.jsonld",
             "@type": "CreativeWork",
             about: {
-                "@id": "./"
+                "@id": "./",
             },
             identifier: "ro-crate-metadata.jsonld",
             conformsTo: { "@id": "https://w3id.org/ro/crate/1.0" },
             license: {
-                "@id": "https://creativecommons.org/licenses/by-sa/3.0"
-            }
+                "@id": "https://creativecommons.org/licenses/by-sa/3.0",
+            },
         };
     }
 
     getRootDataset({ data }) {
-        let rootDataset = data.filter(d => d["@type"] === "RootDataset");
+        let rootDataset = data.filter((d) => d["@type"] === "RootDataset");
         if (rootDataset.length !== 1) {
             throw new Error(
                 `You must provide a graph with only one 'RootDataset'`
@@ -189,7 +192,7 @@ export default class CrateTool {
         rootDataset = {
             ...rootDataset,
             "@id": "./",
-            "@type": "Dataset"
+            "@type": "Dataset",
         };
 
         return rootDataset;
@@ -197,8 +200,8 @@ export default class CrateTool {
 
     getRootDatasetFromCrate({ data }) {
         let rootDataset = data
-            .filter(d => d["@type"] === "Dataset")
-            .filter(d => d["@id"] === "./");
+            .filter((d) => d["@type"] === "Dataset")
+            .filter((d) => d["@id"] === "./");
         if (rootDataset.length !== 1) {
             throw new Error(
                 `The crate doesn't seem to be right. Expecting one root dataset. Found ${rootDataset.length}`

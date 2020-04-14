@@ -9,11 +9,11 @@ const graph = [
         name: "dataset",
         author: [
             { uuid: "#2", "@type": "Person" },
-            { uuid: "#3", "@type": "Person" }
+            { uuid: "#3", "@type": "Person" },
         ],
         elephants: [{ uuid: "/large" }],
         languages: ["english", "french"],
-        participant: [{ uuid: "#3" }, { uuid: "#4" }]
+        participant: [{ uuid: "#3" }, { uuid: "#4" }],
     },
     {
         "@type": "Person",
@@ -23,34 +23,34 @@ const graph = [
                 {
                     uuid: "#1",
                     something: {
-                        uuid: "#4"
-                    }
-                }
-            ]
-        }
+                        uuid: "#4",
+                    },
+                },
+            ],
+        },
     },
     {
         "@type": "Person",
         uuid: "#3",
         "@reverse": {
             author: [{ uuid: "#1" }],
-            participant: [{ uuid: "#1" }]
-        }
+            participant: [{ uuid: "#1" }],
+        },
     },
     {
         "@type": "Person",
         uuid: "#4",
         "@reverse": {
-            participant: [{ uuid: "#1" }]
-        }
+            participant: [{ uuid: "#1" }],
+        },
     },
     {
         "@type": "Elephant",
         uuid: "/large",
         "@reverse": {
-            elephants: [{ uuid: "#1" }]
-        }
-    }
+            elephants: [{ uuid: "#1" }],
+        },
+    },
 ];
 
 test("it should be able to find the root dataset", () => {
@@ -67,11 +67,11 @@ test("it should not be able to find the root dataset", () => {
             uuid: "#1",
             name: "dataset",
             author: {
-                uuid: "#2"
+                uuid: "#2",
             },
             elephants: [{ "@id": "/large" }],
-            participant: [{ uuid: "#3" }, { uuid: "#4" }]
-        }
+            participant: [{ uuid: "#3" }, { uuid: "#4" }],
+        },
     ];
 
     const crateTool = new CrateTool();
@@ -91,7 +91,7 @@ test("it should be able to create an ro-crate", () => {
     let ensureNoUUID = ensureNot("uuid");
     let ensureATID = ensure("@id");
     let rootDataset = crateTool.getRootDatasetFromCrate({
-        data: data["@graph"]
+        data: data["@graph"],
     });
     walkObject({ obj: rootDataset, tests: [ensureNoUUID, ensureATID] });
 });
@@ -104,37 +104,37 @@ test("it should be able to load a crate", () => {
                 "@id": "/ro-crate-metadata.jsonld",
                 "@type": "CreativeWork",
                 about: {
-                    "@id": "./"
+                    "@id": "./",
                 },
                 identifier: "ro-crate-metadata.jsonld",
                 conformsTo: {
-                    "@id": "https://w3id.org/ro/crate/1.0"
+                    "@id": "https://w3id.org/ro/crate/1.0",
                 },
                 license: {
-                    "@id": "https://creativecommons.org/licenses/by-sa/3.0"
-                }
+                    "@id": "https://creativecommons.org/licenses/by-sa/3.0",
+                },
             },
             {
                 "@type": "Dataset",
                 name: "dataset",
                 author: {
-                    "@id": "#2"
+                    "@id": "#2",
                 },
                 elephants: [
                     {
-                        "@id": "/large"
-                    }
+                        "@id": "/large",
+                    },
                 ],
                 languages: ["english", "french"],
                 participant: [
                     {
-                        "@id": "#3"
+                        "@id": "#3",
                     },
                     {
-                        "@id": "#4"
-                    }
+                        "@id": "#4",
+                    },
                 ],
-                "@id": "./"
+                "@id": "./",
             },
             {
                 "@type": "Person",
@@ -142,10 +142,10 @@ test("it should be able to load a crate", () => {
                 "@reverse": {
                     author: [
                         {
-                            "@id": "./"
-                        }
-                    ]
-                }
+                            "@id": "./",
+                        },
+                    ],
+                },
             },
             {
                 "@type": "Person",
@@ -153,10 +153,10 @@ test("it should be able to load a crate", () => {
                 "@reverse": {
                     participant: [
                         {
-                            "@id": "./"
-                        }
-                    ]
-                }
+                            "@id": "./",
+                        },
+                    ],
+                },
             },
             {
                 "@type": "Person",
@@ -164,10 +164,10 @@ test("it should be able to load a crate", () => {
                 "@reverse": {
                     participant: [
                         {
-                            "@id": "./"
-                        }
-                    ]
-                }
+                            "@id": "./",
+                        },
+                    ],
+                },
             },
             {
                 "@type": "Elephant",
@@ -175,12 +175,12 @@ test("it should be able to load a crate", () => {
                 "@reverse": {
                     author: [
                         {
-                            "@id": "./"
-                        }
-                    ]
-                }
-            }
-        ]
+                            "@id": "./",
+                        },
+                    ],
+                },
+            },
+        ],
     };
     const crateTool = new CrateTool();
     const data = crateTool.loadCrate({ crate });
@@ -188,16 +188,16 @@ test("it should be able to load a crate", () => {
 
     let ensureUUID = ensure("uuid");
     let ensureNotATID = ensureNot("@id");
-    let rootDataset = data.filter(d => d["@type"] === "RootDataset")[0];
+    let rootDataset = data.filter((d) => d["@type"] === "RootDataset")[0];
     walkObject({ obj: rootDataset, tests: [ensureUUID, ensureNotATID] });
 });
 
 function ensureNot(property) {
-    return element => expect(element).not.toHaveProperty(property);
+    return (element) => expect(element).not.toHaveProperty(property);
 }
 
 function ensure(property) {
-    return element => expect(element).toHaveProperty(property);
+    return (element) => expect(element).toHaveProperty(property);
 }
 
 function walkObject({ obj, tests }) {
@@ -207,13 +207,13 @@ function walkObject({ obj, tests }) {
         } else if (isArray(obj[prop])) {
             walkArray({ arr: obj[prop], tests });
         } else {
-            tests.forEach(test => test(obj));
+            tests.forEach((test) => test(obj));
         }
     }
 }
 
 function walkArray({ arr, tests }) {
-    arr.forEach(entry => {
+    arr.forEach((entry) => {
         if (isPlainObject(entry)) {
             walkObject({ obj: entry, tests });
         } else if (isArray(entry)) {
