@@ -33,26 +33,23 @@
                     >
                     </el-alert>
                 </div>
+
                 <div class="flex flex-col my-4">
+                    <div class="flex flex-row">
+                        <el-checkbox v-model="bagItBag" label="bag">
+                            BagIt Bag
+                        </el-checkbox>
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        Should a BagIt bag be created?
+                    </div>
+                </div>
+                <div class="flex flex-col my-4" v-if="archiveName">
                     <div>
-                        <!-- <el-input :value="archiveName" :disabled="true"></el-input> -->
                         {{ archiveName }}
                     </div>
                     <div class="text-sm text-gray-600">
                         The name of the archive that will be created.
-                    </div>
-                </div>
-                <div class="flex flex-col my-4">
-                    <div class="flex flex-row">
-                        <el-radio v-model="exportType" label="zip"
-                            >Zip Archive</el-radio
-                        >
-                        <el-radio v-model="exportType" label="bag"
-                            >BagIt Bag</el-radio
-                        >
-                    </div>
-                    <div class="text-sm text-gray-600">
-                        Please specify the type of archive to produce.
                     </div>
                 </div>
                 <div class="flex flex-col">
@@ -64,7 +61,7 @@
                             @click="createArchive"
                             type="success"
                             :disabled="exporting"
-                            v-if="folder && archiveName"
+                            v-if="folder"
                             >Create Archive at {{ folder }}</el-button
                         >
                     </div>
@@ -113,8 +110,8 @@ export default {
     data() {
         return {
             folder: undefined,
-            exportType: "zip",
-            archiveName: `${format(new Date(), "yyyyMMddHHMM")}-ro-crate`,
+            bagItBag: false,
+            archiveName: undefined,
             exported: false,
             exporting: false,
             progressPercentage: 0,
@@ -144,6 +141,11 @@ export default {
             ) {
                 this.folder = folder;
                 this.error = undefined;
+                const basename = path.basename(this.folder);
+                this.archiveName = `${format(
+                    new Date(),
+                    "yyyyMMddHHMM"
+                )}-${basename}.ro-crate`;
             } else {
                 this.error = `You can't export the archive to the path that you're archiving.`;
                 this.folder = undefined;
@@ -154,20 +156,19 @@ export default {
                 source: this.$store.state.target.folder,
                 target: this.folder,
             });
-            if (this.exportType === "zip") {
-                this.exporting = true;
-                await exporter.exportZip({
-                    zipFileName: `${this.archiveName}.zip`,
-                });
-                this.exported = true;
-                setTimeout(() => {
-                    this.exported = false;
-                    this.exporting = false;
-                    this.aborted = false;
-                    this.folder = undefined;
-                    this.progressPercentage = 0;
-                }, 1500);
-            }
+
+            this.exporting = true;
+            await exporter.exportZip({
+                zipFileName: `${this.archiveName}.zip`,
+            });
+            this.exported = true;
+            setTimeout(() => {
+                this.exported = false;
+                this.exporting = false;
+                this.aborted = false;
+                this.folder = undefined;
+                this.progressPercentage = 0;
+            }, 1500);
         },
         cancelExport() {
             EventBus.$emit("abort");
@@ -175,7 +176,7 @@ export default {
         },
         reportProgress(progress) {
             this.progressPercentage = round(
-                (progress.entries.processed / progress.entries.total) * 100
+                (progress.fs.processedBytes / progress.fs.totalBytes) * 100
             );
         },
     },
