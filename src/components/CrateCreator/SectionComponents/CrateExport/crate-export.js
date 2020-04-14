@@ -5,7 +5,7 @@ import path from "path";
 import EventBus from "./eventbus";
 import { Preview, HtmlFile, Defaults } from "ro-crate-html-js";
 import { ROCrate } from "ro-crate";
-import fs from "fs-extra";
+import Bag from "./bagit";
 
 export default class CrateExporter {
     constructor({ source, target }) {
@@ -13,7 +13,7 @@ export default class CrateExporter {
         this.target = target;
     }
 
-    async exportZip({ zipFileName }) {
+    async export({ zipFileName, bagIt }) {
         if (
             !isAcceptableTarget({
                 source: this.source,
@@ -26,6 +26,11 @@ export default class CrateExporter {
         }
 
         await this.renderCrateHTML();
+
+        let bagFiles = [];
+        if (bagIt) {
+            bagFiles = await this.bagIt();
+        }
 
         // create a file to stream archive data to.
         const output = await createWriteStream(
@@ -48,7 +53,10 @@ export default class CrateExporter {
             // This event is fired when the data source is drained no matter what was the data source.
             // It is not part of this library but rather from the NodeJS Stream API.
             // @see: https://nodejs.org/api/stream.html#stream_event_end
-            output.on("end", function() {
+            output.on("end", async function() {
+                for (let file of bagFiles) {
+                    await remove(file);
+                }
                 return resolve();
             });
 
@@ -70,12 +78,27 @@ export default class CrateExporter {
             archive.pipe(output);
 
             // append files from a sub-directory, putting its contents at the root of archive
-            archive.directory(this.source, false);
+            if (bagIt) {
+                archive.directory(this.source, "data");
+                for (let file of bagFiles) {
+                    archive.file(file, { name: path.basename(file) });
+                }
+            } else {
+                archive.directory(this.source, false);
+            }
 
             // finalize the archive (ie we are done appending files but streams have to finish yet)
             // 'close', 'end' or 'finish' may be fired right after calling this method so register to them beforehand
             archive.finalize();
         });
+    }
+
+    async bagIt() {
+        const crate = new ROCrate(
+            await readJSON(path.join(this.source, Defaults.roCrateMetadataID))
+        );
+        const bag = new Bag({ source: this.source, crate });
+        return await bag.bagIt();
     }
 
     async renderCrateHTML() {

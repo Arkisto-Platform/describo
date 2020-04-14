@@ -35,7 +35,7 @@ test("it should be able to create a zip export", async () => {
     await fs.writeJSON(path.join(source, "ro-crate-metadata.jsonld"), crate);
 
     const exporter = new CrateExporter({ source, target });
-    await exporter.exportZip({ zipFileName });
+    await exporter.export({ zipFileName });
     let stat = await fs.stat(path.join(target, zipFileName));
     expect(stat.isFile()).toBeTrue;
     stat = await fs.stat(path.join(source, "ro-crate-preview.html"));
@@ -54,10 +54,23 @@ test("it should not be able to create a zip export as a child of the zipped fold
 
     const exporter = new CrateExporter({ source, target });
     try {
-        await exporter.exportZip({ zipFileName });
+        await exporter.export({ zipFileName });
     } catch (error) {
         expect(error.message).toBe(
             `You can't export the archive to the path that you're archiving.`
         );
     }
+});
+
+test("it should be able to create a bagged export", async () => {
+    const source = __dirname;
+    const target = path.join(__dirname, "..");
+    const zipFileName = "example.zip";
+    await fs.writeJSON(path.join(source, "ro-crate-metadata.jsonld"), crate);
+
+    const exporter = new CrateExporter({ source, target });
+    await exporter.export({ zipFileName, bagIt: true });
+    await fs.remove(path.join(target, zipFileName));
+    await fs.remove(path.join(source, "ro-crate-metadata.jsonld"));
+    await fs.remove(path.join(source, "ro-crate-preview.html"));
 });

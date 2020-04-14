@@ -10,7 +10,8 @@
             <div v-if="localCrateFolder">
                 <div class="text-lg">Export my RO-Crate</div>
                 <div class="mt-6 mb-4">
-                    A crate can be exported as a Zip archive or a BagIt Bag.
+                    A crate can be exported as a plain Zip archive or a BagIt
+                    Bag.
                 </div>
                 <div class="flex flex-col my-4">
                     <div>
@@ -36,8 +37,8 @@
 
                 <div class="flex flex-col my-4">
                     <div class="flex flex-row">
-                        <el-checkbox v-model="bagItBag" label="bag">
-                            BagIt Bag
+                        <el-checkbox v-model="bagIt" label="bag">
+                            BagIt
                         </el-checkbox>
                     </div>
                     <div class="text-sm text-gray-600">
@@ -110,7 +111,7 @@ export default {
     data() {
         return {
             folder: undefined,
-            bagItBag: false,
+            bagIt: false,
             archiveName: undefined,
             exported: false,
             exporting: false,
@@ -159,8 +160,9 @@ export default {
             });
 
             this.exporting = true;
-            await exporter.exportZip({
+            await exporter.export({
                 zipFileName: `${this.archiveName}.zip`,
+                bagIt: this.bagIt,
             });
             this.exported = true;
             setTimeout(() => {
