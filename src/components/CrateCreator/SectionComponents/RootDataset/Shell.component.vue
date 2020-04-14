@@ -2,12 +2,20 @@
     <div class="flex flex-col">
         <div class="w-full lg:w-1/2 border-b-2 pb-2">
             <div class="flex flex-row">
-                <div v-show="saving" class="text-orange-600 pt-2">
+                <div v-show="saving" class="text-orange-600 pt-2 mr-10">
                     <i class="fas fa-save"></i> saving the crate
                 </div>
-                <div v-show="saved" class="text-green-600 pt-2">
+                <div v-show="saved" class="text-green-600 pt-2 mr-10">
                     <i class="fas fa-check"></i> saved
                 </div>
+                <div v-show="!valid" class="text-red-600 pt-2">
+                    The crate is not yet valid. Ensure you fill in all of the
+                    required properties.
+                </div>
+                <div v-show="valid" class="text-green-600 pt-2">
+                    The crate is valid.
+                </div>
+
                 <el-alert
                     v-if="error"
                     :title="error.title"
@@ -39,13 +47,14 @@ const crateTool = new CrateTool();
 export default {
     components: {
         RenderEntryComponent,
-        RenderItemComponent
+        RenderItemComponent,
     },
     data() {
         return {
             saved: false,
             saving: false,
-            error: undefined
+            error: undefined,
+            valid: true,
         };
     },
     computed: {
@@ -55,7 +64,7 @@ export default {
         },
         profileInputs: function() {
             return this.$store.state.profileInputs;
-        }
+        },
     },
     methods: {
         async writeCrateToDisk() {
@@ -63,9 +72,13 @@ export default {
             this.saved = false;
             this.saving = true;
             try {
+                this.valid = crateTool.verifyCrate({
+                    data: this.$store.state.graph,
+                    inputs: this.$store.state.profileInputs,
+                });
                 crateTool.assembleCrate({ data: this.$store.state.graph });
                 await crateTool.writeCrate({
-                    target: this.$store.state.target
+                    target: this.$store.state.target,
                 });
                 setTimeout(() => {
                     this.saving = false;
@@ -74,13 +87,13 @@ export default {
             } catch (error) {
                 this.error = {
                     title: "There was a problem saving the crate.",
-                    description: error.message
+                    description: error.message,
                 };
                 this.saving = false;
                 this.saved = false;
             }
-        }
-    }
+        },
+    },
 };
 </script>
 

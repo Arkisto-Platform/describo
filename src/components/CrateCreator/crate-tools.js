@@ -1,4 +1,11 @@
-import { cloneDeep, groupBy, isPlainObject, isArray, isString } from "lodash";
+import {
+    cloneDeep,
+    groupBy,
+    isPlainObject,
+    isArray,
+    isString,
+    isEmpty,
+} from "lodash";
 import { writeFile, readJSON } from "fs-extra";
 import { generateId } from "components/CrateCreator/tools";
 import path from "path";
@@ -7,6 +14,19 @@ const roCrateMetadataFile = "ro-crate-metadata.jsonld";
 export default class CrateTool {
     constructor() {
         this.crate = undefined;
+    }
+
+    verifyCrate({ data, inputs }) {
+        const rootDataset = this.getRootDataset({ data });
+        let valid = [];
+        for (let input of inputs) {
+            const { property, required } = input;
+            if (!required in input || !required) continue;
+            if (!rootDataset[property] || isEmpty(rootDataset[property]))
+                valid.push(false);
+            valid.push(true);
+        }
+        return valid.includes(false) ? false : true;
     }
 
     async writeCrate({ target }) {

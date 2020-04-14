@@ -1,6 +1,14 @@
 <template>
-    <div class="flex flex-col mt-1 mb-4 pl-2 border-l-2 border-gray-400">
-        <div class="my-auto text-left text-sm pr-2">{{ label }}</div>
+    <div
+        class="flex flex-col my-1 pl-2 border-l-2 border-gray-400 py-2"
+        :class="{ 'border-orange-600': template.required }"
+    >
+        <div class="my-auto text-left text-sm pr-2">
+            <span v-if="template.required" class="text-orange-600"
+                ><i class="fas fa-asterisk"></i
+            ></span>
+            {{ label }}
+        </div>
         <div class="my-2" v-if="enableAdd">
             <add-control :template="template" @add="add" />
         </div>

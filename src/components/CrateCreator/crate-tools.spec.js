@@ -1,6 +1,6 @@
 import "regenerator-runtime/runtime";
 import CrateTool from "./crate-tools";
-import { isPlainObject, isArray } from "lodash";
+import { cloneDeep, isPlainObject, isArray } from "lodash";
 
 const graph = [
     {
@@ -190,6 +190,40 @@ test("it should be able to load a crate", () => {
     let ensureNotATID = ensureNot("@id");
     let rootDataset = data.filter((d) => d["@type"] === "RootDataset")[0];
     walkObject({ obj: rootDataset, tests: [ensureUUID, ensureNotATID] });
+});
+
+test("it should be able to verify a crate has all the requried data", () => {
+    const crateTool = new CrateTool();
+    let data, inputs, valid;
+
+    inputs = [
+        { property: "name", required: true },
+        { property: "elephants" },
+        { property: "author", required: true },
+    ];
+    valid = crateTool.verifyCrate({ data: graph, inputs });
+    expect(valid).toBeTruthy;
+
+    inputs = [{ property: "jumbo", required: true }];
+    valid = crateTool.verifyCrate({ data: graph, inputs });
+    expect(valid).toBeFalsy;
+
+    inputs = [{ property: "participant", required: true }];
+    data = cloneDeep(graph);
+    delete data[0].participant;
+    valid = crateTool.verifyCrate({ data, inputs });
+    expect(valid).toBeFalsy;
+
+    inputs = [{ property: "participant", required: true }];
+    data = cloneDeep(graph);
+    data[0].participant = {};
+    valid = crateTool.verifyCrate({ data, inputs });
+    expect(valid).toBeFalsy;
+
+    data = cloneDeep(graph);
+    data[0].participant = { "@id": "somewhere" };
+    valid = crateTool.verifyCrate({ data, inputs });
+    expect(valid).toBeTruthy;
 });
 
 function ensureNot(property) {

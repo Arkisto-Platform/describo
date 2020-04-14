@@ -45,6 +45,7 @@ export default {
 
                 // can there be multiple authors?
                 multiple: true,
+                required: true,
             },
             {
                 property: "publisher",

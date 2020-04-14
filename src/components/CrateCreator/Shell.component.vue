@@ -1,7 +1,13 @@
 <template>
     <div class="flex flex-col">
         <div v-if="error">
-            <el-alert :title="error" type="error" effect="dark" :center="true" :closable="false"></el-alert>
+            <el-alert
+                :title="error"
+                type="error"
+                effect="dark"
+                :center="true"
+                :closable="false"
+            ></el-alert>
         </div>
 
         <div class="flex flex-col" v-if="!error">
@@ -11,7 +17,10 @@
                     :profile="profile"
                     @load-selection="loadSelection"
                 />
-                <div class="flex flex-row w-full px-4" v-if="!showRootDatasetSelector">
+                <div
+                    class="flex flex-row w-full px-4"
+                    v-if="!showRootDatasetSelector"
+                >
                     <el-button @click="dataInspector = true" type="primary">
                         <i class="fas fa-eye"></i> inspect data
                     </el-button>
@@ -22,8 +31,14 @@
                     </el-button>
                 </div>
             </div>
-            <data-inspector-component :drawer="dataInspector" @close="dataInspector = false" />
-            <crate-export-component :drawer="crateExport" @close="crateExport = false" />
+            <data-inspector-component
+                :drawer="dataInspector"
+                @close="dataInspector = false"
+            />
+            <crate-export-component
+                :drawer="crateExport"
+                @close="crateExport = false"
+            />
             <el-tabs
                 v-model="activeTab"
                 tab-position="left"
@@ -41,7 +56,10 @@
                     <crate-parts-component v-if="activeTab === 'parts'" />
                 </el-tab-pane>
                 <el-tab-pane label="People" name="people">
-                    <type-management-component type="Person" v-if="activeTab === 'people'" />
+                    <type-management-component
+                        type="Person"
+                        v-if="activeTab === 'people'"
+                    />
                 </el-tab-pane>
                 <el-tab-pane label="Organisations" name="organisations">
                     <type-management-component
@@ -71,7 +89,6 @@ import TypeManagementComponent from "./SectionComponents/TypeManagement/Shell.co
 import DataInspectorComponent from "./SectionComponents/DataInspector.component.vue";
 import CrateExportComponent from "./SectionComponents/CrateExport/CrateExport.component.vue";
 import CrateTool from "components/CrateCreator/crate-tools";
-const crateTool = new CrateTool();
 
 export default {
     components: {
@@ -80,7 +97,7 @@ export default {
         TypeManagementComponent,
         RootDatasetSelectorComponent,
         DataInspectorComponent,
-        CrateExportComponent
+        CrateExportComponent,
     },
     data() {
         return {
@@ -90,7 +107,7 @@ export default {
             showRootDatasetSelector: false,
             activeTab: "crate",
             ready: false,
-            error: undefined
+            error: undefined,
         };
     },
     beforeMount() {
@@ -100,7 +117,7 @@ export default {
         async loadProfile() {
             this.$store.commit("reset");
             const profileLoader = new ProfileLoader({
-                name: this.$store.state.profile
+                name: this.$store.state.profile,
             });
             const { profile } = await profileLoader.load();
             let { valid, errors } = profileLoader.verify();
@@ -125,17 +142,18 @@ export default {
             this.$store.commit("saveProfileInputs", profile.inputs);
 
             try {
+                const crateTool = new CrateTool();
                 const crate = await crateTool.readCrate({
-                    target: this.$store.state.target
+                    target: this.$store.state.target,
                 });
                 if (crate) {
-                    crate.forEach(element => {
+                    crate.forEach((element) => {
                         this.$store.commit("saveToGraph", element);
                     });
                 } else {
                     let rootDataset = {
                         uuid: generateId(),
-                        "@type": "RootDataset"
+                        "@type": "RootDataset",
                     };
                     this.$store.commit("saveToGraph", rootDataset);
                 }
@@ -144,8 +162,8 @@ export default {
             } catch (error) {
                 this.error = error.message;
             }
-        }
-    }
+        },
+    },
 };
 </script>
 
