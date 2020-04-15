@@ -45,22 +45,24 @@
                     </el-tab-pane>
                 </el-tabs>
                 <div class="flex flex-col p-4" v-if="browseTarget">
-                    <div class="text-lg">Describo Target</div>
+                    <div class="flex flex-row">
+                        <div class="text-lg pt-2">Describo Target</div>
+                        <div class="flex-grow"></div>
+                        <div>
+                            <el-button
+                                type="success"
+                                @click="setTarget"
+                                :disabled="!this.browseTarget"
+                            >
+                                describe this target
+                                <i class="fas fa-long-arrow-alt-right"></i
+                            ></el-button>
+                        </div>
+                    </div>
                     <file-tree-component
                         :browse-target="browseTarget"
                         class="style-tree-view overflow-scroll"
                     />
-                    <div class="flex flex-row">
-                        <div class="flex-grow"></div>
-                        <el-button
-                            type="success"
-                            @click="setTarget"
-                            :disabled="!this.browseTarget"
-                        >
-                            describe this target
-                            <i class="fas fa-long-arrow-alt-right"></i
-                        ></el-button>
-                    </div>
                 </div>
             </div>
         </div>
