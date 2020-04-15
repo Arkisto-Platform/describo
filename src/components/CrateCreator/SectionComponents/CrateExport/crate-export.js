@@ -83,6 +83,7 @@ export default class CrateExporter {
                 for (let file of bagFiles) {
                     archive.file(file, { name: path.basename(file) });
                 }
+                archive.symlink("index.html", "data/ro-crate-preview.html");
             } else {
                 archive.directory(this.source, false);
             }
