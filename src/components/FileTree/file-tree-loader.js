@@ -1,7 +1,14 @@
 const nodePath = require("path");
 const { platform } = require("os");
 const { spawn } = require("child_process");
-const { mapKeys, camelCase } = require("lodash");
+const { mapKeys, camelCase, compact } = require("lodash");
+
+const filesToExclude = [
+    ".DS_Store",
+    "ro-crate-metadata.json",
+    "ro-crate-metadata.jsonld",
+    "ro-crate-preview.html",
+];
 
 export default class FileTreeLoader {
     constructor({ target }) {
@@ -17,7 +24,7 @@ export default class FileTreeLoader {
             let content = "";
             const s = spawn(rclone, ["lsjson", path]);
 
-            s.stdout.on("data", function (msg) {
+            s.stdout.on("data", function(msg) {
                 content += msg.toString();
             });
             s.on("close", (code) => {
@@ -30,13 +37,16 @@ export default class FileTreeLoader {
         if (!content) return {};
         return {
             path,
-            children: content.map((child) => {
-                child = mapKeys(child, (val, key) => camelCase(key));
-                child.parent = path === root ? "/" : path.replace(root, "");
-                child.isLeaf = !child.isDir;
-                child.uuid = nodePath.join(child.parent, child.name);
-                return child;
-            }),
+            children: compact(
+                content.map((child) => {
+                    if (filesToExclude.includes(child.Path)) return undefined;
+                    child = mapKeys(child, (val, key) => camelCase(key));
+                    child.parent = path === root ? "/" : path.replace(root, "");
+                    child.isLeaf = !child.isDir;
+                    child.uuid = nodePath.join(child.parent, child.name);
+                    return child;
+                })
+            ),
         };
     }
 
