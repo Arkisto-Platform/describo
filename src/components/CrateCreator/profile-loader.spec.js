@@ -14,16 +14,16 @@ test("profile verification", async () => {
         Dataset: {
             metadata: {
                 about: "about",
-                version: 1
+                version: 1,
             },
             inputs: [
                 {
                     property: "name",
                     label: "Name",
-                    "@type": "Text"
-                }
-            ]
-        }
+                    "@type": "Text",
+                },
+            ],
+        },
     };
     profileLoader.profile = profile;
     let profileValidity = profileLoader.verify();
@@ -34,22 +34,22 @@ test("profile verification", async () => {
             metadata: {
                 about: "about",
                 version: 1,
-                something: ""
+                something: "",
             },
             inputs: [
                 {
                     camels: "camels",
                     label: "Name",
-                    "@type": "Camels"
-                }
-            ]
-        }
+                    "@type": "Camels",
+                },
+            ],
+        },
     };
 
     profileLoader.profile = profile;
     profileValidity = profileLoader.verify();
     expect(profileValidity.valid).toBeFalse;
-    expect(profileValidity.errors.length).toBe(3);
+    expect(profileValidity.errors.length).toBe(2);
 
     profileLoader.profile = (await profileLoader.load()).profile;
     profileValidity = profileLoader.verify();
