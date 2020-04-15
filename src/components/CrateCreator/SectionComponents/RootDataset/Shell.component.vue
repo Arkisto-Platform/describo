@@ -2,17 +2,17 @@
     <div class="flex flex-col">
         <div class="w-full lg:w-1/2 border-b-2 pb-2">
             <div class="flex flex-row">
-                <div v-show="saving" class="text-orange-600 pt-2 mr-10">
+                <div v-show="saving" class="text-orange-600 mr-10">
                     <i class="fas fa-save"></i> saving the crate
                 </div>
-                <div v-show="saved" class="text-green-600 pt-2 mr-10">
+                <div v-show="saved" class="text-green-600 mr-10">
                     <i class="fas fa-check"></i> saved
                 </div>
-                <div v-show="!valid" class="text-red-600 pt-2">
+                <div v-show="!valid" class="text-red-600">
                     The crate is not yet valid. Ensure you fill in all of the
                     required properties.
                 </div>
-                <div v-show="valid" class="text-green-600 pt-2">
+                <div v-show="valid" class="text-green-600">
                     The crate is valid.
                 </div>
 
@@ -27,12 +27,14 @@
                 </el-alert>
             </div>
         </div>
-        <div v-for="(template, idx) of profileInputs" :key="idx">
-            <render-entry-component
-                :template="template"
-                :reference="dataset.uuid"
-                :data="dataset[template.property]"
-            />
+        <div class="overflow-scroll set-input-section-height">
+            <div v-for="(template, idx) of profileInputs" :key="idx">
+                <render-entry-component
+                    :template="template"
+                    :reference="dataset.uuid"
+                    :data="dataset[template.property]"
+                />
+            </div>
         </div>
     </div>
 </template>
@@ -98,6 +100,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.set-input-section-height {
+    height: calc(100vh - 320px);
+}
 .style-controls-row {
     width: 700px;
 }

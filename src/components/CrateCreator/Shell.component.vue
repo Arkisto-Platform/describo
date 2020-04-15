@@ -21,11 +21,19 @@
                     class="flex flex-row w-full px-4"
                     v-if="!showRootDatasetSelector"
                 >
-                    <el-button @click="dataInspector = true" type="primary">
-                        <i class="fas fa-eye"></i> inspect data
+                    <el-button
+                        @click="dataInspector = true"
+                        type="primary"
+                        size="small"
+                    >
+                        <i class="fas fa-eye"></i> inspect the data
                     </el-button>
                     <div class="flex-grow"></div>
-                    <el-button @click="crateExport = true" type="success">
+                    <el-button
+                        @click="crateExport = true"
+                        type="success"
+                        size="small"
+                    >
                         <i class="fas fa-upload"></i>
                         export crate
                     </el-button>
@@ -48,7 +56,7 @@
                 <el-tab-pane
                     label="RO-Crate Root Dataset"
                     name="crate"
-                    class="overflow-scroll set-tab-height m-2"
+                    class="m-2"
                 >
                     <root-dataset-component v-if="activeTab === 'crate'" />
                 </el-tab-pane>
@@ -169,6 +177,6 @@ export default {
 
 <style lang="scss" scoped>
 .set-tab-height {
-    height: calc(100vh - 280px);
+    height: calc(100vh - 270px);
 }
 </style>
