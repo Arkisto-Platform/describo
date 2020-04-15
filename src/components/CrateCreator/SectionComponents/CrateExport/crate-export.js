@@ -1,11 +1,12 @@
 // require modules
-import { createWriteStream, readJSON, writeFile } from "fs-extra";
+import { createWriteStream, readJSON, writeFile, pathExists } from "fs-extra";
 import archiver from "archiver";
 import path from "path";
 import EventBus from "./eventbus";
 import { Preview, HtmlFile, Defaults } from "ro-crate-html-js";
 import { ROCrate } from "ro-crate";
 import Bag from "./bagit";
+const roCrateMetadataFile = "ro-crate-metadata";
 
 export default class CrateExporter {
     constructor({ source, target }) {
@@ -103,7 +104,17 @@ export default class CrateExporter {
     }
 
     async renderCrateHTML() {
-        const metadataFile = path.join(this.source, Defaults.roCrateMetadataID);
+        const jsonFile = path.join(this.source, `${roCrateMetadataFile}.json`);
+        const jsonldFile = path.join(
+            this.source,
+            `${roCrateMetadataFile}.jsonld`
+        );
+        let metadataFile;
+        if (await pathExists(jsonFile)) {
+            metadataFile = jsonFile;
+        } else if (await pathExists(jsonldFile)) {
+            metadataFile = jsonldFile;
+        }
         const crateScript =
             "https://data.research.uts.edu.au/examples/ro-crate/examples/src/crate.js";
 
