@@ -1,16 +1,16 @@
 <template>
     <div class="flex flex-col">
-        <div
-            class="flex flex-row border-2 border-gray-400 rounded-lg p-4"
-            v-if="target"
-        >
-            <div class="pt-2"><render-selected-target-component /></div>
-            <div class="flex-grow"></div>
+        <div class="flex flex-row border-b-2 border-gray-400 p-1" v-if="target">
             <div>
-                <el-button @click="describeNewFolder" type="danger">
+                <el-button
+                    @click="describeNewFolder"
+                    type="danger"
+                    size="small"
+                >
                     <i class="fas fa-trash-alt"></i>
                 </el-button>
             </div>
+            <render-selected-target-component class="ml-2 pt-1" />
         </div>
         <div class="flex flex-col" v-if="!target">
             <div class="text-lg text-center">
@@ -81,16 +81,16 @@ export default {
         AmazonS3Component,
         GoogleDriveComponent,
         MicrosoftOneDriveComponent,
-        FileTreeComponent
+        FileTreeComponent,
     },
     computed: {
         target: function() {
             return this.$store.state.target;
-        }
+        },
     },
     data() {
         return {
-            browseTarget: undefined
+            browseTarget: undefined,
         };
     },
     methods: {
@@ -106,8 +106,8 @@ export default {
         },
         describeNewFolder() {
             this.$store.commit("setTarget", null);
-        }
-    }
+        },
+    },
 };
 </script>
 

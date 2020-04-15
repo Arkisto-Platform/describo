@@ -169,6 +169,6 @@ export default {
 
 <style lang="scss" scoped>
 .set-tab-height {
-    height: calc(100vh - 400px);
+    height: calc(100vh - 280px);
 }
 </style>

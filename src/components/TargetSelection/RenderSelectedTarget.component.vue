@@ -1,22 +1,22 @@
 <template>
-    <div class="pt-2">Describing {{ target }}</div>
+    <div>Describing: {{ target }}</div>
 </template>
 
 <script>
 export default {
     data() {
         return {
-            target: undefined
+            target: undefined,
         };
     },
     mounted() {
         const target = this.$store.state.target;
         switch (target.type) {
             case "local":
-                this.target = `local folder: ${target.folder}`;
+                this.target = `${target.folder}`;
                 break;
         }
-    }
+    },
 };
 </script>
 

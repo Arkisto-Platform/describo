@@ -1,10 +1,26 @@
 <template>
     <div class="flex flex-col justify-around">
-        <target-selection-component class="border-b-2 pb-4" />
-        <profile-selection-component
-            v-if="target"
-            class="mt-4 border-b-2 pb-4"
-        />
+        <div
+            :class="{
+                'flex flex-row': target && profile,
+                'flex flex-col': !target || !profile,
+            }"
+        >
+            <target-selection-component
+                :class="{
+                    'w-4/5 mx-1': target && profile,
+                    'w-full': !target || !profile,
+                }"
+            />
+            <profile-selection-component
+                v-if="target"
+                :class="{
+                    'w-1/5 mx-1': target && profile,
+                    'w-full mt-2 border-b-2 border-gray-400':
+                        !target || !profile,
+                }"
+            />
+        </div>
         <crate-creator v-if="target && profile" class="mt-4"> </crate-creator>
     </div>
 </template>
@@ -17,7 +33,7 @@ export default {
     components: {
         TargetSelectionComponent,
         ProfileSelectionComponent,
-        CrateCreator
+        CrateCreator,
     },
     computed: {
         target: function() {
@@ -25,11 +41,11 @@ export default {
         },
         profile: function() {
             return this.$store.state.profile;
-        }
+        },
     },
     data() {
         return {};
-    }
+    },
 };
 </script>
 
