@@ -18,26 +18,32 @@ export default {
     props: {
         template: {
             type: Object,
-            required: true
+            required: true,
         },
         reference: {
             type: String,
-            required: true
+            required: true,
         },
         data: {},
         mode: {
-            type: Object
-        }
+            type: Object,
+        },
     },
     data() {
         return {
-            component: undefined
+            component: undefined,
         };
     },
     mounted() {
-        if (this.template["@type"])
-            this.component = `${this.template["@type"]}Component`;
-    }
+        const components = Object.keys(ComponentMixins.components);
+        if (this.template["@type"]) {
+            if (components.includes(`${this.template["@type"]}Component`)) {
+                this.component = `${this.template["@type"]}Component`;
+            } else {
+                this.component = "GenericComponent";
+            }
+        }
+    },
 };
 </script>
 

@@ -28,6 +28,10 @@ export const components = {
         ContactPointComponent: () =>
             import(
                 "components/CrateCreator/CoreEntities/contactPoint/ContactPoint.component.vue"
-            )
-    }
+            ),
+        GenericComponent: () =>
+            import(
+                "components/CrateCreator/CoreEntities/generic/Generic.component.vue"
+            ),
+    },
 };

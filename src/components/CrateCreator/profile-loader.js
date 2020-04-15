@@ -4,7 +4,7 @@ import defaultProfile from "components/profiles/default";
 import { cloneDeep, isString } from "lodash";
 
 const profiles = {
-    default: defaultProfile
+    default: defaultProfile,
 };
 
 export default class ProfileLoader {
@@ -34,7 +34,7 @@ export default class ProfileLoader {
             "required",
             "help",
             "options",
-            "multiple"
+            "multiple",
         ];
         const validTypes = [
             "Value",
@@ -44,7 +44,7 @@ export default class ProfileLoader {
             "Date",
             "Person",
             "Organisation",
-            "ContactPoint"
+            "ContactPoint",
         ];
 
         // for each definition
@@ -54,7 +54,7 @@ export default class ProfileLoader {
             // ensure only two top level keys - ['metadata', 'inputs']
             let response = validateKeys({
                 element: profile,
-                validKeys: ["inputs", "metadata"]
+                validKeys: ["inputs", "metadata"],
             });
             if (response.errors.length) {
                 valid = response.valid;
@@ -64,7 +64,7 @@ export default class ProfileLoader {
             // if metadata key ensure only - ['about', 'version']
             response = validateKeys({
                 element: profile.metadata,
-                validKeys: ["about", "version"]
+                validKeys: ["about", "version"],
             });
             if (response.errors.length) {
                 valid = response.valid;
@@ -75,7 +75,7 @@ export default class ProfileLoader {
             for (let element of profile.inputs) {
                 response = validateKeys({
                     element,
-                    validKeys: validInputProperties
+                    validKeys: validInputProperties,
                 });
                 if (response.errors.length) {
                     valid = response.valid;
@@ -84,26 +84,27 @@ export default class ProfileLoader {
 
                 let types = element["@type"];
                 if (isString(types)) types = [types];
-                for (let type of types) {
-                    if (!validTypes.includes(type)) {
-                        errors.push(
-                            `Input type '${type}' is invalid. Valid types are: ${validTypes}`
-                        );
-                        valid = false;
-                    }
-                }
+                // TODO skip type validation for now
+                // for (let type of types) {
+                //     if (!validTypes.includes(type)) {
+                //         errors.push(
+                //             `Input type '${type}' is invalid. Valid types are: ${validTypes}`
+                //         );
+                //         valid = false;
+                //     }
+                // }
             }
         }
         if (errors.length) {
             console.error(`The profile is invalid and can't be loaded`);
-            errors.forEach(e => console.error(e));
+            errors.forEach((e) => console.error(e));
         }
         return { valid, errors };
 
         function validateKeys({ element, validKeys }) {
             let errors = [];
             let valid = true;
-            Object.keys(element).forEach(key => {
+            Object.keys(element).forEach((key) => {
                 if (!validKeys.includes(key)) {
                     errors.push(
                         `Definition ${JSON.stringify(
