@@ -143,11 +143,11 @@ export default {
             ) {
                 this.folder = folder;
                 this.error = undefined;
-                const basename = path.basename(this.folder);
-                this.archiveName = `${format(
+                const basename = path.basename(this.$store.state.target.folder);
+                this.archiveName = `${basename}-${format(
                     new Date(),
-                    "yyyyMMddHHMM"
-                )}-${basename}.ro-crate`;
+                    "yyyy-MM-dd-HH-MM"
+                )}.ro-crate`;
             } else {
                 this.error = `You can't export the archive to the path that you're archiving.`;
                 this.folder = undefined;
