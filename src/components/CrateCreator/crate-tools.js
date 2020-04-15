@@ -6,10 +6,10 @@ import {
     isString,
     isEmpty,
 } from "lodash";
-import { writeFile, readJSON } from "fs-extra";
+import { writeFile, readJSON, pathExists } from "fs-extra";
 import { generateId } from "components/CrateCreator/tools";
 import path from "path";
-const roCrateMetadataFile = "ro-crate-metadata.jsonld";
+const roCrateMetadataFile = "ro-crate-metadata";
 
 export default class CrateTool {
     constructor() {
@@ -39,7 +39,7 @@ export default class CrateTool {
                 break;
         }
         async function writeToLocalFolder({ folder, crate }) {
-            const file = path.join(folder, roCrateMetadataFile);
+            const file = path.join(folder, `${roCrateMetadataFile}.json`);
             await writeFile(file, JSON.stringify(crate));
         }
     }
@@ -58,10 +58,21 @@ export default class CrateTool {
             return null;
         }
 
-        return this.loadCrate({ crate });
+        return crate ? this.loadCrate({ crate }) : undefined;
         async function readFromLocalFolder({ folder }) {
-            const file = path.join(folder, roCrateMetadataFile);
-            return await readJSON(file);
+            // is there a .json file? read that otherwise fall back to reading
+            //  the .jsonld file if any
+            const jsonFile = path.join(folder, `${roCrateMetadataFile}.json`);
+            const jsonldFile = path.join(
+                folder,
+                `${roCrateMetadataFile}.jsonld`
+            );
+            if (await pathExists(jsonFile)) {
+                return await readJSON(jsonFile);
+            } else if (await pathExists(jsonldFile)) {
+                return await readJSON(jsonldFile);
+            }
+            return undefined;
         }
     }
 
