@@ -81,6 +81,7 @@ export default {
                     target: this.target,
                     root: this.target.folder,
                     path: this.target.folder,
+                    filterFiles: this.enableFileSelector,
                 });
                 worker.addEventListener("message", (m) => resolve(m.data));
             });
@@ -102,6 +103,7 @@ export default {
                         target: this.target,
                         root: this.target.folder,
                         path: path.join(parentPath, node.data.path),
+                        filterFiles: this.enableFileSelector,
                     });
                     worker.addEventListener("message", (m) => resolve(m.data));
                 });

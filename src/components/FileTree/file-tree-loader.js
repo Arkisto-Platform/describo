@@ -15,7 +15,7 @@ export default class FileTreeLoader {
         this.target = target;
     }
 
-    async load({ root, path }) {
+    async load({ root, path, filterFiles }) {
         const rclone = this.rclone();
         // console.log("PATH", path);
         // console.log("RCLONE BINARY", rclone, await fs.pathExists(rclone));
@@ -39,7 +39,8 @@ export default class FileTreeLoader {
             path,
             children: compact(
                 content.map((child) => {
-                    if (filesToExclude.includes(child.Path)) return undefined;
+                    if (filterFiles && filesToExclude.includes(child.Path))
+                        return undefined;
                     child = mapKeys(child, (val, key) => camelCase(key));
                     child.parent = path === root ? "/" : path.replace(root, "");
                     child.isLeaf = !child.isDir;
