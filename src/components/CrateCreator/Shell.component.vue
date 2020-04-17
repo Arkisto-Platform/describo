@@ -90,10 +90,10 @@
                 >
                     <root-dataset-component v-if="activeTab === 'crate'" />
                 </el-tab-pane>
-                <el-tab-pane label="Contents" name="parts">
+                <el-tab-pane label="Crate Contents" name="parts">
                     <crate-parts-component v-if="activeTab === 'parts'" />
                 </el-tab-pane>
-                <el-tab-pane label="People" name="people">
+                <!-- <el-tab-pane label="People" name="people">
                     <type-management-component
                         type="Person"
                         v-if="activeTab === 'people'"
@@ -109,6 +109,17 @@
                     <type-management-component
                         type="ContactPoint"
                         v-if="activeTab === 'contactPoints'"
+                    />
+                </el-tab-pane> -->
+                <el-tab-pane
+                    :label="type"
+                    :name="type"
+                    v-for="(type, idx) of types"
+                    :key="idx"
+                >
+                    <type-management-component
+                        :type="type"
+                        v-if="activeTab === type"
                     />
                 </el-tab-pane>
             </el-tabs>
@@ -161,6 +172,13 @@ export default {
             crateLoadingErrors: [],
             percentageLoaded: 0,
         };
+    },
+    computed: {
+        types: function() {
+            return Object.keys(this.$store.state.itemsByType)
+                .filter((t) => t !== "RootDataset")
+                .sort();
+        },
     },
     beforeMount() {
         this.loadProfile();
