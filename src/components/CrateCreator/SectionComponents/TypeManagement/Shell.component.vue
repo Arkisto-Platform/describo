@@ -1,5 +1,13 @@
 <template>
     <div>
+        <el-pagination
+            v-if="total > pageSize + 1"
+            layout="prev, pager, next"
+            :page-size="pageSize"
+            :total="total"
+            @current-change="currentChange"
+        >
+        </el-pagination>
         <el-table :data="items" class="w-full">
             <el-table-column
                 prop="uuid"
@@ -37,27 +45,35 @@ export default {
     props: {
         type: {
             type: String,
-            required: true
-        }
+            required: true,
+        },
     },
     components: {
-        RenderItemComponent
+        RenderItemComponent,
     },
     data() {
         return {
             entity: undefined,
             template: {},
-            mode: {}
+            mode: {},
+            total: undefined,
+            pageSize: 5,
+            page: 0,
         };
     },
     computed: {
         items: function() {
             try {
-                return this.$store.state.itemsByType[this.type];
+                const items = this.$store.state.itemsByType[this.type];
+                this.total = items.length;
+                return items.slice(
+                    this.page * this.pageSize,
+                    this.page * this.pageSize + this.pageSize
+                );
             } catch (error) {
                 return [];
             }
-        }
+        },
     },
     methods: {
         editEntity(entity) {
@@ -66,10 +82,13 @@ export default {
             this.mode = {
                 disableDelete: true,
                 visible: true,
-                edit: true
+                edit: true,
             };
-        }
-    }
+        },
+        currentChange(page) {
+            this.page = page - 1;
+        },
+    },
 };
 </script>
 
