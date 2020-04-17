@@ -11,6 +11,7 @@
         </div>
 
         <div class="flex flex-col" v-if="!error">
+            <!-- controls-->
             <div class="flex flex-row">
                 <root-dataset-selector-component
                     v-if="showRootDatasetSelector"
@@ -22,15 +23,24 @@
                     v-if="!showRootDatasetSelector"
                 >
                     <el-button
-                        @click="dataInspector = true"
+                        @click="view.dataInspector = true"
                         type="primary"
                         size="small"
                     >
                         <i class="fas fa-eye"></i> inspect the data
                     </el-button>
+                    <el-button
+                        @click="view.crateLoadingErrors = true"
+                        type="warning"
+                        size="small"
+                        v-if="crateLoadingErrors.length"
+                    >
+                        <i class="fas fa-eye"></i>
+                        crate loading errors
+                    </el-button>
                     <div class="flex-grow"></div>
                     <el-button
-                        @click="crateExport = true"
+                        @click="view.crateExport = true"
                         type="success"
                         size="small"
                     >
@@ -39,14 +49,34 @@
                     </el-button>
                 </div>
             </div>
+
+            <!-- data inspector drawer-->
             <data-inspector-component
-                :drawer="dataInspector"
-                @close="dataInspector = false"
+                :drawer="view.dataInspector"
+                @close="view.dataInspector = false"
             />
+
+            <!-- crate export drawer -->
             <crate-export-component
-                :drawer="crateExport"
-                @close="crateExport = false"
+                :drawer="view.crateExportDialog"
+                @close="view.crateExport = false"
             />
+
+            <!-- crate loading errors drawer -->
+            <crate-loading-errors-component
+                :drawer="view.crateLoadingErrors"
+                :errors="crateLoadingErrors"
+                @close="view.crateLoadingErrors = false"
+            />
+
+            <!-- loading indicator -->
+            <el-progress
+                class="my-2"
+                :percentage="percentageLoaded"
+                v-if="percentageLoaded !== 0"
+            ></el-progress>
+
+            <!-- tabs -->
             <el-tabs
                 v-model="activeTab"
                 tab-position="left"
@@ -87,7 +117,14 @@
 </template>
 
 <script>
-import { cloneDeep, isObject, isPlainObject, isArray } from "lodash";
+import {
+    cloneDeep,
+    isObject,
+    isPlainObject,
+    isArray,
+    groupBy,
+    round,
+} from "lodash";
 import { generateId } from "components/CrateCreator/tools";
 import ProfileLoader from "./profile-loader";
 import RootDatasetComponent from "./SectionComponents/RootDataset/Shell.component.vue";
@@ -96,6 +133,7 @@ import RootDatasetSelectorComponent from "./SectionComponents/RootDatasetSelecto
 import TypeManagementComponent from "./SectionComponents/TypeManagement/Shell.component.vue";
 import DataInspectorComponent from "./SectionComponents/DataInspector.component.vue";
 import CrateExportComponent from "./SectionComponents/CrateExport/CrateExport.component.vue";
+import CrateLoadingErrorsComponent from "./SectionComponents/CrateLoadingErrors.component.vue";
 import CrateTool from "components/CrateCreator/crate-tools";
 
 export default {
@@ -106,16 +144,22 @@ export default {
         RootDatasetSelectorComponent,
         DataInspectorComponent,
         CrateExportComponent,
+        CrateLoadingErrorsComponent,
     },
     data() {
         return {
-            dataInspector: false,
-            crateExport: false,
+            view: {
+                dataInspector: false,
+                crateExportDialog: false,
+                crateLoadingErrors: false,
+            },
             rootDatasetProfile: {},
             showRootDatasetSelector: false,
             activeTab: "crate",
             ready: false,
             error: undefined,
+            crateLoadingErrors: [],
+            percentageLoaded: 0,
         };
     },
     beforeMount() {
@@ -151,13 +195,15 @@ export default {
 
             try {
                 const crateTool = new CrateTool();
-                const crate = await crateTool.readCrate({
+                let { data, errors } = await crateTool.readCrate({
                     target: this.$store.state.target,
                 });
-                if (crate) {
-                    crate.forEach((element) => {
-                        this.$store.commit("saveToGraph", element);
+                if (data) {
+                    errors = await this.loadCrateDataIntoStore({
+                        data,
+                        errors,
                     });
+                    this.crateLoadingErrors = [...errors];
                 } else {
                     let rootDataset = {
                         uuid: generateId(),
@@ -170,6 +216,23 @@ export default {
             } catch (error) {
                 this.error = error.message;
             }
+        },
+        async loadCrateDataIntoStore({ data, errors }) {
+            const updateProgress = data.length > 10;
+            const dataLength = data.length;
+            for (let [idx, element] of data.entries()) {
+                if (updateProgress && idx % 10 === 0) {
+                    this.percentageLoaded = round((idx / dataLength) * 100);
+                }
+                await new Promise((resolve) => setTimeout(resolve, 5));
+                try {
+                    this.$store.commit("saveToGraph", element);
+                } catch (error) {
+                    errors.push(`${error.message}: ${JSON.stringify(element)}`);
+                }
+            }
+            this.percentageLoaded = 0;
+            return errors;
         },
     },
 };

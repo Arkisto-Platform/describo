@@ -1,11 +1,4 @@
-import {
-    cloneDeep,
-    groupBy,
-    isPlainObject,
-    isArray,
-    isString,
-    isEmpty,
-} from "lodash";
+import { cloneDeep, groupBy, isPlainObject, isArray, isEmpty } from "lodash";
 import { writeFile, readJSON, pathExists } from "fs-extra";
 import { generateId } from "components/CrateCreator/tools";
 import path from "path";
@@ -17,7 +10,7 @@ export default class CrateTool {
     }
 
     verifyCrate({ data, inputs }) {
-        const rootDataset = this.getRootDataset({ data });
+        const rootDataset = this.getRootDataset({ data, fromGraph: true });
         let valid = [];
         for (let input of inputs) {
             const { property, required } = input;
@@ -58,7 +51,7 @@ export default class CrateTool {
             return null;
         }
 
-        return crate ? this.loadCrate({ crate }) : undefined;
+        return this.loadCrate({ crate });
         async function readFromLocalFolder({ folder }) {
             // is there a .json file? read that otherwise fall back to reading
             //  the .jsonld file if any
@@ -77,44 +70,49 @@ export default class CrateTool {
     }
 
     loadCrate({ crate }) {
-        // remove metadata element
+        let errors = [];
         let data = crate["@graph"];
-        data = data.filter((e) => e["@id"] !== "/ro-crate-metadata.jsonld");
-        const elementsById = groupBy(data, "@id");
+        data = data.filter((e) => e["@id"] !== `/${roCrateMetadataFile}.json`);
+        data = data.filter(
+            (e) => e["@id"] !== `/${roCrateMetadataFile}.jsonld`
+        );
+
         const rootDatasetUUID = generateId();
         data = mapIdentifiers({ data, rootDatasetUUID });
-        data = data.map((element) => {
-            if (element.uuid === rootDatasetUUID)
-                element["@type"] = "RootDataset";
-            return element;
+        // console.log(JSON.stringify(data, null, 2));
+        data = mapReverse({
+            data,
+            rootDataset: this.getRootDataset({ data, fromGraph: true }),
         });
-        return data;
+        // console.log(JSON.stringify(data, null, 2));
+        ({ data, errors } = verify({ data }));
+        return { data, errors };
 
         function mapIdentifiers({ data, rootDatasetUUID }) {
+            const elementsById = groupBy(data, "@id");
             return data.map((element) => {
                 element = mapIdToUuid(element);
-                return walkObject(element);
+                return walkObject({ obj: element });
             });
 
-            function walkObject(obj) {
+            function walkObject({ obj }) {
                 obj = mapIdToUuid(obj);
                 for (let prop of Object.keys(obj)) {
                     if (isPlainObject(obj[prop])) {
-                        obj[prop] = walkObject(obj[prop]);
+                        obj[prop] = walkObject({ obj: obj[prop] });
                     } else if (isArray(obj[prop])) {
-                        obj[prop] = walkArray(obj[prop]);
+                        obj[prop] = walkArray({ arr: obj[prop] });
                     }
                 }
                 return obj;
             }
 
-            function walkArray(obj) {
-                return obj.map((element) => {
-                    mapIdToUuid(element);
+            function walkArray({ arr }) {
+                return arr.map((element) => {
                     if (isPlainObject(element)) {
-                        return walkObject(element);
+                        return walkObject({ obj: element });
                     } else if (isArray(element)) {
-                        return walkArray(element);
+                        return walkArray({ arr: element });
                     } else {
                         return element;
                     }
@@ -123,26 +121,147 @@ export default class CrateTool {
 
             function mapIdToUuid(element) {
                 if (element && element["@id"]) {
-                    element["@type"] = elementsById[element["@id"]][0]["@type"];
-                    element.uuid =
-                        element["@id"] === "./"
-                            ? rootDatasetUUID
-                            : element["@id"];
+                    if (element["@id"] === "./") {
+                        element.uuid = rootDatasetUUID;
+                        element["@type"] = "RootDataset";
+                    } else {
+                        element.uuid = element["@id"];
+                    }
+                    try {
+                        if (element["@type"] !== "RootDataset") {
+                            element["@type"] =
+                                elementsById[element["@id"]][0]["@type"];
+                        }
+                    } catch (error) {}
                     delete element["@id"];
                 }
                 return element;
             }
         }
+
+        function mapReverse({ data, rootDataset }) {
+            const reverseMappings = [];
+            data.forEach((element) => {
+                walkObject({ obj: element });
+            });
+            const reverseMappingsByTargetId = groupBy(
+                reverseMappings,
+                "tgtUUID"
+            );
+            data.forEach((d) => {
+                const mapping = reverseMappingsByTargetId[d.uuid];
+                if (mapping) {
+                    mapping.forEach((m) => {
+                        if (d.uuid === m.tgtUUID) {
+                            if (!d["@reverse"]) d["@reverse"] = {};
+                            if (!d["@reverse"][m.srcProperty])
+                                d["@reverse"][m.srcProperty] = [];
+                            if (isPlainObject(d["@reverse"][m.srcProperty]))
+                                d["@reverse"][m.srcProperty] = [
+                                    d["@reverse"][m.srcProperty],
+                                ];
+                            d["@reverse"][m.srcProperty].push({
+                                uuid: m.srcUUID,
+                            });
+                        }
+                    });
+                }
+            });
+            return data;
+
+            function walkObject({ obj }) {
+                for (let property of Object.keys(obj)) {
+                    if (isArray(obj[property])) {
+                        obj[property].forEach((element) => {
+                            if (isPlainObject(element)) {
+                                if ("uuid" in element)
+                                    reverseMappings.push({
+                                        tgtUUID: element.uuid,
+                                        srcProperty: property,
+                                        srcUUID: obj.uuid,
+                                    });
+                            }
+                        });
+                    } else if (isPlainObject(obj[property])) {
+                        if ("uuid" in obj[property])
+                            reverseMappings.push({
+                                tgtUUID: obj[property].uuid,
+                                srcProperty: property,
+                                srcUUID: obj.uuid,
+                            });
+                    }
+                }
+            }
+        }
+
+        function verify({ data }) {
+            const elementsById = groupBy(data, "uuid");
+            // console.log(JSON.stringify(elementsById, null, 2));
+            let errors = [];
+            data.forEach((item) => {
+                // console.log(JSON.stringify(item, null, 2));
+                // ensure each item has an @id property
+                if (!item.uuid) {
+                    errors.push(
+                        `Missing property '@id' from item: '${JSON.stringify(
+                            item
+                        )}`
+                    );
+                }
+                // ensure each item has an @type property
+                if (!item["@type"]) {
+                    errors.push(
+                        `Missing property '@type' from item with @id=${item.uuid}`
+                    );
+                }
+
+                // ensure each item except for the root dataset has a reverse property
+                if (item["@type"] !== "RootDataset" && !item["@reverse"]) {
+                    errors.push(
+                        `Dangling item found @id=${item.uuid}, @type=${item["@type"]}`
+                    );
+                }
+
+                // walk all items and make sure all references are resolvable
+                walkObject({ obj: item });
+
+                function walkObject({ obj }) {
+                    for (let property of Object.keys(obj)) {
+                        if (isArray(obj[property])) {
+                            obj[property].forEach((element) => {
+                                if (isPlainObject(element)) {
+                                    if (!elementsById[element.uuid]) {
+                                        errors.push(
+                                            `Unable to resolve item reference for property: ${property} in item @id=${obj[property].uuid}, @type=${obj[property]["@type"]}`
+                                        );
+                                    }
+                                }
+                            });
+                        } else if (isPlainObject(obj[property])) {
+                            if ("uuid" in obj[property]) {
+                                if (!elementsById[obj[property].uuid]) {
+                                    errors.push(
+                                        `Unable to resolve item reference for property: ${property} in item @id=${obj[property].uuid}, @type=${obj[property]["@type"]}`
+                                    );
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            return { data, errors };
+        }
     }
 
     assembleCrate({ data }) {
         data = cloneDeep(data);
-        const rootDatasetUUID = this.getRootDataset({ data }).uuid;
-        data = mapIdentifiers({ data, rootDatasetUUID });
+        let rootDataset = this.getRootDataset({ data, fromGraph: true });
+        data = mapIdentifiers({ data, rootDatasetUUID: rootDataset.uuid });
 
-        let elements = data.filter((d) => d["@type"] !== "RootDataset");
-        let rootDataset = this.getRootDataset({ data });
-        rootDataset["@type"] = "Dataset";
+        let elements = data.filter(
+            (d) => d["@type"] !== "Dataset" && d["@id"] !== "./"
+        );
+        rootDataset = this.getRootDataset({ data, fromGraph: false });
 
         let graph = [this.getCrateMetadataFileDescriptor()];
         graph = [...graph, rootDataset, ...elements];
@@ -187,8 +306,12 @@ export default class CrateTool {
 
             function mapUuidToId(element) {
                 if (element.uuid && !element["@id"]) {
-                    element["@id"] =
-                        element.uuid === rootDatasetUUID ? "./" : element.uuid;
+                    if (element.uuid === rootDatasetUUID) {
+                        element["@id"] = "./";
+                        element["@type"] = "Dataset";
+                    } else {
+                        element["@id"] = element.uuid;
+                    }
                 }
                 delete element.uuid;
                 return element;
@@ -211,33 +334,31 @@ export default class CrateTool {
         };
     }
 
-    getRootDataset({ data }) {
-        let rootDataset = data.filter((d) => d["@type"] === "RootDataset");
-        if (rootDataset.length !== 1) {
-            throw new Error(
-                `You must provide a graph with only one 'RootDataset'`
+    getRootDataset({ data, fromGraph }) {
+        let rootDataset;
+        data = cloneDeep(data);
+        if (fromGraph) {
+            rootDataset = data.filter(
+                (d) => d["@type"] === "RootDataset" && !isEmpty(d.uuid)
             );
-            return;
-        }
-        rootDataset = rootDataset.pop();
-        rootDataset = {
-            ...rootDataset,
-            "@id": "./",
-            "@type": "Dataset",
-        };
-
-        return rootDataset;
-    }
-
-    getRootDatasetFromCrate({ data }) {
-        let rootDataset = data
-            .filter((d) => d["@type"] === "Dataset")
-            .filter((d) => d["@id"] === "./");
-        if (rootDataset.length !== 1) {
-            throw new Error(
-                `The crate doesn't seem to be right. Expecting one root dataset. Found ${rootDataset.length}`
+            if (rootDataset.length > 1) {
+                throw new Error(
+                    `There seems to be more than one root Dataset. You must provide a graph with only one`
+                );
+            }
+        } else {
+            rootDataset = data.filter(
+                (d) => d["@type"] === "Dataset" && d["@id"] === "./"
             );
+            if (rootDataset.length > 1) {
+                throw new Error(
+                    `There seems to be more than one root Dataset. You must provide a graph with only one`
+                );
+            }
         }
-        return rootDataset.pop();
+        if (isEmpty(rootDataset))
+            throw new Error(`There must be one root Dataset. None located.`);
+
+        return rootDataset[0];
     }
 }

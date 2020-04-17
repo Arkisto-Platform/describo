@@ -42,7 +42,7 @@
 
         <!-- View: Custom (entity) types -->
         <div v-if="!isSimpleType && !isCompoundType">
-            <div class="flex flex-row flex-wrap">
+            <div class="flex flex-row flex-wrap" v-if="data.length">
                 <render-item-component
                     class="m-1"
                     v-for="item of data"
@@ -50,6 +50,14 @@
                     :template="{ ...template, '@type': item['@type'] }"
                     :reference="reference"
                     :data="item"
+                />
+            </div>
+            <div class="flex flex-row flex-wrap" v-else>
+                <render-item-component
+                    class="m-1"
+                    :template="{ ...template, '@type': data['@type'] }"
+                    :reference="reference"
+                    :data="data"
                 />
             </div>
         </div>
