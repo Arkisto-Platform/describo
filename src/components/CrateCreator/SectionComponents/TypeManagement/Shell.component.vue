@@ -12,7 +12,7 @@
             <el-table-column
                 prop="uuid"
                 label="Identifier"
-                width="320"
+                width="500"
             ></el-table-column>
             <el-table-column prop="name" label="Name"></el-table-column>
             <el-table-column prop="name" label="Actions" width="180">
