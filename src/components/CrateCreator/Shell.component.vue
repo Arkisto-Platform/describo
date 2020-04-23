@@ -211,29 +211,30 @@ export default {
             const profile = cloneDeep(this.profile[selection]);
             this.$store.commit("saveProfileInputs", profile.inputs);
 
+            let data, errors;
             try {
                 const crateTool = new CrateTool();
-                let { data, errors } = await crateTool.readCrate({
+                ({ data, errors } = await crateTool.readCrate({
                     target: this.$store.state.target,
-                });
-                if (data) {
-                    errors = await this.loadCrateDataIntoStore({
-                        data,
-                        errors,
-                    });
-                    this.crateLoadingErrors = [...errors];
-                } else {
-                    let rootDataset = {
-                        uuid: generateId(),
-                        "@type": "RootDataset",
-                    };
-                    this.$store.commit("saveToGraph", rootDataset);
-                }
-                this.showRootDatasetSelector = false;
-                this.ready = true;
+                }));
             } catch (error) {
-                this.error = error.message;
+                // this.error = error.message;
             }
+            if (data) {
+                errors = await this.loadCrateDataIntoStore({
+                    data,
+                    errors,
+                });
+                this.crateLoadingErrors = [...errors];
+            } else {
+                let rootDataset = {
+                    uuid: generateId(),
+                    "@type": "RootDataset",
+                };
+                this.$store.commit("saveToGraph", rootDataset);
+            }
+            this.showRootDatasetSelector = false;
+            this.ready = true;
         },
         async loadCrateDataIntoStore({ data, errors }) {
             const updateProgress = data.length > 10;
