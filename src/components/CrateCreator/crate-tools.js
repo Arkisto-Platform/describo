@@ -218,7 +218,7 @@ export default class CrateTool {
                 // ensure each item except for the root dataset has a reverse property
                 if (item["@type"] !== "RootDataset" && !item["@reverse"]) {
                     errors.push(
-                        `Dangling item found @id=${item.uuid}, @type=${item["@type"]}`
+                        `Orphaned item found @id=${item.uuid}, @type=${item["@type"]}`
                     );
                 }
 
