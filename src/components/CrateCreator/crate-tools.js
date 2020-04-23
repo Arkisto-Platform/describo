@@ -271,37 +271,27 @@ export default class CrateTool {
         };
 
         function mapIdentifiers({ data, rootDatasetUUID }) {
-            let level = 0;
             return data.map((element) => {
                 element = mapUuidToId(element);
-                return walkObject(element, level);
+                return walkObject(element);
             });
 
             function walkObject(obj, level) {
                 obj = mapUuidToId(obj);
                 for (let prop of Object.keys(obj)) {
                     if (isPlainObject(obj[prop])) {
-                        if (level !== 0) delete obj["@type"];
-                        obj[prop] = walkObject(obj[prop], (level += 1));
+                        obj[prop] = mapUuidToId(obj[prop]);
+                        delete obj[prop]["@type"];
                     } else if (isArray(obj[prop])) {
-                        obj[prop] = walkArray(obj[prop], (level += 1));
+                        obj[prop].map((element) => {
+                            element = mapUuidToId(element);
+                            if (isPlainObject(element)) {
+                                delete element["@type"];
+                            }
+                        });
                     }
                 }
                 return obj;
-            }
-
-            function walkArray(obj, level) {
-                return obj.map((element) => {
-                    mapUuidToId(element);
-                    if (isPlainObject(element)) {
-                        if (level !== 0) delete element["@type"];
-                        return walkObject(element, (level += 1));
-                    } else if (isArray(element)) {
-                        return walkArray(element, (level += 1));
-                    } else {
-                        return element;
-                    }
-                });
             }
 
             function mapUuidToId(element) {
