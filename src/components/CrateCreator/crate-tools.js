@@ -195,10 +195,11 @@ export default class CrateTool {
         }
 
         function verify({ data }) {
+            const skipChecks = ["CreativeWork", "CreateAction"];
             const elementsById = groupBy(data, "uuid");
             // console.log(JSON.stringify(elementsById, null, 2));
             let errors = [];
-            data.forEach((item) => {
+            for (let item of data) {
                 // console.log(JSON.stringify(item, null, 2));
                 // ensure each item has an @id property
                 if (!item.uuid) {
@@ -214,6 +215,9 @@ export default class CrateTool {
                         `Missing property '@type' from item with @id=${item.uuid}`
                     );
                 }
+
+                // stop here if item in skipChecks
+                if (skipChecks.includes(item["@type"])) continue;
 
                 // ensure each item except for the root dataset has a reverse property
                 if (item["@type"] !== "RootDataset" && !item["@reverse"]) {
@@ -248,7 +252,7 @@ export default class CrateTool {
                         }
                     }
                 }
-            });
+            }
             return { data, errors };
         }
     }
