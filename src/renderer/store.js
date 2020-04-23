@@ -4,7 +4,14 @@ import Vue from "vue";
 import Vuex from "vuex";
 Vue.use(Vuex);
 
-import { groupBy, cloneDeep, uniqBy, merge, isArray } from "lodash";
+import {
+    groupBy,
+    cloneDeep,
+    uniqBy,
+    merge,
+    isArray,
+    flattenDeep,
+} from "lodash";
 import { stat } from "fs";
 import { reverse } from "dns";
 
@@ -57,7 +64,7 @@ export const mutations = {
                         // join sensibly
                         payload["@reverse"][prop] = [
                             ...item["@reverse"][prop],
-                            ...payload["@reverse"][prop]
+                            ...payload["@reverse"][prop],
                         ];
 
                         // then ensure uniq entries only
@@ -76,7 +83,7 @@ export const mutations = {
             }
             // update the item
             state.itemsById[payload.uuid] = {
-                ...payload
+                ...payload,
             };
         } else {
             state.itemsById[payload.uuid] = payload;
@@ -84,9 +91,10 @@ export const mutations = {
 
         state.itemsById = { ...state.itemsById };
         state.graph = Object.keys(state.itemsById).map(
-            key => state.itemsById[key]
+            (key) => state.itemsById[key]
         );
-        state.itemsByType = groupBy(state.graph, "@type");
+        // state.itemsByType = groupBy(state.graph, "@type");
+        state.itemsByType = groupItemsByType(state.graph);
     },
     removeFromGraph(state, payload) {
         // payload = {
@@ -109,7 +117,7 @@ export const mutations = {
                 let reference = payload["@reverse"][prop];
                 if (item["@reverse"][prop]) {
                     item["@reverse"][prop] = item["@reverse"][prop].filter(
-                        i => {
+                        (i) => {
                             return i.uuid !== reference.uuid;
                         }
                     );
@@ -129,32 +137,33 @@ export const mutations = {
             delete state.itemsById[uuid];
         }
         state.graph = Object.keys(state.itemsById).map(
-            key => state.itemsById[key]
+            (key) => state.itemsById[key]
         );
-        state.itemsByType = groupBy(state.graph, "@type");
+        // state.itemsByType = groupBy(state.graph, "@type");
+        state.itemsByType = groupItemsByType(state.graph);
     },
     reset(state) {
         state.graph = [];
         state.itemsById = {};
         state.itemsByType = {};
-    }
+    },
 };
 
 export const getters = {
-    getItemById: state => id => {
+    getItemById: (state) => (id) => {
         try {
             return cloneDeep(state.itemsById[id]);
         } catch (error) {
             return undefined;
         }
     },
-    getItemsByType: state => type => {
+    getItemsByType: (state) => (type) => {
         try {
             return cloneDeep(state.itemsByType[type]);
         } catch (error) {
             return undefined;
         }
-    }
+    },
 };
 
 const configuration = {
@@ -162,7 +171,7 @@ const configuration = {
     state,
     mutations,
     actions: {},
-    getters: getters
+    getters: getters,
 };
 export const store = new Vuex.Store(configuration);
 
@@ -173,6 +182,19 @@ function reset() {
         profileInputs: [],
         graph: [],
         itemsByType: {},
-        itemsById: {}
+        itemsById: {},
     };
+}
+
+function groupItemsByType(graph) {
+    const items = graph.map((item) => {
+        if (isArray(item["@type"])) {
+            return item["@type"].map((type) => {
+                return { ...item, "@type": type };
+            });
+        } else {
+            return item;
+        }
+    });
+    return groupBy(flattenDeep(items), "@type");
 }
