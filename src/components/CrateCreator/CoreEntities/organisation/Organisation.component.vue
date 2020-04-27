@@ -1,26 +1,19 @@
 <template>
     <div>
-        <el-tag
-            class="cursor-pointer"
-            type="success"
-            @click="editing = !editing"
-            v-if="!editing"
-        >
-            {{ this.properties.name }}
-        </el-tag>
-        <el-card type="box-card" class="flex flex-col" v-if="editing">
-            <!-- lookup organisation -->
-            <lookup-ror-component @selected-organisation="update" />
+        <el-card type="box-card" class="flex flex-col">
+            <pre>{{ item }}</pre>
 
-            <!-- select existing -->
-            <!-- <select-existing-entry type="Organisation" @selection="save" /> -->
-            <!-- </span> -->
+            <!-- lookup organisation -->
+            <lookup-ror-component
+                @selected-organisation="save"
+                v-if="newItem"
+            />
 
             <!-- create /edit organisation -->
             <create-organisation-component :properties.sync="properties" />
 
             <div class="flex flex-row mt-2">
-                <el-button @click="cancel" type="danger">
+                <el-button @click="remove" type="danger" v-if="enableRemove">
                     <i class="fas fa-trash-alt"></i>
                 </el-button>
                 <div class="flex-grow"></div>
@@ -33,8 +26,6 @@
 </template>
 
 <script>
-import { save, restore, remove } from "./organisation.js";
-import { unlinkParentAndItem } from "components/CrateCreator/tools";
 import CreateOrganisationComponent from "./CreateOrganisation.component.vue";
 import SelectExistingEntry from "../SelectExistingEntry.component.vue";
 import LookupRorComponent from "./LookupROR.component.vue";
@@ -46,68 +37,64 @@ export default {
         LookupRorComponent,
     },
     props: {
-        template: {
-            type: Object,
-            required: true,
-        },
-        reference: {
-            type: String,
-        },
+        uuid: { type: String, required: true },
+        enableRemove: { type: Boolean },
     },
     data() {
         return {
             editing: true,
-            properties: {},
+            properties: {
+                name: undefined,
+                description: undefined,
+            },
         };
     },
-    created() {
-        this.$data.properties = this.restore();
+    computed: {
+        item: function() {
+            return this.$store.getters.getItemById(this.uuid);
+        },
+        newItem: function() {
+            return !this.item.name;
+        },
     },
-    mounted() {},
+    created() {
+        const item = this.$store.getters.getItemById(this.uuid);
+        if (item) {
+            this.properties.name = item.name;
+            this.properties.description = item.description;
+        }
+    },
     methods: {
-        restore() {
-            return restore({
-                store: this.$store,
-                uuid: this.template.data.uuid,
-            });
+        remove() {
+            this.$emit("remove");
         },
-        cancel() {
-            remove({
-                store: this.$store,
-                organisation: this.properties,
-                parentId: this.reference,
-                property: this.template.property,
-            });
-            this.editing = false;
-            this.$emit("remove", {
-                uuid: this.properties.uuid,
-                property: this.template.property,
-                type: this.template["@type"],
-            });
-        },
-        update(selection) {
-            this.$store.commit("removeFromGraph", {
-                uuid: this.properties.uuid,
-            });
-            unlinkParentAndItem({
-                store: this.$store,
-                parentId: this.reference,
-                itemId: this.properties.uuid,
-                property: this.template.property,
-            });
-            this.properties.uuid = selection.uuid;
-            this.properties.name = selection.name;
-            this.save();
-        },
-        save() {
-            save({
-                store: this.$store,
-                parentId: this.reference,
-                property: this.template.property,
-                organisation: this.properties,
-            });
-            this.editing = false;
-            this.$emit("done");
+        save(selection) {
+            if (selection && selection.uuid) {
+                // select an org from ROR
+                //  delete current org
+                this.$store.commit("removeFromGraph", this.item);
+
+                //  create new org with ROR info
+                const newItem = {
+                    uuid: selection.uuid,
+                    "@type": "Organization",
+                    name: selection.name,
+                };
+                this.$store.commit("saveToGraph", newItem);
+
+                this.$store.commit("addNewItem", {
+                    ...this.$store.state.addNewItem,
+                    itemId: selection.uuid,
+                });
+            } else {
+                const item = {
+                    ...this.item,
+                    name: this.properties.name,
+                    description: this.properties.description,
+                };
+                this.$store.commit("saveToGraph", item);
+            }
+            this.$emit("save");
         },
     },
 };

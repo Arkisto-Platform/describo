@@ -1,23 +1,28 @@
 <template>
     <div class="flex flex-row">
-        <el-tag class="cursor-pointer" type="success" @click="edit">
-            <div class="flex flex-row">
+        <div class="cursor-pointer bg-green-200 p-2 rounded-l-lg" @click="edit">
+            <div class="flex flex-col space-y-1">
                 <div class="text-gray-800 text-lg">
                     {{ itemData["@type"] }}:
                     {{ itemData.name }}
                 </div>
-                <div class="w-10"></div>
-                <div class="text-gray-600 text-base">
+                <div class="text-gray-600 text-xs pt-2">
                     @id&nbsp;
                     {{ itemData.uuid }}
                 </div>
             </div>
-        </el-tag>
+        </div>
+        <div class="bg-green-200 p-2 rounded-r-lg">
+            <el-button @click="removeItem" size="mini" class="mt-3">
+                <i class="fas fa-times"></i>
+            </el-button>
+        </div>
     </div>
 </template>
 
 <script>
 import { isArray, isPlainObject } from "lodash";
+import { unlinkParentAndItem } from "components/CrateCreator/tools";
 export default {
     props: {
         item: {
@@ -42,6 +47,14 @@ export default {
             this.$store.commit("addNewItem", {
                 itemId: this.item.data.uuid,
                 parentId: this.reference,
+                property: this.item.property,
+            });
+        },
+        removeItem() {
+            unlinkParentAndItem({
+                store: this.$store,
+                parentId: this.reference,
+                itemId: this.item.data.uuid,
                 property: this.item.property,
             });
         },

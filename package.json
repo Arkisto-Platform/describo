@@ -60,7 +60,7 @@
         "core-js": "^3.6.5",
         "date-fns": "^2.12.0",
         "electron-updater": "^4.2.5",
-        "element-ui": "^2.13.1",
+        "element-ui": "2.13.0",
         "fs-extra": "^8.1.0",
         "hasha": "^5.2.0",
         "highlight.js": "^9.18.1",

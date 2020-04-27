@@ -111,7 +111,7 @@ export default {
             });
         },
         remove() {
-            this.$store.commit("removeFromGraph", this.item);
+            // this.$store.commit("removeFromGraph", this.item);
             this.$emit("remove");
         },
         save() {

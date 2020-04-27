@@ -26,7 +26,7 @@ export function linkParentAndItem({ store, parentId, itemId, property }) {
     let parent = store.getters.getItemById(parentId);
 
     // set up the parent
-    if (!parent[property]) parent[property] = [];
+    if (property && !parent[property]) parent[property] = [];
     if (isPlainObject(parent[property])) parent[property] = [parent[property]];
     parent[property].push({ uuid: itemId, "@type": item["@type"] });
     parent[property] = uniqBy(parent[property], "uuid");
@@ -46,7 +46,7 @@ export function unlinkParentAndItem({ store, parentId, itemId, property }) {
     let parent = store.getters.getItemById(parentId);
 
     // remove the item from the parent
-    if (parent[property]) {
+    if (property && parent[property]) {
         if (isPlainObject(parent[property]))
             parent[property] = [parent[property]];
 

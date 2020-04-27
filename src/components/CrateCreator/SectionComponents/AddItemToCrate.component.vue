@@ -9,50 +9,44 @@
         @close="done"
     >
         <div class="flex flex-col bg-gray-200 p-4 h-full">
-            <div v-if="!addNewItem">
-                <div class="text-xl">Add an item to the crate.</div>
-                <div class="my-2">
-                    <!-- select item to add to crate -->
-                    <el-select
-                        v-model="type"
-                        placeholder="Select an item type to add to the crate"
-                        class="w-full"
-                        @change="loadComponent"
+            <div class="text-xl">Add an item to the crate.</div>
+            <div class="my-2">
+                <!-- select item to add to crate -->
+                <el-select
+                    v-model="type"
+                    placeholder="Select an item type to add to the crate"
+                    class="w-full"
+                    @change="loadComponent"
+                >
+                    <el-option
+                        v-for="item in typeDefinitions"
+                        :key="item"
+                        :label="item"
+                        :value="item"
                     >
-                        <el-option
-                            v-for="item in typeDefinitions"
-                            :key="item"
-                            :label="item"
-                            :value="item"
-                        >
-                        </el-option>
-                    </el-select>
-                    <!-- end: select item to add to crate -->
-                </div>
-
-                <div v-if="item.uuid">
-                    <div class="text-xl my-4">Add: {{ type }}</div>
-                    <div class="overflow-scroll style-content-area">
-                        <div class="flex flex-col">
-                            <describe-item-component
-                                :uuid="item.uuid"
-                                :enable-remove="true"
-                                v-if="item.uuid"
-                                @save="done"
-                                @remove="done"
-                            />
-                        </div>
-                    </div>
-                </div>
+                    </el-option>
+                </el-select>
+                <!-- end: select item to add to crate -->
             </div>
 
             <div v-if="addNewItem">
                 <div class="text-xl my-4">
                     Edit: {{ item["@type"] }} - {{ item.name }}
+                    {{ customComponent }}
                 </div>
 
-                <div class="overflow-scroll style-content-area">
-                    <div class="flex flex-col">
+                <div class="overflow-scroll style-content-area flex flex-col">
+                    <div v-if="customComponent">
+                        <component
+                            class="flex-grow"
+                            v-bind:is="customComponent"
+                            :uuid="item.uuid"
+                            :enable-remove="enableRemove"
+                            @save="done"
+                            @remove="remove"
+                        ></component>
+                    </div>
+                    <div v-else>
                         <describe-item-component
                             :uuid="item.uuid"
                             :enable-remove="enableRemove"
@@ -71,12 +65,20 @@
 <script>
 import DescribeItemComponent from "./DescribeItem.component.vue";
 import {
+    CustomCompoonents,
+    isCustomComponent,
+    customComponents as CustomComponentMixins,
+    CustomComponents,
+} from "./component.mixins";
+
+import {
     generateId,
     linkParentAndItem,
     unlinkParentAndItem,
 } from "components/CrateCreator/tools";
 
 export default {
+    mixins: [CustomComponentMixins],
     components: {
         DescribeItemComponent,
     },
@@ -90,19 +92,23 @@ export default {
         return {
             type: undefined,
             profileInputs: [],
-            item: {},
         };
     },
     computed: {
         enableRemove: function() {
-            if (this.addNewItem) {
-                return this.addNewItem.parentId ? true : false;
-            } else {
-                return true;
-            }
+            const item = this.$store.getters.getItemById(
+                this.addNewItem.itemId
+            );
+            return !item["@reverse"] ||
+                Object.keys(item["@reverse"]).length === 1
+                ? true
+                : false;
         },
         typeDefinitions: function() {
-            return Object.keys(this.$store.state.typeDefinitions).sort();
+            const typeDefinitions = Object.keys(
+                this.$store.state.typeDefinitions
+            );
+            return [...typeDefinitions, ...CustomComponents].sort();
         },
         addNewItem: function() {
             const item = this.$store.state.addNewItem;
@@ -110,6 +116,11 @@ export default {
                 this.item = this.$store.getters.getItemById(item.itemId);
             }
             return item;
+        },
+        customComponent: function() {
+            return isCustomComponent(this.item["@type"])
+                ? `${this.item["@type"]}Component`
+                : undefined;
         },
     },
     methods: {
@@ -120,16 +131,21 @@ export default {
                 uuid: generateId(),
             };
             this.$store.commit("saveToGraph", item);
-
-            this.item = item;
+            this.$store.commit("addNewItem", {
+                itemId: item.uuid,
+                parentId: undefined,
+                property: undefined,
+            });
         },
         remove() {
-            unlinkParentAndItem({
-                store: this.$store,
-                parentId: this.addNewItem.parentId,
-                itemId: this.addNewItem.itemId,
-                property: this.addNewItem.property,
-            });
+            if (this.addNewItem && this.addNewItem.parentId) {
+                unlinkParentAndItem({
+                    store: this.$store,
+                    parentId: this.addNewItem.parentId,
+                    itemId: this.addNewItem.itemId,
+                    property: this.addNewItem.property,
+                });
+            }
             this.$store.commit("removeFromGraph", {
                 uuid: this.addNewItem.itemId,
             });

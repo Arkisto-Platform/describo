@@ -1,5 +1,5 @@
 export const SimpleTypes = ["Value", "Text", "TextArea", "Select", "Date"];
-export const CustomComponents = ["Organisation"];
+export const CustomComponents = ["Organization"];
 
 export function isSimpleType(type) {
     return SimpleTypes.includes(type);
@@ -28,7 +28,7 @@ export const components = {
 
 export const customComponents = {
     components: {
-        OrganisationComponent: () =>
+        OrganizationComponent: () =>
             import(
                 "components/CrateCreator/CoreEntities/organisation/Organisation.component.vue"
             ),
