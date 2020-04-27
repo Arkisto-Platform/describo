@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import RenderProfileComponent from "components/CrateCreator/SectionComponents/RenderProfile.component.vue";
+import RenderProfileComponent from "components/CrateCreator/shared/RenderProfile.component.vue";
 import { cloneDeep } from "lodash";
 import CrateTool from "components/CrateCreator/crate-tools";
 const crateTool = new CrateTool();

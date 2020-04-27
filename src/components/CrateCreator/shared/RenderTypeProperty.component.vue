@@ -25,7 +25,7 @@
                 :key="instance.idx"
                 class="my-1"
             >
-                <render-item-component
+                <render-core-component
                     v-if="isSimpleType(entry['@type'])"
                     class="w-full"
                     :template="entry"
@@ -35,7 +35,7 @@
             </div>
         </div>
         <div v-else>
-            <render-item-component
+            <render-core-component
                 v-if="isSimpleType(entry['@type'])"
                 class="my-1"
                 :template="entry"
@@ -48,17 +48,17 @@
 
 <script>
 import { updateTemplate } from "./describe-entry";
-import RenderItemComponent from "./RenderItem.component.vue";
 import AddControl from "./AddControl.component.vue";
 import { shortName } from "src/renderer/filters";
 import { cloneDeep, isArray, isEmpty, has } from "lodash";
 import { generateId } from "components/CrateCreator/tools";
-import { isSimpleType } from "./component.mixins";
+import { isSimpleType } from "components/CrateCreator/CoreComponents/simple/component.mixins";
 
 export default {
     components: {
         AddControl,
-        RenderItemComponent,
+        RenderCoreComponent: () =>
+            import("./RenderCoreComponent.component.vue"),
     },
     props: {
         entry: { type: Object, required: true },

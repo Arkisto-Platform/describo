@@ -1,5 +1,5 @@
 import { isEmpty, isUndefined, isString, isArray, isPlainObject } from "lodash";
-import { isSimpleType } from "./component.mixins";
+import { isSimpleType } from "components/CrateCreator/CoreComponents/simple/component.mixins";
 
 export function updateTemplate({ inputs, item, typeDefinitions }) {
     let template = [];

@@ -47,7 +47,7 @@
                         ></component>
                     </div>
                     <div v-else>
-                        <describe-item-component
+                        <render-type-component
                             :uuid="item.uuid"
                             :enable-remove="enableRemove"
                             @save="done"
@@ -63,13 +63,11 @@
 </template>
 
 <script>
-import DescribeItemComponent from "./DescribeItem.component.vue";
 import {
-    CustomCompoonents,
-    isCustomComponent,
-    customComponents as CustomComponentMixins,
     CustomComponents,
-} from "./component.mixins";
+    isCustomComponent,
+    components as CustomComponentMixins,
+} from "components/CrateCreator/CoreComponents/custom/component.mixins";
 
 import {
     generateId,
@@ -80,7 +78,7 @@ import {
 export default {
     mixins: [CustomComponentMixins],
     components: {
-        DescribeItemComponent,
+        RenderTypeComponent: () => import("./RenderType.component.vue"),
     },
     props: {
         drawer: {

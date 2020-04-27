@@ -24,9 +24,9 @@
 <script>
 import { uniq, isArray, isPlainObject, isString, isEmpty } from "lodash";
 import RemoveControl from "./RemoveControl.component.vue";
-import { components as ComponentMixins } from "./component.mixins";
+import { components as SimpleComponentMixins } from "components/CrateCreator/CoreComponents/simple/component.mixins";
 export default {
-    mixins: [ComponentMixins],
+    mixins: [SimpleComponentMixins],
     components: {
         RemoveControl,
     },

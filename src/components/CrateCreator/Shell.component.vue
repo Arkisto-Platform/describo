@@ -152,14 +152,14 @@ import {
 } from "lodash";
 import { generateId } from "components/CrateCreator/tools";
 import ProfileLoader from "./profile-loader";
-import RootDatasetComponent from "./SectionComponents/RootDataset/Shell.component.vue";
-import CratePartsComponent from "./SectionComponents/CrateParts/Shell.component.vue";
-import RootDatasetSelectorComponent from "./SectionComponents/RootDatasetSelector.component.vue";
-import TypeManagementComponent from "./SectionComponents/TypeManagement/Shell.component.vue";
-import DataInspectorComponent from "./SectionComponents/DataInspector.component.vue";
-import CrateExportComponent from "./SectionComponents/CrateExport/CrateExport.component.vue";
-import CrateLoadingErrorsComponent from "./SectionComponents/CrateLoadingErrors.component.vue";
-import AddItemToCrateComponent from "./SectionComponents/AddItemToCrate.component.vue";
+import RootDatasetComponent from "./RootDataset/Shell.component.vue";
+import CratePartsComponent from "./CrateParts/Shell.component.vue";
+import TypeManagementComponent from "./TypeManagement/Shell.component.vue";
+import CrateExportComponent from "./CrateExport/CrateExport.component.vue";
+import RootDatasetSelectorComponent from "./shared/RootDatasetSelector.component.vue";
+import DataInspectorComponent from "./shared/DataInspector.component.vue";
+import CrateLoadingErrorsComponent from "./shared/CrateLoadingErrors.component.vue";
+import AddItemToCrateComponent from "./shared/AddItemToCrate.component.vue";
 import CrateTool from "components/CrateCreator/crate-tools";
 
 export default {

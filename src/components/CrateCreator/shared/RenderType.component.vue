@@ -1,11 +1,7 @@
 <template>
     <div class="flex flex-col">
         <div v-for="entry of template" :key="entry.property">
-            <describe-entry-component
-                :entry="entry"
-                :uuid="item.uuid"
-                @add="add"
-            />
+            <render-type-property :entry="entry" :uuid="item.uuid" @add="add" />
         </div>
 
         <div class="flex flex-row mt-1">
@@ -32,12 +28,11 @@
 
 <script>
 import { updateTemplate } from "./describe-entry";
-import DescribeEntryComponent from "./DescribeEntry.component.vue";
 import { groupBy, flattenDeep, isArray, has, cloneDeep } from "lodash";
 
 export default {
     components: {
-        DescribeEntryComponent,
+        RenderTypeProperty: () => import("./RenderTypeProperty.component.vue"),
     },
     props: {
         uuid: { type: String, required: true },

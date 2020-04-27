@@ -94,25 +94,25 @@
 <script>
 import { shortName } from "src/renderer/filters";
 import { updateTemplate } from "./describe-entry";
+import { cloneDeep, isArray, isString, isEmpty, difference } from "lodash";
+import AddControl from "./AddControl.component.vue";
+import RenderProfileItemComponent from "./RenderProfileItem.component.vue";
+import RenderProfileItemLinkerComponent from "./RenderProfileItemLinker.component.vue";
+import {
+    SimpleTypes,
+    isSimpleType,
+} from "components/CrateCreator/CoreComponents/simple/component.mixins";
 import {
     generateId,
     linkParentAndItem,
     unlinkParentAndItem,
 } from "components/CrateCreator/tools";
-import { cloneDeep, isArray, isString, isEmpty, difference } from "lodash";
-import AddControl from "./AddControl.component.vue";
-import {
-    SimpleTypes,
-    isSimpleType,
-    customComponents as CustomComponentMixins,
-} from "./component.mixins";
-import RenderProfileItemComponent from "./RenderProfileItem.component.vue";
-import RenderProfileItemLinkerComponent from "./RenderProfileItemLinker.component.vue";
 
 export default {
     components: {
         AddControl,
-        RenderItemComponent: () => import("./RenderItem.component.vue"),
+        RenderItemComponent: () =>
+            import("./RenderCoreComponent.component.vue"),
         RenderProfileItemComponent,
         RenderProfileItemLinkerComponent,
     },

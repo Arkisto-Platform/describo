@@ -47,8 +47,8 @@
 <script>
 import FileTreeComponent from "components/FileTree/FileTree.component.vue";
 import PartsListComponent from "./PartsList.component.vue";
-import FileComponent from "components/CrateCreator/CoreEntities/File.component.vue";
-import DatasetComponent from "components/CrateCreator/CoreEntities/Dataset.component.vue";
+import FileComponent from "components/CrateCreator/CoreComponents/simple/File.component.vue";
+import DatasetComponent from "components/CrateCreator/CoreComponents/simple/Dataset.component.vue";
 import CrateTool from "components/CrateCreator/crate-tools";
 const crateTool = new CrateTool();
 
@@ -71,7 +71,7 @@ export default {
         };
     },
     computed: {
-        checkedNodes: function () {
+        checkedNodes: function() {
             const state = this.$store.state.itemsByType;
             let parts = state.File ? state.File : [];
             parts = state.Dataset ? [...parts, ...state.Dataset] : parts;

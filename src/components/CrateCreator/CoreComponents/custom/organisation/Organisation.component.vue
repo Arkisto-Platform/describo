@@ -27,13 +27,11 @@
 
 <script>
 import CreateOrganisationComponent from "./CreateOrganisation.component.vue";
-import SelectExistingEntry from "../SelectExistingEntry.component.vue";
 import LookupRorComponent from "./LookupROR.component.vue";
 
 export default {
     components: {
         CreateOrganisationComponent,
-        SelectExistingEntry,
         LookupRorComponent,
     },
     props: {

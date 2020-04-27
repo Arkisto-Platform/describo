@@ -36,8 +36,8 @@
 
 <script>
 import { difference, isString } from "lodash";
-import SelectExistingEntryComponent from "components/CrateCreator/CoreEntities/SelectExistingEntry.component.vue";
-import { SimpleTypes } from "./component.mixins";
+import SelectExistingEntryComponent from "components/CrateCreator/CoreComponents/SelectExistingEntry.component.vue";
+import { SimpleTypes } from "components/CrateCreator/CoreComponents/simple/component.mixins";
 import { linkParentAndItem } from "components/CrateCreator/tools";
 
 export default {

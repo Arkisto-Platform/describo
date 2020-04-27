@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { save, restore } from "./dataset.js";
+import { save, restore } from "./dataset";
 import { getParams } from "components/CrateCreator/tools";
 
 export default {
