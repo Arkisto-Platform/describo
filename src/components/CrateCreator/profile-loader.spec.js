@@ -1,6 +1,8 @@
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 import ProfileLoader from "./profile-loader";
+import { readdir } from "fs-extra";
+import path from "path";
 
 test("can load the default profile", async () => {
     const profileLoader = new ProfileLoader({ name: "default" });
@@ -54,4 +56,16 @@ test("profile verification", async () => {
     profileLoader.profile = (await profileLoader.load()).profile;
     profileValidity = profileLoader.verify();
     expect(profileValidity.valid).toBeTrue;
+});
+
+test.skip("it should be able to dynamically load all type definitions", async () => {
+    // skipped for now as I can't get dynamic imports working!
+
+    const profileLoader = new ProfileLoader({ name: "default" });
+    let typeDefinitions = await profileLoader.loadTypeDefinitions();
+
+    const typeDefs = (
+        await readdir(path.join(__dirname, "../profiles/default"))
+    ).filter((d) => d !== "index.js");
+    expect(Object.keys(typeDefinitions).length).toEqual(typeDefs.length);
 });

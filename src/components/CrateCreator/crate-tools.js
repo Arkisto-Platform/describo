@@ -72,10 +72,14 @@ export default class CrateTool {
     loadCrate({ crate }) {
         let errors = [];
         let data = crate["@graph"];
-        data = data.filter((e) => e["@id"] !== `/${roCrateMetadataFile}.json`);
-        data = data.filter(
-            (e) => e["@id"] !== `/${roCrateMetadataFile}.jsonld`
-        );
+        data = data.filter((e) => {
+            return ![
+                `${roCrateMetadataFile}.json`,
+                `/${roCrateMetadataFile}.json`,
+                `${roCrateMetadataFile}.jsonld`,
+                `/${roCrateMetadataFile}.jsonld`,
+            ].includes(e["@id"]);
+        });
 
         const rootDatasetUUID = generateId();
         data = mapIdentifiers({ data, rootDatasetUUID });
@@ -91,51 +95,29 @@ export default class CrateTool {
         function mapIdentifiers({ data, rootDatasetUUID }) {
             const elementsById = groupBy(data, "@id");
             return data.map((element) => {
-                element = mapIdToUuid(element);
-                return walkObject({ obj: element });
+                return walkObject({
+                    obj: element,
+                    func: mapIdToUuid,
+                    level: 0,
+                });
             });
 
-            function walkObject({ obj }) {
-                obj = mapIdToUuid(obj);
-                for (let prop of Object.keys(obj)) {
-                    if (isPlainObject(obj[prop])) {
-                        obj[prop] = walkObject({ obj: obj[prop] });
-                    } else if (isArray(obj[prop])) {
-                        obj[prop] = walkArray({ arr: obj[prop] });
-                    }
-                }
-                return obj;
-            }
-
-            function walkArray({ arr }) {
-                return arr.map((element) => {
-                    if (isPlainObject(element)) {
-                        return walkObject({ obj: element });
-                    } else if (isArray(element)) {
-                        return walkArray({ arr: element });
+            function mapIdToUuid({ obj, level }) {
+                if (obj && obj["@id"]) {
+                    if (obj["@id"] === "./") {
+                        obj.uuid = rootDatasetUUID;
+                        obj["@type"] = "RootDataset";
                     } else {
-                        return element;
-                    }
-                });
-            }
-
-            function mapIdToUuid(element) {
-                if (element && element["@id"]) {
-                    if (element["@id"] === "./") {
-                        element.uuid = rootDatasetUUID;
-                        element["@type"] = "RootDataset";
-                    } else {
-                        element.uuid = element["@id"];
+                        obj.uuid = obj["@id"];
                     }
                     try {
-                        if (element["@type"] !== "RootDataset") {
-                            element["@type"] =
-                                elementsById[element["@id"]][0]["@type"];
+                        if (obj["@type"] !== "RootDataset") {
+                            obj["@type"] = elementsById[obj["@id"]][0]["@type"];
                         }
                     } catch (error) {}
-                    delete element["@id"];
+                    delete obj["@id"];
                 }
-                return element;
+                return obj;
             }
         }
 
@@ -261,6 +243,8 @@ export default class CrateTool {
         data = cloneDeep(data);
         let rootDataset = this.getRootDataset({ data, fromGraph: true });
         data = mapIdentifiers({ data, rootDatasetUUID: rootDataset.uuid });
+        data = removeType({ data });
+        // console.log(JSON.stringify(data, null, 2));
 
         let elements = data.filter(
             (d) => d["@type"] !== "Dataset" && d["@id"] !== "./"
@@ -276,39 +260,34 @@ export default class CrateTool {
 
         function mapIdentifiers({ data, rootDatasetUUID }) {
             return data.map((element) => {
-                element = mapUuidToId(element);
-                return walkObject(element);
+                return walkObject({ obj: element, func: mapUuidToId });
             });
 
-            function walkObject(obj, level) {
-                obj = mapUuidToId(obj);
-                for (let prop of Object.keys(obj)) {
-                    if (isPlainObject(obj[prop])) {
-                        obj[prop] = mapUuidToId(obj[prop]);
-                        delete obj[prop]["@type"];
-                    } else if (isArray(obj[prop])) {
-                        obj[prop].map((element) => {
-                            element = mapUuidToId(element);
-                            if (isPlainObject(element)) {
-                                delete element["@type"];
-                            }
-                        });
+            function mapUuidToId({ obj, level }) {
+                if (obj.uuid && !obj["@id"]) {
+                    if (obj.uuid === rootDatasetUUID) {
+                        obj["@id"] = "./";
+                        obj["@type"] = "Dataset";
+                    } else {
+                        obj["@id"] = obj.uuid;
                     }
                 }
+                delete obj.uuid;
                 return obj;
             }
+        }
 
-            function mapUuidToId(element) {
-                if (element.uuid && !element["@id"]) {
-                    if (element.uuid === rootDatasetUUID) {
-                        element["@id"] = "./";
-                        element["@type"] = "Dataset";
-                    } else {
-                        element["@id"] = element.uuid;
-                    }
-                }
-                delete element.uuid;
-                return element;
+        function removeType({ data }) {
+            return data.map((element) => {
+                return walkObject({
+                    obj: element,
+                    func: removeTypeFromElement,
+                    level: 0,
+                });
+            });
+            function removeTypeFromElement({ obj, level }) {
+                if (level !== 0 && obj["@type"]) delete obj["@type"];
+                return obj;
             }
         }
     }
@@ -355,4 +334,33 @@ export default class CrateTool {
 
         return rootDataset[0];
     }
+}
+
+function walkObject({ obj, func, level }) {
+    obj = func({ obj, level });
+    level += 1;
+    for (let prop of Object.keys(obj)) {
+        if (isPlainObject(obj[prop])) {
+            obj[prop] = walkObject({
+                obj: obj[prop],
+                func,
+                level,
+            });
+        } else if (isArray(obj[prop])) {
+            obj[prop] = walkArray({ arr: obj[prop], func, level });
+        }
+    }
+    return obj;
+}
+
+function walkArray({ arr, func, level }) {
+    return arr.map((element) => {
+        if (isPlainObject(element)) {
+            return walkObject({ obj: element, func, level });
+        } else if (isArray(element)) {
+            return walkArray({ arr: element, func, level });
+        } else {
+            return element;
+        }
+    });
 }

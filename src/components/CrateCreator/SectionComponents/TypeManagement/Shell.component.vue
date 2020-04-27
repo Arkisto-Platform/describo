@@ -17,30 +17,17 @@
             <el-table-column prop="name" label="Name"></el-table-column>
             <el-table-column prop="name" label="Actions" width="180">
                 <template slot-scope="scope">
-                    <el-button type="success" @click="editEntity(scope.row)">
+                    <el-button type="success" @click="editItem(scope.row)">
                         <i class="fas fa-edit"></i>
                     </el-button>
                 </template>
             </el-table-column>
         </el-table>
-
-        <div class="mt-4">
-            <render-item-component
-                v-if="entity"
-                class="m-1"
-                :template="template"
-                reference=""
-                :data="entity"
-                :mode="mode"
-                @done="entity = undefined"
-            />
-        </div>
     </div>
 </template>
 
 <script>
-import RenderItemComponent from "components/CrateCreator/SectionComponents/RenderItem.component.vue";
-
+import { isEmpty } from "lodash";
 export default {
     props: {
         type: {
@@ -48,14 +35,11 @@ export default {
             required: true,
         },
     },
-    components: {
-        RenderItemComponent,
-    },
     data() {
         return {
-            entity: undefined,
-            template: {},
-            mode: {},
+            item: {},
+            profileInputs: [],
+            enableRemove: false,
             total: undefined,
             pageSize: 5,
             page: 0,
@@ -76,14 +60,15 @@ export default {
         },
     },
     methods: {
-        editEntity(entity) {
-            this.entity = entity;
-            this.template = { "@type": entity["@type"] };
-            this.mode = {
-                disableDelete: true,
-                visible: true,
-                edit: true,
-            };
+        isCustomComponent(type) {
+            return isCustomComponent(type);
+        },
+        editItem(item) {
+            this.$store.commit("addNewItem", {
+                itemId: item.uuid,
+                parentId: undefined,
+                property: undefined,
+            });
         },
         currentChange(page) {
             this.page = page - 1;

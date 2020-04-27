@@ -8,13 +8,13 @@
                 <div v-show="saved" class="text-green-600 mr-10">
                     <i class="fas fa-check"></i> saved
                 </div>
-                <div v-show="!valid" class="text-red-600">
+                <!-- <div v-show="!valid" class="text-red-600">
                     The crate is not yet valid. Ensure you fill in all of the
                     required properties.
                 </div>
                 <div v-show="valid" class="text-green-600">
                     The crate is valid.
-                </div>
+                </div> -->
 
                 <el-alert
                     v-if="error"
@@ -28,28 +28,20 @@
             </div>
         </div>
         <div class="overflow-scroll set-input-section-height">
-            <div v-for="(template, idx) of profileInputs" :key="idx">
-                <render-entry-component
-                    :template="template"
-                    :reference="dataset.uuid"
-                    :data="dataset[template.property]"
-                />
-            </div>
+            <render-profile-component :uuid="dataset.uuid" />
         </div>
     </div>
 </template>
 
 <script>
-import RenderEntryComponent from "components/CrateCreator/SectionComponents/RenderEntry.component.vue";
-import RenderItemComponent from "components/CrateCreator/SectionComponents/RenderItem.component.vue";
+import RenderProfileComponent from "components/CrateCreator/SectionComponents/RenderProfile.component.vue";
 import { cloneDeep } from "lodash";
 import CrateTool from "components/CrateCreator/crate-tools";
 const crateTool = new CrateTool();
 
 export default {
     components: {
-        RenderEntryComponent,
-        RenderItemComponent,
+        RenderProfileComponent,
     },
     data() {
         return {

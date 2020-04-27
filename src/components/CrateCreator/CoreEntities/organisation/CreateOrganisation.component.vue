@@ -1,12 +1,5 @@
 <template>
     <div class="flex flex-col mt-4">
-        <div class="text-sm text-gray-500" v-if="properties.mode.create">
-            Create a new organisation
-        </div>
-        <div class="text-sm text-gray-500" v-else>
-            Update organisation
-        </div>
-
         <el-form
             ref="form"
             :model="properties"
@@ -32,12 +25,12 @@ export default {
     props: {
         properties: {
             type: Object,
-            required: true
-        }
+            required: true,
+        },
     },
     data() {
         return {};
-    }
+    },
 };
 </script>
 

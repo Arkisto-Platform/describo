@@ -3,32 +3,21 @@
         <el-tag
             class="cursor-pointer"
             type="success"
-            @click="toggleEdit()"
-            v-if="!properties.mode.visible"
+            @click="editing = !editing"
+            v-if="!editing"
         >
             {{ this.properties.name }}
         </el-tag>
-        <el-card
-            type="box-card"
-            class="flex flex-col style-card"
-            v-if="properties.mode.visible"
-        >
-            <span v-if="properties.mode.create">
-                <!-- lookup organisation -->
-                <lookup-ror-component @selected-organisation="save" />
+        <el-card type="box-card" class="flex flex-col" v-if="editing">
+            <!-- lookup organisation -->
+            <lookup-ror-component @selected-organisation="update" />
 
-                <!-- select existing -->
-                <select-existing-entry type="Organisation" @selection="save" />
-            </span>
+            <!-- select existing -->
+            <!-- <select-existing-entry type="Organisation" @selection="save" /> -->
+            <!-- </span> -->
 
             <!-- create /edit organisation -->
-            <create-organisation-component
-                :properties.sync="properties"
-                v-if="properties.mode.create || properties.mode.edit"
-            />
-            <div v-else class="mb-4">
-                {{ properties.name }} ({{ properties.uuid }})
-            </div>
+            <create-organisation-component :properties.sync="properties" />
 
             <div class="flex flex-row mt-2">
                 <el-button @click="cancel" type="danger">
@@ -45,7 +34,7 @@
 
 <script>
 import { save, restore, remove } from "./organisation.js";
-import { generateId } from "components/CrateCreator/tools";
+import { unlinkParentAndItem } from "components/CrateCreator/tools";
 import CreateOrganisationComponent from "./CreateOrganisation.component.vue";
 import SelectExistingEntry from "../SelectExistingEntry.component.vue";
 import LookupRorComponent from "./LookupROR.component.vue";
@@ -54,107 +43,74 @@ export default {
     components: {
         CreateOrganisationComponent,
         SelectExistingEntry,
-        LookupRorComponent
+        LookupRorComponent,
     },
     props: {
         template: {
             type: Object,
-            required: true
+            required: true,
         },
         reference: {
-            type: String
+            type: String,
         },
-        data: {},
-        mode: {
-            type: Object
-        }
     },
     data() {
         return {
-            properties: {
-                visible: false
-            }
+            editing: true,
+            properties: {},
         };
     },
     created() {
         this.$data.properties = this.restore();
-        if (!this.data) this.$data.properties.uuid = generateId();
     },
-    mounted() {
-        if (this.mode) {
-            this.properties.mode = { ...this.properties.mode, ...this.mode };
-        }
-    },
+    mounted() {},
     methods: {
         restore() {
             return restore({
                 store: this.$store,
-                uuid: (this.data && this.data.uuid) || undefined
+                uuid: this.template.data.uuid,
             });
         },
         cancel() {
             remove({
                 store: this.$store,
-                organisation: this.data,
-                reference: {
-                    uuid: this.reference,
-                    property: this.template.property
-                }
+                organisation: this.properties,
+                parentId: this.reference,
+                property: this.template.property,
             });
-            this.properties.mode = {
-                edit: false,
-                create: false,
-                visible: false
-            };
+            this.editing = false;
+            this.$emit("remove", {
+                uuid: this.properties.uuid,
+                property: this.template.property,
+                type: this.template["@type"],
+            });
+        },
+        update(selection) {
+            this.$store.commit("removeFromGraph", {
+                uuid: this.properties.uuid,
+            });
+            unlinkParentAndItem({
+                store: this.$store,
+                parentId: this.reference,
+                itemId: this.properties.uuid,
+                property: this.template.property,
+            });
+            this.properties.uuid = selection.uuid;
+            this.properties.name = selection.name;
+            this.save();
+        },
+        save() {
+            save({
+                store: this.$store,
+                parentId: this.reference,
+                property: this.template.property,
+                organisation: this.properties,
+            });
+            this.editing = false;
             this.$emit("done");
         },
-        save(selection) {
-            if (selection) {
-                save({
-                    store: this.$store,
-                    reference: {
-                        uuid: this.reference,
-                        property: this.template.property
-                    },
-                    organisation: selection
-                });
-            } else {
-                if (
-                    this.properties.mode.edit &&
-                    this.properties.uuid !== this.data.uuid
-                )
-                    this.cancel();
-                save({
-                    store: this.$store,
-                    reference: {
-                        uuid: this.reference,
-                        property: this.template.property
-                    },
-                    organisation: this.properties
-                });
-            }
-            this.properties.mode = {
-                edit: false,
-                create: false,
-                visible: false
-            };
-            this.$emit("done");
-        },
-        toggleEdit() {
-            this.properties.mode.visible = true;
-            this.properties.mode.create = false;
-            this.properties.mode.edit = this.properties.uuid.match(
-                "https://ror.org"
-            )
-                ? false
-                : true;
-        }
-    }
+    },
 };
 </script>
 
-<style lang="scss" scoped>
-.style-card {
-    width: 600px;
-}
-</style>
+<style lang="scss" scoped></style>

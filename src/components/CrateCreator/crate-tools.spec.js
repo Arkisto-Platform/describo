@@ -371,7 +371,7 @@ test("it should report errors when elements are missing @id property", () => {
     // console.log(JSON.stringify(data, null, 2));
     expect(errors[0]).toMatch(/Unable to resolve item reference/);
     expect(errors[1]).toMatch(/Missing property '@id'/);
-    expect(errors[2]).toMatch(/Dangling item found/);
+    expect(errors[2]).toMatch(/Orphaned item found/);
 });
 
 test("it should report errors when elements are missing @type property", () => {
@@ -412,7 +412,7 @@ test("it should report errors when dangling elements are found", () => {
     });
     ({ data, errors } = crateTool.loadCrate({ crate }));
     // console.log(JSON.stringify(data, null, 2));
-    expect(errors[0]).toMatch(/Dangling item found/);
+    expect(errors[0]).toMatch(/Orphaned item found/);
 });
 
 test("it should not report an error - no dangling elements", () => {

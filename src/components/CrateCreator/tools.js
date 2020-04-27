@@ -1,3 +1,5 @@
+import { uniqBy, isEmpty, isPlainObject } from "lodash";
+
 function uuidv4() {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
         var r = (Math.random() * 16) | 0,
@@ -11,10 +13,68 @@ export function generateId() {
 }
 
 export function getParams({ properties, reference }) {
-    let params = Object.keys(properties).map(p => {
+    let params = Object.keys(properties).map((p) => {
         return { k: p, v: properties[p] };
     });
     params = params.reduce((map, obj) => ((map[obj.k] = obj.v), map), {});
     params.reference = reference;
     return params;
+}
+
+export function linkParentAndItem({ store, parentId, itemId, property }) {
+    let item = store.getters.getItemById(itemId);
+    let parent = store.getters.getItemById(parentId);
+
+    // set up the parent
+    if (!parent[property]) parent[property] = [];
+    if (isPlainObject(parent[property])) parent[property] = [parent[property]];
+    parent[property].push({ uuid: itemId, "@type": item["@type"] });
+    parent[property] = uniqBy(parent[property], "uuid");
+
+    // set up the reverse link from the item
+    if (!item["@reverse"]) item["@reverse"] = {};
+    if (!item["@reverse"][property]) item["@reverse"][property] = [];
+    if (isPlainObject(item["@reverse"][property]))
+        item["@reverse"][property] = [item["@reverse"][property]];
+    item["@reverse"][property].push({ uuid: parentId });
+    store.commit("saveToGraph", parent);
+    store.commit("saveToGraph", item);
+}
+
+export function unlinkParentAndItem({ store, parentId, itemId, property }) {
+    let item = store.getters.getItemById(itemId);
+    let parent = store.getters.getItemById(parentId);
+
+    // remove the item from the parent
+    if (parent[property]) {
+        if (isPlainObject(parent[property]))
+            parent[property] = [parent[property]];
+
+        parent[property] = parent[property].filter((i) => i.uuid !== itemId);
+        if (isEmpty(parent[property])) delete parent[property];
+        store.commit("saveToGraph", parent);
+    }
+
+    // remove the parent from the item
+    if (item && item["@reverse"] && item["@reverse"][property]) {
+        if (isPlainObject(item["@reverse"][property]))
+            item["@reverse"][property] = [item["@reverse"][property]];
+        item["@reverse"][property] = item["@reverse"][property].filter((i) => {
+            return i.uuid !== parentId;
+        });
+        if (!item["@reverse"][property].length)
+            delete item["@reverse"][property];
+        store.commit("saveToGraph", item);
+    }
+}
+
+export function validateIdentifier(uuid) {
+    if (
+        !uuid.match(
+            /^(http:\/\/|https:\/\/)[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i
+        ) &&
+        !uuid.match("^#.*")
+    ) {
+        id = `#${uuid}`;
+    }
 }

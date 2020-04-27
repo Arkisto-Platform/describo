@@ -24,7 +24,7 @@
             </el-option>
         </el-select>
         <div v-if="!entries || !entries.length">
-            No {{ type.toLowerCase() }} entries available yet.
+            No entries of type '{{ type }}' available yet.
         </div>
     </div>
 </template>
@@ -34,27 +34,27 @@ export default {
     props: {
         type: {
             type: String,
-            required: true
-        }
+            required: true,
+        },
     },
     data() {
         return {
-            selection: undefined
+            selection: undefined,
         };
     },
     computed: {
         entries: function() {
             return this.$store.state.itemsByType[this.type];
-        }
+        },
     },
     methods: {
         emitSelection() {
             const selection = this.entries.filter(
-                e => e.uuid === this.selection
+                (e) => e.uuid === this.selection
             )[0];
             this.$emit("selection", selection);
-        }
-    }
+        },
+    },
 };
 </script>
 

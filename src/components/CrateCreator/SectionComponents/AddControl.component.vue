@@ -17,12 +17,12 @@ export default {
     props: {
         template: {
             type: Object,
-            required: true
-        }
+            required: true,
+        },
     },
     data() {
         return {
-            types: []
+            types: [],
         };
     },
     mounted() {
@@ -33,12 +33,9 @@ export default {
     },
     methods: {
         add(type) {
-            this.$emit("add", {
-                template: this.template,
-                type
-            });
-        }
-    }
+            this.$emit("add", { type, property: this.template.property });
+        },
+    },
 };
 </script>
 

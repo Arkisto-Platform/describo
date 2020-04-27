@@ -29,6 +29,12 @@ export default {
                 help: "A description of the content of this crate.",
             },
             {
+                property: "keywords",
+                "@type": "Text",
+                help: "A description of the content of this crate.",
+                multiple: true,
+            },
+            {
                 property: "datePublished",
                 label: "Date Published",
 
@@ -37,11 +43,22 @@ export default {
                 help: "The date of publication crate.",
             },
             {
+                property: "audience",
+                label: "Audience",
+                "@type": "Select",
+                options: [
+                    "Researchers",
+                    "Archivists",
+                    "Librarians",
+                    "Management",
+                ],
+            },
+            {
                 property: "author",
                 label: "Author",
 
                 // the type of element: one of the core types in components/CrateCreator/components
-                "@type": ["Person", "Organisation"],
+                "@type": ["Person", "Organization"],
 
                 // can there be multiple authors?
                 multiple: true,
@@ -52,15 +69,28 @@ export default {
                 label: "Publisher",
 
                 // the type of element: one of the core types in components/CrateCreator/components
-                "@type": "Organisation",
+                "@type": "Organization",
 
                 required: true,
+                multiple: true,
             },
             {
                 property: "contactPoint",
                 label: "Contact Point",
                 "@type": "ContactPoint",
                 required: true,
+                multiple: true,
+            },
+            {
+                property: "citation",
+                label: "Citation",
+                "@type": "ScholarlyArticle",
+                multiple: true,
+            },
+            {
+                property: "funder",
+                label: "Funder",
+                "@type": "Organisation",
                 multiple: true,
             },
         ],

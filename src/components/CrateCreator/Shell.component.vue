@@ -23,6 +23,13 @@
                     v-if="!showRootDatasetSelector"
                 >
                     <el-button
+                        type="success"
+                        size="small"
+                        @click="view.addItem = true"
+                    >
+                        <i class="fas fa-plus"></i> Add item to the crate
+                    </el-button>
+                    <el-button
                         @click="view.dataInspector = true"
                         type="primary"
                         size="small"
@@ -40,7 +47,7 @@
                     </el-button>
                     <div class="flex-grow"></div>
                     <el-button
-                        @click="view.crateExport = true"
+                        @click="view.crateExportDialog = true"
                         type="success"
                         size="small"
                     >
@@ -49,18 +56,21 @@
                     </el-button>
                 </div>
             </div>
+            <!-- end: controls-->
 
             <!-- data inspector drawer-->
             <data-inspector-component
                 :drawer="view.dataInspector"
                 @close="view.dataInspector = false"
             />
+            <!-- end: data inspector drawer-->
 
             <!-- crate export drawer -->
             <crate-export-component
                 :drawer="view.crateExportDialog"
-                @close="view.crateExport = false"
+                @close="view.crateExportDialog = false"
             />
+            <!-- end: crate export drawer -->
 
             <!-- crate loading errors drawer -->
             <crate-loading-errors-component
@@ -68,6 +78,14 @@
                 :errors="crateLoadingErrors"
                 @close="view.crateLoadingErrors = false"
             />
+            <!-- end: crate loading errors drawer -->
+
+            <!-- add item to the crate drawer -->
+            <add-item-to-crate-component
+                :drawer="view.addItem"
+                @close="view.addItem = false"
+            />
+            <!-- end: add item to the crate drawer -->
 
             <!-- loading indicator -->
             <el-progress
@@ -75,10 +93,12 @@
                 :percentage="percentageLoaded"
                 v-if="percentageLoaded !== 0"
             ></el-progress>
+            <!-- end: loading indicator -->
 
             <!-- tabs -->
             <el-tabs
                 v-model="activeTab"
+                :stretch="true"
                 tab-position="left"
                 class="mt-4 border-t-2 pt-4"
                 v-if="ready && !showRootDatasetSelector"
@@ -93,30 +113,24 @@
                 <el-tab-pane label="Crate Contents" name="parts">
                     <crate-parts-component v-if="activeTab === 'parts'" />
                 </el-tab-pane>
-                <!-- <el-tab-pane label="People" name="people">
-                    <type-management-component
-                        type="Person"
-                        v-if="activeTab === 'people'"
-                    />
-                </el-tab-pane>
-                <el-tab-pane label="Organisations" name="organisations">
-                    <type-management-component
-                        type="Organisation"
-                        v-if="activeTab === 'organisations'"
-                    />
-                </el-tab-pane>
-                <el-tab-pane label="Contact Points" name="contactPoints">
-                    <type-management-component
-                        type="ContactPoint"
-                        v-if="activeTab === 'contactPoints'"
-                    />
-                </el-tab-pane> -->
                 <el-tab-pane
                     :label="type"
                     :name="type"
-                    v-for="(type, idx) of types"
-                    :key="idx"
+                    v-for="type of types"
+                    :key="type"
                 >
+                    <span slot="label">
+                        <span v-show="type === 'ContactPoint'">
+                            <i class="fas fa-address-book"></i>
+                        </span>
+                        <span v-show="type === 'Person'">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        <span v-show="type === 'Organisation'">
+                            <i class="fas fa-university"></i>
+                        </span>
+                        {{ type }}
+                    </span>
                     <type-management-component
                         :type="type"
                         v-if="activeTab === type"
@@ -145,6 +159,7 @@ import TypeManagementComponent from "./SectionComponents/TypeManagement/Shell.co
 import DataInspectorComponent from "./SectionComponents/DataInspector.component.vue";
 import CrateExportComponent from "./SectionComponents/CrateExport/CrateExport.component.vue";
 import CrateLoadingErrorsComponent from "./SectionComponents/CrateLoadingErrors.component.vue";
+import AddItemToCrateComponent from "./SectionComponents/AddItemToCrate.component.vue";
 import CrateTool from "components/CrateCreator/crate-tools";
 
 export default {
@@ -156,10 +171,12 @@ export default {
         DataInspectorComponent,
         CrateExportComponent,
         CrateLoadingErrorsComponent,
+        AddItemToCrateComponent,
     },
     data() {
         return {
             view: {
+                addItem: false,
                 dataInspector: false,
                 crateExportDialog: false,
                 crateLoadingErrors: false,
@@ -179,9 +196,23 @@ export default {
                 .filter((t) => t !== "RootDataset")
                 .sort();
         },
+        addNewItem: function() {
+            const newItem = this.$store.state.addNewItem;
+            return newItem;
+        },
     },
     beforeMount() {
         this.loadProfile();
+    },
+    watch: {
+        addNewItem: {
+            handler: function() {
+                if (this.addNewItem && this.addNewItem.itemId) {
+                    this.view.addItem = true;
+                }
+            },
+            deep: true,
+        },
     },
     methods: {
         async loadProfile() {
@@ -189,7 +220,15 @@ export default {
             const profileLoader = new ProfileLoader({
                 name: this.$store.state.profile,
             });
+
+            // load the profile
             const { profile } = await profileLoader.load();
+
+            // get and store the type definitions
+            const typeDefinitions = await profileLoader.loadTypeDefinitions();
+            this.$store.commit("saveTypeDefinitions", typeDefinitions);
+
+            // verify the profile
             let { valid, errors } = profileLoader.verify();
             if (!valid) {
                 this.error = `The profile is invalid and can't be loaded.`;
@@ -211,14 +250,14 @@ export default {
             const profile = cloneDeep(this.profile[selection]);
             this.$store.commit("saveProfileInputs", profile.inputs);
 
+            const crateTool = new CrateTool();
             let data, errors;
             try {
-                const crateTool = new CrateTool();
                 ({ data, errors } = await crateTool.readCrate({
                     target: this.$store.state.target,
                 }));
             } catch (error) {
-                // this.error = error.message;
+                console.log(error);
             }
             if (data) {
                 errors = await this.loadCrateDataIntoStore({

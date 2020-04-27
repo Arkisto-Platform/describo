@@ -1,10 +1,14 @@
 import fs from "fs-extra";
 
 import defaultProfile from "components/profiles/default";
+import typeDefinitions from "components/profiles/types";
 import { cloneDeep, isString } from "lodash";
+import { readdir } from "fs-extra";
+import path from "path";
 
 const profiles = {
     default: defaultProfile,
+    typeDefinitions,
 };
 
 export default class ProfileLoader {
@@ -21,6 +25,23 @@ export default class ProfileLoader {
         }
         this.profile = profiles[this.name];
         return { profile: cloneDeep(this.profile) };
+    }
+
+    async loadTypeDefinitions() {
+        //     const typeDefs = (
+        //         await readdir(path.join(__dirname, "..", "profiles", "default"))
+        //     )
+        //         .filter((d) => d !== "index.js")
+        //         .map((d) => `${path.sep}default${path.sep}${d}`);
+        //     const typeDefinitions = {};
+
+        //     for (let def of typeDefs) {
+        //         let inputs = (await import(`..${path.sep}profiles${def}`)).default
+        //             .inputs;
+        //         typeDefinitions[def.replace(".js", "")] = inputs;
+        //     }
+        //     return typeDefinitions;
+        return profiles.typeDefinitions;
     }
 
     verify() {

@@ -1,7 +1,7 @@
 <template>
     <div>
         <audio ref="mediaElement" controls class="style-audio-element">
-            <source :src="path" />
+            <source :src="filePath" />
             Your browser does not support the <code>audio</code> element.
         </audio>
     </div>
@@ -12,12 +12,17 @@ export default {
     props: {
         path: {
             type: String,
-            required: true
-        }
+            required: true,
+        },
     },
     data() {
         return {};
-    }
+    },
+    computed: {
+        filePath: function() {
+            return `file:${this.path}`;
+        },
+    },
 };
 </script>
 

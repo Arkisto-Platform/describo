@@ -12,8 +12,6 @@ import {
     isArray,
     flattenDeep,
 } from "lodash";
-import { stat } from "fs";
-import { reverse } from "dns";
 
 const state = reset();
 export const mutations = {
@@ -25,6 +23,9 @@ export const mutations = {
     },
     saveProfileInputs(state, payload) {
         state.profileInputs = [...payload];
+    },
+    saveTypeDefinitions(state, payload) {
+        state.typeDefinitions = cloneDeep(payload);
     },
     saveToGraph(state, payload) {
         // payload = {
@@ -142,6 +143,9 @@ export const mutations = {
         // state.itemsByType = groupBy(state.graph, "@type");
         state.itemsByType = groupItemsByType(state.graph);
     },
+    addNewItem(state, payload) {
+        state.addNewItem = cloneDeep(payload);
+    },
     reset(state) {
         state.graph = [];
         state.itemsById = {};
@@ -154,13 +158,20 @@ export const getters = {
         try {
             return cloneDeep(state.itemsById[id]);
         } catch (error) {
-            return undefined;
+            return {};
         }
     },
     getItemsByType: (state) => (type) => {
         try {
             return cloneDeep(state.itemsByType[type]);
         } catch (error) {
+            return [];
+        }
+    },
+    getTypeDefinition: (state) => (type) => {
+        if (type in state.typeDefinitions) {
+            return cloneDeep(state.typeDefinitions[type]);
+        } else {
             return undefined;
         }
     },
@@ -180,9 +191,11 @@ function reset() {
         target: null,
         profile: null,
         profileInputs: [],
+        typeDefinitions: {},
         graph: [],
         itemsByType: {},
         itemsById: {},
+        addNewItem: undefined,
     };
 }
 

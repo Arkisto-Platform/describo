@@ -10,14 +10,6 @@
             v-if="template.required || enabled"
         >
         </el-date-picker>
-        <remove-control
-            type="Text"
-            @cancel="cancel"
-            v-if="!template.required && enabled"
-        />
-        <div v-if="saved" class="ml-2 text-green-600 pt-1">
-            <i class="far fa-check-circle fa-2x"></i>
-        </div>
     </div>
 </template>
 
@@ -33,7 +25,7 @@ export default {
         setTimeout(() => {
             this.saved = false;
         }, 1000);
-    }
+    },
 };
 </script>
 

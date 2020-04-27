@@ -16,7 +16,8 @@
             v-loading="loading"
             :trigger-on-focus="false"
             :clearable="true"
-            :fetch-suggestions="debouncedLookup"
+            :debounce="1000"
+            :fetch-suggestions="lookup"
             placeholder=""
             @select="handleSelect"
             v-if="!error"
@@ -40,35 +41,29 @@ export default {
             loading: false,
             value: undefined,
             debouncedLookup: debounce(this.lookup, 800),
-            api: "https://api.ror.org/organizations"
+            api: "https://api.ror.org/organizations",
         };
     },
     methods: {
         async lookup(query, cb) {
             if (!query) return cb([]);
             this.loading = true;
-            setTimeout(async () => {
-                let response = await fetch(`${this.api}?query=${query}`);
-                if (response.status !== 200) {
-                    this.error = true;
-                    // console.log(
-                    //     "Looks like there was a problem. Status Code: " +
-                    //         response.status
-                    // );
-                    return;
-                }
-                let results = await response.json();
-                this.loading = false;
-                return cb(results.items);
-            }, 500);
+            let response = await fetch(`${this.api}?query=${query}`);
+            if (response.status !== 200) {
+                this.error = true;
+                return cb([]);
+            }
+            let results = await response.json();
+            this.loading = false;
+            return cb(results.items);
         },
         handleSelect(selection) {
             this.$emit("selected-organisation", {
                 uuid: selection.id,
-                ...selection
+                ...selection,
             });
-        }
-    }
+        },
+    },
 };
 </script>
 

@@ -5,9 +5,22 @@
 </template>
 
 <script>
-import SimpleComponentMixins from "./SimpleComponentMixins";
 export default {
-    mixins: [SimpleComponentMixins]
+    props: {
+        template: {
+            type: Object,
+            required: true,
+        },
+        reference: {
+            type: String,
+            required: true,
+        },
+    },
+    data() {
+        return {
+            value: this.template.value,
+        };
+    },
 };
 </script>
 

@@ -1,4 +1,14 @@
 export const SimpleTypes = ["Value", "Text", "TextArea", "Select", "Date"];
+export const CustomComponents = ["Organisation"];
+
+export function isSimpleType(type) {
+    return SimpleTypes.includes(type);
+}
+
+export function isCustomComponent(type) {
+    return CustomComponents.includes(type);
+}
+
 export const components = {
     components: {
         DateComponent: () =>
@@ -13,25 +23,14 @@ export const components = {
             import("components/CrateCreator/CoreEntities/Text.component.vue"),
         ValueComponent: () =>
             import("components/CrateCreator/CoreEntities/Value.component.vue"),
-        CompoundComponent: () =>
-            import(
-                "components/CrateCreator/CoreEntities/Compound.component.vue"
-            ),
-        PersonComponent: () =>
-            import(
-                "components/CrateCreator/CoreEntities/person/Person.component.vue"
-            ),
+    },
+};
+
+export const customComponents = {
+    components: {
         OrganisationComponent: () =>
             import(
                 "components/CrateCreator/CoreEntities/organisation/Organisation.component.vue"
-            ),
-        ContactPointComponent: () =>
-            import(
-                "components/CrateCreator/CoreEntities/contactPoint/ContactPoint.component.vue"
-            ),
-        GenericComponent: () =>
-            import(
-                "components/CrateCreator/CoreEntities/generic/Generic.component.vue"
             ),
     },
 };

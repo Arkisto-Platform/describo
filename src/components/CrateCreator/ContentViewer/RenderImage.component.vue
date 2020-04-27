@@ -6,7 +6,7 @@
             </el-button>
         </div>
         <div class="mt-2">
-            <img :src="path" class="object-fill m-auto" />
+            <img :src="filePath" class="object-fill m-auto" />
         </div>
     </div>
 </template>
@@ -25,10 +25,15 @@ export default {
     data() {
         return {};
     },
+    computed: {
+        filePath: function() {
+            return `file:${this.path}`;
+        },
+    },
     methods: {
         toggleFullScreen() {
             const viewer = new FullScreenViewer({});
-            viewer.show(this.path);
+            viewer.show(this.filePath);
         },
     },
 };
