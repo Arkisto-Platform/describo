@@ -54,7 +54,7 @@ export default class FileTreeLoader {
     rclone() {
         let rclone;
         if (process.env.NODE_ENV === "production") {
-            return nodePath.join(__dirname, "..", "bin", "rclone");
+            return nodePath.join(__dirname, "..", "..", "bin", "rclone");
         } else {
             const backPath = [__dirname, "..", "..", "..", "rclone-binaries"];
             switch (platform()) {
