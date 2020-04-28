@@ -29,6 +29,12 @@ export default {
                 help: "A description of the content of this crate.",
             },
             {
+                property: "license",
+                label: "License",
+                "@type": "CreativeWork",
+                help: "A license for this crate",
+            },
+            {
                 property: "keywords",
                 "@type": "Text",
                 help: "A description of the content of this crate.",
@@ -69,7 +75,7 @@ export default {
                 label: "Publisher",
 
                 // the type of element: one of the core types in components/CrateCreator/components
-                "@type": "Organization",
+                "@type": ["Organization", "Person"],
 
                 required: true,
                 multiple: true,
@@ -92,6 +98,11 @@ export default {
                 label: "Funder",
                 "@type": "Organisation",
                 multiple: true,
+            },
+            {
+                property: "contentLocation",
+                label: "Content Location",
+                "@type": "Place",
             },
         ],
     },

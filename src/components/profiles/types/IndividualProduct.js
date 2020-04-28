@@ -3,12 +3,8 @@ export default {
         { property: "name", "@type": "Text", required: true },
         { property: "description", "@type": "Text" },
         { property: "URL", "@type": "Text" },
-        {
-            property: "manufacturer",
-            "@type": "Select",
-            options: ["Olympus", "Panasonic"],
-        },
-        { property: "model", "@type": "Text" },
-        { property: "serialNumber", "@type": "Text" },
+        { property: "manufacturer", "@type": "Type", required: true },
+        { property: "model", "@type": "Text", required: true },
+        { property: "serialNumber", "@type": "Text", required: true },
     ],
 };

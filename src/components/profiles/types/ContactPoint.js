@@ -7,5 +7,7 @@ export default {
             value: "customer service",
         },
         { property: "email", "@type": "Text", required: true },
+        { property: "identifier", "@type": "Text" },
+        { property: "url", "@type": "Text" },
     ],
 };

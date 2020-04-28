@@ -1,7 +1,7 @@
 import {
     updateTemplate,
     setFlags,
-    checkAndMergeComplexTypes,
+    determinePropertyDataType,
 } from "./describe-entry";
 import { isArray, isString } from "lodash";
 
@@ -67,23 +67,6 @@ test("it should join a populated item with a template", () => {
     // console.log(template);
     expect(template.data).toBe(item.name);
 });
-test("it should create a template showing all item properties", () => {
-    const inputs = [];
-    const item = {
-        "@type": "ContactPoint",
-        uuid: "#3",
-        name: "something",
-    };
-
-    const template = updateTemplate({ inputs, item })[0];
-    expect(template).toEqual({
-        property: "name",
-        "@type": "Text",
-        data: "something",
-        showAddControl: false,
-        enabled: true,
-    });
-});
 test("it should create a template with generic inputs", () => {
     const inputs = [];
     const item = {
@@ -91,6 +74,7 @@ test("it should create a template with generic inputs", () => {
         uuid: "#3",
     };
     const template = updateTemplate({ inputs, item });
+    // console.log(template);
     expect(template).toEqual([
         {
             property: "name",
@@ -225,50 +209,106 @@ test("test handling an that is not required and can't have multiples", () => {
     expect(template.showAddControl).toBe(false);
     expect(isString(template.data)).toBe(true);
 });
-test("it should resolve a single complex type", () => {
-    let input = {
-        property: "author",
-        "@type": "Person",
-    };
-    input = checkAndMergeComplexTypes({ input, typeDefinitions });
-    // console.log(JSON.stringify(input, null, 2));
-    expect(input["@type"]).toEqual(["Person"]);
-});
-test("it should resolve a single complex type in a mixed array", () => {
-    let input = {
-        property: "author",
-        "@type": ["Person", "Text"],
-    };
-    input = checkAndMergeComplexTypes({ input, typeDefinitions });
-    // console.log(JSON.stringify(input, null, 2));
-    expect(input.typeDefinitions).toHaveProperty("Person");
-});
-test("it should resolve a multiple complex types", () => {
-    let input = {
-        property: "author",
-        "@type": ["Person", "Organisation"],
-    };
-    input = checkAndMergeComplexTypes({ input, typeDefinitions });
-    // console.log(JSON.stringify(input, null, 2));
-    expect(input.typeDefinitions).toHaveProperty("Person");
-    expect(input.typeDefinitions).toHaveProperty("Organisation");
-});
-test.skip("it should be able to load a template with simple and complex types", () => {
-    const inputs = [
-        { property: "name", "@type": "Text" },
-        {
-            property: "author",
-            "@type": "Person",
-            multiple: true,
-            required: true,
-        },
-    ];
+test("test creating a template from an item with one simple property", () => {
+    const inputs = [];
     const item = {
         "@type": "ContactPoint",
         uuid: "#3",
-        name: "name",
+        name: "something",
     };
 
-    const template = updateTemplate({ inputs, item, typeDefinitions })[1];
-    expect(template.typeDefinitions).toHaveProperty("Person");
+    const template = updateTemplate({ inputs, item })[0];
+    // console.log(template);
+    expect(template).toEqual({
+        property: "name",
+        "@type": "Text",
+        data: "something",
+        showAddControl: false,
+        enabled: true,
+    });
+});
+test("determineProperty: map a string to a Text element", () => {
+    let item = {
+        name: "name",
+    };
+    let template = determinePropertyDataType({
+        property: "name",
+        data: item.name,
+    });
+    // console.log(template);
+    expect(template).toEqual({
+        property: "name",
+        "@type": "Text",
+        data: item.name,
+    });
+});
+test("determineProperty: map a string to a Date element", () => {
+    let item = {
+        date: new Date().toISOString(),
+    };
+    let template = determinePropertyDataType({
+        property: "date",
+        data: item.date,
+    });
+    // console.log(template);
+    expect(template).toEqual({
+        property: "date",
+        "@type": "Date",
+        data: item.date,
+    });
+});
+test("determineProperty: map an object referencing something else ", () => {
+    let item = {
+        name: {
+            uuid: "#1",
+            "@type": "Person",
+        },
+    };
+    let template = determinePropertyDataType({
+        property: "name",
+        data: item.name,
+    });
+    // console.log(template);
+    expect(template).toEqual({
+        property: "name",
+        "@type": "Person",
+        data: [item.name],
+        multiple: true,
+    });
+
+    item = {
+        name: {
+            uuid: "#1",
+        },
+    };
+    template = determinePropertyDataType({
+        property: "name",
+        data: item.name,
+    });
+    // console.log(template);
+    expect(template).toEqual({
+        property: "name",
+        "@type": "Text",
+        data: [item.name],
+        multiple: true,
+    });
+});
+test("determineProperty: map an array of objects each referencing something else ", () => {
+    let item = {
+        name: [
+            { uuid: "#1", "@type": "Person" },
+            { uuid: "#2", "@type": "Organization" },
+        ],
+    };
+    let template = determinePropertyDataType({
+        property: "name",
+        data: item.name,
+    });
+    // console.log(template);
+    expect(template).toEqual({
+        property: "name",
+        "@type": ["Person", "Organization"],
+        data: item.name,
+        multiple: true,
+    });
 });

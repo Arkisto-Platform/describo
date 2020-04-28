@@ -9,24 +9,26 @@
         @close="done"
     >
         <div class="flex flex-col bg-gray-200 p-4 h-full">
-            <div class="text-xl">Add an item to the crate.</div>
-            <div class="my-2">
-                <!-- select item to add to crate -->
-                <el-select
-                    v-model="type"
-                    placeholder="Select an item type to add to the crate"
-                    class="w-full"
-                    @change="loadComponent"
-                >
-                    <el-option
-                        v-for="item in typeDefinitions"
-                        :key="item"
-                        :label="item"
-                        :value="item"
+            <div v-if="!addNewItem">
+                <div class="text-xl">Add an item to the crate.</div>
+                <div class="my-2">
+                    <!-- select item to add to crate -->
+                    <el-select
+                        v-model="type"
+                        placeholder="Select an item type to add to the crate"
+                        class="w-full"
+                        @change="loadComponent"
                     >
-                    </el-option>
-                </el-select>
-                <!-- end: select item to add to crate -->
+                        <el-option
+                            v-for="item in typeDefinitions"
+                            :key="item"
+                            :label="item"
+                            :value="item"
+                        >
+                        </el-option>
+                    </el-select>
+                    <!-- end: select item to add to crate -->
+                </div>
             </div>
 
             <div v-if="addNewItem">
@@ -48,15 +50,35 @@
                         ></component>
                     </div>
                     <div v-else>
-                        <render-type-component
+                        <render-profile-component :uuid="item.uuid" />
+                        <!-- <render-type-component
                             :uuid="item.uuid"
                             :enable-remove="enableRemove"
                             @save="done"
                             @remove="remove"
-                        />
+                        /> -->
                     </div>
                     <!-- <pre>{{ addNewItem }}</pre> -->
                     <!-- <pre>{{ item }}</pre> -->
+                    <div class="flex flex-row mt-1">
+                        <el-button
+                            @click="remove()"
+                            type="danger"
+                            class="ml-1"
+                            v-if="enableRemove"
+                        >
+                            <i class="fas fa-trash-alt"></i>
+                        </el-button>
+                        <div class="flex flex-grow"></div>
+                        <el-button
+                            @click="done()"
+                            type="success"
+                            size="small"
+                            :disabled="item && !item.name"
+                        >
+                            <i class="fas fa-check"></i>&nbsp;save
+                        </el-button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -80,6 +102,7 @@ export default {
     mixins: [CustomComponentMixins],
     components: {
         RenderTypeComponent: () => import("./RenderType.component.vue"),
+        RenderProfileComponent: () => import("./RenderProfile.component"),
     },
     props: {
         drawer: {

@@ -8,5 +8,6 @@ export default {
             "@type": "Text",
         },
         { property: "email", "@type": "Text" },
+        { property: "affiliation", "@type": "Organization" },
     ],
 };

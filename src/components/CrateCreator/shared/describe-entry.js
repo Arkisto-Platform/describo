@@ -1,5 +1,6 @@
 import { isEmpty, isUndefined, isString, isArray, isPlainObject } from "lodash";
 import { isSimpleType } from "components/CrateCreator/CoreComponents/simple/component.mixins";
+import { parseJSON, isValid } from "date-fns";
 
 export function updateTemplate({ inputs, item, typeDefinitions }) {
     let template = [];
@@ -30,29 +31,41 @@ export function updateTemplate({ inputs, item, typeDefinitions }) {
         });
 
         // join in any properties that are not defined in the template
-        // for (let property of Object.keys(item)) {
-        //     if (
-        //         !ignoreProperties.includes(property) &&
-        //         !inputProperties.includes(property)
-        //     ) {
-        //         // a property is defined in the item but not in the type definition
-        //         template.push({
-        //             property,
-        //             "@type": "Text",
-        //             data: item[property],
-        //         });
-        //     }
-        // }
+        for (let property of Object.keys(item)) {
+            if (
+                !ignoreProperties.includes(property) &&
+                !inputProperties.includes(property)
+            ) {
+                // a property is defined in the item but not in the type definition
+                template.push(
+                    determinePropertyDataType({
+                        property,
+                        data: item[property],
+                    })
+                );
+                // template.push({
+                //     property,
+                //     "@type": "Text",
+                //     data: item[property],
+                // });
+            }
+        }
     } else if (!inputs.length && Object.keys(item).length > 2) {
         // if we DON'T have a set of inputs but we DO have an item
         //  create a template with text inputs for each item property
         for (let prop of Object.keys(item)) {
             if (!ignoreProperties.includes(prop)) {
-                template.push({
-                    property: prop,
-                    "@type": "Text",
-                    data: item[prop],
-                });
+                template.push(
+                    determinePropertyDataType({
+                        property: prop,
+                        data: item[prop],
+                    })
+                );
+                // template.push({
+                //     property: prop,
+                //     "@type": "Text",
+                //     data: item[prop],
+                // });
             }
         }
     } else {
@@ -95,4 +108,31 @@ export function setFlags({ item }) {
     }
 
     return item;
+}
+
+export function determinePropertyDataType({ property, data }) {
+    // is it a string
+    if (isString(data)) {
+        if (!isValid(parseJSON(data))) {
+            return { property, "@type": "Text", data };
+        } else {
+            return { property, "@type": "Date", data };
+        }
+    } else if (isPlainObject(data)) {
+        if (data.uuid && data["@type"]) {
+            return {
+                property,
+                "@type": data["@type"],
+                data: [data],
+                multiple: true,
+            };
+        } else {
+            return { property, "@type": "Text", data: [data], multiple: true };
+        }
+    } else if (isArray(data)) {
+        const types = data.map((d) => {
+            return d["@type"] || "Text";
+        });
+        return { property, "@type": types, data, multiple: true };
+    }
 }
