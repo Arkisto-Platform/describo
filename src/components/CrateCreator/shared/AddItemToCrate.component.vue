@@ -36,6 +36,7 @@
                 </div>
 
                 <div class="overflow-scroll style-content-area flex flex-col">
+                    {{ customComponent }}
                     <div v-if="customComponent">
                         <component
                             class="flex-grow"
@@ -90,6 +91,7 @@ export default {
         return {
             type: undefined,
             profileInputs: [],
+            item: {},
         };
     },
     computed: {
@@ -147,6 +149,7 @@ export default {
             this.$store.commit("removeFromGraph", {
                 uuid: this.addNewItem.itemId,
             });
+            this.item = {};
             this.$store.commit("addNewItem", undefined);
             this.$refs.drawer.closeDrawer();
         },
