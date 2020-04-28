@@ -26,7 +26,7 @@
             <!-- add control -->
             <div class="flex flex-row">
                 <render-profile-item-linker-component
-                    v-if="showLinker(input)"
+                    v-if="showLinker(input) && input.showAddControl"
                     :types="input['@type']"
                     :parentId="container.uuid"
                     :property="input.property"
