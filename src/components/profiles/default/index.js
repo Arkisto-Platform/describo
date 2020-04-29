@@ -96,7 +96,7 @@ export default {
             {
                 property: "funder",
                 label: "Funder",
-                "@type": "Organisation",
+                "@type": "Organization",
                 multiple: true,
             },
             {
