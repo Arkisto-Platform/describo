@@ -6,7 +6,7 @@ export default {
             required: true,
         },
         { property: "name", "@type": "Text", required: true },
-        { property: "description", "@type": "Text" },
+        { property: "description", "@type": "TextArea" },
         { property: "license", "@type": "CreativeWork" },
         { property: "author", "@type": ["Person", "Organization"] },
     ],
