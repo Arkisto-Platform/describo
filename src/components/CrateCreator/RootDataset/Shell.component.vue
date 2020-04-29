@@ -2,39 +2,40 @@
     <div class="flex flex-col">
         <div class="w-full lg:w-1/2 border-b-2 pb-2">
             <div class="flex flex-row space-x-2">
-                <div
-                    v-if="development"
-                    class="flex flex-row space-x-2 border-r-2 pr-2"
-                >
-                    <el-button
-                        @click="
-                            enableCrateWriteToDisk = !enableCrateWriteToDisk
-                        "
-                        :type="enableCrateWriteToDisk ? 'danger' : 'primary'"
-                    >
-                        <span v-if="enableCrateWriteToDisk">disable</span>
-                        <span v-else>enable</span>
-                        save
-                    </el-button>
-                    <div
-                        v-if="enableCrateWriteToDisk"
-                        class="text-green-600 pt-2"
-                    >
-                        save to disk enabled
+                <div v-if="development" class="flex flex-row space-x-2 pr-4">
+                    <div>
+                        <el-button
+                            @click="
+                                enableCrateWriteToDisk = !enableCrateWriteToDisk
+                            "
+                            :type="
+                                enableCrateWriteToDisk ? 'danger' : 'success'
+                            "
+                            size="small"
+                        >
+                            <span v-if="enableCrateWriteToDisk">disable</span>
+                            <span v-else>enable</span>
+                            save
+                        </el-button>
                     </div>
-                    <div v-else class="text-red-600 pt-2 font-bold">
+                    <div
+                        v-if="!enableCrateWriteToDisk"
+                        class="text-white text-xl bg-red-600 px-4 rounded"
+                    >
                         save to disk disabled
                     </div>
                 </div>
-                <div v-show="saving" class="text-orange-600 mr-10 pt-2">
-                    <i class="fas fa-save"></i> saving the crate
-                    <span v-if="enableCrateWriteToDisk">to disk</span>
-                    <span v-else>internally - changes can be lost</span>
-                </div>
-                <div v-show="saved" class="text-green-600 mr-10 pt-2">
-                    <i class="fas fa-check"></i> saved
-                    <span v-if="enableCrateWriteToDisk">to disk</span>
-                    <span v-else>internally - changes can be lost</span>
+                <div class="flex flex-row" v-if="enableCrateWriteToDisk">
+                    <div v-show="saving" class="text-orange-600 mr-10 pt-2">
+                        <i class="fas fa-save"></i> saving the crate
+                        <span v-if="enableCrateWriteToDisk">to disk</span>
+                        <span v-else>internally - changes can be lost</span>
+                    </div>
+                    <div v-show="saved" class="text-green-600 mr-10 pt-2">
+                        <i class="fas fa-check"></i> saved
+                        <span v-if="enableCrateWriteToDisk">to disk</span>
+                        <span v-else>internally - changes can be lost</span>
+                    </div>
                 </div>
                 <!-- <div v-show="!valid" class="text-red-600">
                     The crate is not yet valid. Ensure you fill in all of the
@@ -77,7 +78,7 @@ export default {
             saving: false,
             error: undefined,
             valid: true,
-            enableCrateWriteToDisk: true,
+            enableCrateWriteToDisk: false,
         };
     },
     computed: {
@@ -131,14 +132,5 @@ export default {
 }
 .style-controls-row {
     width: 700px;
-}
-
-.blinking {
-    animation: blinkingText 1s infinite;
-}
-@keyframes blinkingText {
-    50% {
-        opacity: 0;
-    }
 }
 </style>
