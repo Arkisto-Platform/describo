@@ -175,6 +175,9 @@ export const getters = {
             return undefined;
         }
     },
+    getProfile: (state) => () => {
+        return cloneDeep(state.profileInputs);
+    },
 };
 
 const configuration = {
