@@ -24,12 +24,38 @@ export function getParams({ properties, reference }) {
 export function linkParentAndItem({ store, parentId, itemId, property }) {
     let item = store.getters.getItemById(itemId);
     let parent = store.getters.getItemById(parentId);
+    console.log(parent["@type"]);
+
+    // look up the property def in the parent and figure out whether to
+    //   add this as a multiple or single
+    let multiple = false;
+    if (parent["@type"] === "RootDataset") {
+        let typeDefinition = store.getters
+            .getProfile()
+            .filter((i) => i.property === property);
+        multiple = false;
+        if (typeDefinition.length) {
+            multiple = typeDefinition[0].multiple || multiple;
+        }
+    } else {
+        let typeDefinition = store.getters.getTypeDefinition(parent["@type"]);
+        if (typeDefinition) {
+            typeDefinition.inputs.filter((i) => i.property === property);
+            if (typeDefinition.length) {
+                multiple = typeDefinition[0].multiple || multiple;
+            }
+        }
+    }
 
     // set up the parent
     if (property && !parent[property]) parent[property] = [];
-    if (isPlainObject(parent[property])) parent[property] = [parent[property]];
-    parent[property].push({ uuid: itemId, "@type": item["@type"] });
-    parent[property] = uniqBy(parent[property], "uuid");
+    if (isPlainObject(parent[property]) && multiple) {
+        parent[property] = [parent[property]];
+        parent[property].push({ uuid: itemId, "@type": item["@type"] });
+        parent[property] = uniqBy(parent[property], "uuid");
+    } else {
+        parent[property] = { uuid: itemId, "@type": item["@type"] };
+    }
 
     // set up the reverse link from the item
     if (!item["@reverse"]) item["@reverse"] = {};
@@ -45,6 +71,20 @@ export function unlinkParentAndItem({ store, parentId, itemId, property }) {
     let item = store.getters.getItemById(itemId);
     let parent = store.getters.getItemById(parentId);
 
+    // remove the parent from the item
+    if (item && item["@reverse"] && item["@reverse"][property]) {
+        if (isPlainObject(item["@reverse"][property]))
+            item["@reverse"][property] = [item["@reverse"][property]];
+        item["@reverse"][property] = item["@reverse"][property].filter((i) => {
+            return i.uuid !== parentId;
+        });
+        if (!item["@reverse"][property].length)
+            delete item["@reverse"][property];
+        if (isEmpty(item["@reverse"])) delete item["@reverse"];
+        store.commit("saveToGraph", item);
+        store.commit("removeFromGraph", item);
+    }
+
     // remove the item from the parent
     if (property && parent[property]) {
         if (isPlainObject(parent[property]))
@@ -55,17 +95,7 @@ export function unlinkParentAndItem({ store, parentId, itemId, property }) {
         store.commit("saveToGraph", parent);
     }
 
-    // remove the parent from the item
-    if (item && item["@reverse"] && item["@reverse"][property]) {
-        if (isPlainObject(item["@reverse"][property]))
-            item["@reverse"][property] = [item["@reverse"][property]];
-        item["@reverse"][property] = item["@reverse"][property].filter((i) => {
-            return i.uuid !== parentId;
-        });
-        if (!item["@reverse"][property].length)
-            delete item["@reverse"][property];
-        store.commit("saveToGraph", item);
-    }
+    return;
 }
 
 export function validateIdentifier(uuid) {
