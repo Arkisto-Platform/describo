@@ -173,9 +173,14 @@ export default {
             if (type === "RootDataset") {
                 this.inputs = this.$store.state.profileInputs;
             } else {
-                this.inputs = this.$store.getters.getTypeDefinition(
-                    type
-                ).inputs;
+                try {
+                    this.inputs = this.$store.getters.getTypeDefinition(
+                        type
+                    ).inputs;
+                } catch (error) {
+                    //no type definition
+                    this.inputs = [];
+                }
             }
         },
         updateTemplate() {
