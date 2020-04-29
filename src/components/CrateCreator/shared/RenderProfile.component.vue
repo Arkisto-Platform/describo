@@ -172,10 +172,10 @@ export default {
             const type = container["@type"];
             if (type === "RootDataset") {
                 this.inputs = this.$store.state.profileInputs;
-                // } else {
-                //     this.inputs = this.$store.getters.getTypeDefinition(
-                //         type
-                //     ).inputs;
+            } else {
+                this.inputs = this.$store.getters.getTypeDefinition(
+                    type
+                ).inputs;
             }
         },
         updateTemplate() {
