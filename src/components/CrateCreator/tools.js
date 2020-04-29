@@ -24,7 +24,6 @@ export function getParams({ properties, reference }) {
 export function linkParentAndItem({ store, parentId, itemId, property }) {
     let item = store.getters.getItemById(itemId);
     let parent = store.getters.getItemById(parentId);
-    console.log(parent["@type"]);
 
     // look up the property def in the parent and figure out whether to
     //   add this as a multiple or single
