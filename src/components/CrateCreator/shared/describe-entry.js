@@ -1,8 +1,8 @@
-import { isEmpty, isUndefined, isString, isArray, isPlainObject } from "lodash";
+import { uniq, isString, isArray, isPlainObject } from "lodash";
 import { isSimpleType } from "components/CrateCreator/CoreComponents/simple/component.mixins";
 import { parseJSON, isValid } from "date-fns";
 
-export function updateTemplate({ inputs, item, typeDefinitions }) {
+export function updateTemplate({ inputs, item }) {
     let template = [];
     const ignoreProperties = ["uuid", "@type", "@reverse"];
     let inputProperties = inputs.map((i) => i.property);
@@ -133,6 +133,6 @@ export function determinePropertyDataType({ property, data }) {
         const types = data.map((d) => {
             return d["@type"] || "Text";
         });
-        return { property, "@type": types, data, multiple: true };
+        return { property, "@type": uniq(types).sort(), data, multiple: true };
     }
 }

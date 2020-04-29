@@ -52,7 +52,7 @@ test("it should join an empty item with a template", () => {
     };
 
     const template = updateTemplate({ inputs, item })[0];
-    // console.log(template);
+    expect(template.property).toBe("name");
     expect(template.data).toBe("");
 });
 test("it should join a populated item with a template", () => {
@@ -307,7 +307,7 @@ test("determineProperty: map an array of objects each referencing something else
     // console.log(template);
     expect(template).toEqual({
         property: "name",
-        "@type": ["Person", "Organization"],
+        "@type": ["Organization", "Person"],
         data: item.name,
         multiple: true,
     });

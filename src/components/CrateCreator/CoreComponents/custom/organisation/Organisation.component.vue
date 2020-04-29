@@ -1,8 +1,6 @@
 <template>
     <div>
         <el-card type="box-card" class="flex flex-col">
-            <pre>{{ item }}</pre>
-
             <!-- lookup organisation -->
             <lookup-ror-component
                 @selected-organisation="save"

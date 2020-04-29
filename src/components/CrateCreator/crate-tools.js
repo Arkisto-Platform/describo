@@ -247,7 +247,7 @@ export default class CrateTool {
         // console.log(JSON.stringify(data, null, 2));
 
         let elements = data.filter(
-            (d) => d["@type"] !== "Dataset" && d["@id"] !== "./"
+            (d) => `${d["@type"]}${d["@id"]}` !== "Dataset./"
         );
         rootDataset = this.getRootDataset({ data, fromGraph: false });
 
