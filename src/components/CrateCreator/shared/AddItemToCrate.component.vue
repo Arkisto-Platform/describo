@@ -34,11 +34,9 @@
             <div v-if="addNewItem">
                 <div class="text-xl my-4">
                     Edit: {{ item["@type"] }} - {{ item.name }}
-                    {{ customComponent }}
                 </div>
 
                 <div class="overflow-scroll style-content-area flex flex-col">
-                    {{ customComponent }}
                     <div v-if="customComponent">
                         <component
                             class="flex-grow"
