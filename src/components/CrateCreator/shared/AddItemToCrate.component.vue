@@ -47,7 +47,7 @@
                             @remove="remove"
                         ></component>
                     </div>
-                    <div v-else>
+                    <div v-else class="flex flex-col">
                         <render-profile-component :uuid="item.uuid" />
                         <!-- <render-type-component
                             :uuid="item.uuid"
@@ -55,27 +55,27 @@
                             @save="done"
                             @remove="remove"
                         /> -->
-                    </div>
-                    <!-- <pre>{{ addNewItem }}</pre> -->
-                    <!-- <pre>{{ item }}</pre> -->
-                    <div class="flex flex-row mt-1">
-                        <el-button
-                            @click="remove()"
-                            type="danger"
-                            class="ml-1"
-                            v-if="enableRemove"
-                        >
-                            <i class="fas fa-trash-alt"></i>
-                        </el-button>
-                        <div class="flex flex-grow"></div>
-                        <el-button
-                            @click="done()"
-                            type="success"
-                            size="small"
-                            :disabled="item && !item.name"
-                        >
-                            <i class="fas fa-check"></i>&nbsp;save
-                        </el-button>
+                        <!-- <pre>{{ addNewItem }}</pre> -->
+                        <!-- <pre>{{ item }}</pre> -->
+                        <div class="flex flex-row mt-1">
+                            <el-button
+                                @click="remove()"
+                                type="danger"
+                                class="ml-1"
+                                v-if="enableRemove"
+                            >
+                                <i class="fas fa-trash-alt"></i>
+                            </el-button>
+                            <div class="flex flex-grow"></div>
+                            <el-button
+                                @click="done()"
+                                type="success"
+                                size="small"
+                                :disabled="item && !item.name"
+                            >
+                                <i class="fas fa-check"></i>&nbsp;save
+                            </el-button>
+                        </div>
                     </div>
                 </div>
             </div>
