@@ -53,6 +53,7 @@
                 <!-- show tag for complex type entries -->
                 <div v-else class="flex flex-row">
                     <render-profile-item-component
+                        v-if="input.data"
                         :item="input"
                         :reference="container.uuid"
                     />
