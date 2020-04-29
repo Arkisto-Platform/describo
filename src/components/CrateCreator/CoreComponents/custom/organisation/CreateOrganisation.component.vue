@@ -1,22 +1,21 @@
 <template>
     <div class="flex flex-col mt-4">
-        <el-form
-            ref="form"
-            :model="properties"
-            label-width="120px"
-            @submit.native.prevent
-        >
-            <el-form-item label="Name">
+        <div class="my-2">
+            <div class="my-auto text-left text-sm pr-2">
+                name
+            </div>
+            <div>
                 <el-input v-model="properties.name"></el-input>
-            </el-form-item>
-            <el-form-item label="Description">
-                <el-input
-                    v-model="properties.description"
-                    type="textarea"
-                    rows="3"
-                ></el-input>
-            </el-form-item>
-        </el-form>
+            </div>
+        </div>
+        <div class="my-2">
+            <div class="my-auto text-left text-sm pr-2">
+                description
+            </div>
+            <div>
+                <el-input v-model="properties.description"></el-input>
+            </div>
+        </div>
     </div>
 </template>
 

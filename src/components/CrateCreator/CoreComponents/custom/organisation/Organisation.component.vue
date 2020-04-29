@@ -1,25 +1,20 @@
 <template>
-    <div>
-        <el-card type="box-card" class="flex flex-col">
-            <!-- lookup organisation -->
-            <lookup-ror-component
-                @selected-organisation="save"
-                v-if="newItem"
-            />
+    <div class="flex flex-col">
+        <!-- lookup organisation -->
+        <lookup-ror-component @selected-organisation="save" v-if="newItem" />
 
-            <!-- create /edit organisation -->
-            <create-organisation-component :properties.sync="properties" />
+        <!-- create /edit organisation -->
+        <create-organisation-component :properties.sync="properties" />
 
-            <div class="flex flex-row mt-2">
-                <el-button @click="remove" type="danger" v-if="enableRemove">
-                    <i class="fas fa-trash-alt"></i>
-                </el-button>
-                <div class="flex-grow"></div>
-                <el-button @click="save()" type="success">
-                    <i class="fas fa-check"></i>
-                </el-button>
-            </div>
-        </el-card>
+        <div class="flex flex-row mt-2">
+            <el-button @click="remove" type="danger" v-if="enableRemove">
+                <i class="fas fa-trash-alt"></i>
+            </el-button>
+            <div class="flex-grow"></div>
+            <el-button @click="save()" type="success">
+                <i class="fas fa-check"></i>
+            </el-button>
+        </div>
     </div>
 </template>
 
