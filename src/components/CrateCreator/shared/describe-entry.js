@@ -1,4 +1,4 @@
-import { uniq, isString, isArray, isPlainObject } from "lodash";
+import { uniq, isString, isArray, isPlainObject, isUndefined } from "lodash";
 import { isSimpleType } from "components/CrateCreator/CoreComponents/simple/component.mixins";
 import { parseJSON, isValid } from "date-fns";
 
@@ -11,6 +11,7 @@ export function updateTemplate({ inputs, item }) {
     if (inputs.length) {
         template = inputs.map((input) => {
             // is it a simple or a complex type?
+            if (isUndefined(input.multiple)) input.multiple = true;
 
             let data = item[input.property];
             if (!data && input.multiple) {
