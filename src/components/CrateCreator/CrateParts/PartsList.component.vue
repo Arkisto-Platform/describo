@@ -63,7 +63,7 @@ export default {
         };
     },
     computed: {
-        parts: function () {
+        parts: function() {
             const itemsByType = this.$store.state.itemsByType;
             let parts = itemsByType["File"] || [];
             parts = itemsByType["Dataset"]
@@ -71,7 +71,7 @@ export default {
                 : parts;
             parts = parts.filter((part) => part.uuid.match(this.filterItems));
             this.total = parts.length;
-            return orderBy(parts, "uuid").slice(
+            return orderBy(parts, ["@type", "uuid"]).slice(
                 this.page * this.pageSize,
                 this.page * this.pageSize + this.pageSize
             );
