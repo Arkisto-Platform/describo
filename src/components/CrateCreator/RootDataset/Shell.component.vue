@@ -20,18 +20,18 @@
                     </div>
                     <div
                         v-if="!enableCrateWriteToDisk"
-                        class="text-white text-xl bg-red-600 px-4 rounded"
+                        class="text-black text-xl bg-red-400 px-4 rounded"
                     >
-                        save to disk disabled
+                        save to disk is disabled
                     </div>
                 </div>
-                <div class="flex flex-row" v-if="enableCrateWriteToDisk">
-                    <div v-show="saving" class="text-orange-600 mr-10 pt-2">
+                <div class="flex flex-row pt-1" v-if="enableCrateWriteToDisk">
+                    <div v-show="saving" class="text-orange-600 mr-10">
                         <i class="fas fa-save"></i> saving the crate
                         <span v-if="enableCrateWriteToDisk">to disk</span>
                         <span v-else>internally - changes can be lost</span>
                     </div>
-                    <div v-show="saved" class="text-green-600 mr-10 pt-2">
+                    <div v-show="saved" class="text-green-600 mr-10">
                         <i class="fas fa-check"></i> saved
                         <span v-if="enableCrateWriteToDisk">to disk</span>
                         <span v-else>internally - changes can be lost</span>
@@ -78,7 +78,8 @@ export default {
             saving: false,
             error: undefined,
             valid: true,
-            enableCrateWriteToDisk: false,
+            enableCrateWriteToDisk:
+                process.env.NODE_ENV === "development" ? false : true,
         };
     },
     computed: {
