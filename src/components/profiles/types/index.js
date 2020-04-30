@@ -1,5 +1,7 @@
 import ContactPoint from "./ContactPoint";
 import CreativeWork from "./CreativeWork";
+import Dataset from "./Dataset";
+import File from "./File";
 import GeoCoordinates from "./GeoCoordinates";
 import IndividualProduct from "./IndividualProduct";
 import Person from "./Person";
@@ -14,8 +16,10 @@ import WorkflowSketch from "./WorkflowSketch";
 
 export default {
     ContactPoint,
-    GeoCoordinates,
     CreativeWork,
+    Dataset,
+    File,
+    GeoCoordinates,
     IndividualProduct,
     Person,
     Place,

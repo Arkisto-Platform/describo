@@ -8,17 +8,30 @@
                 'border-orange-600 border-l-4 bg-red-200': showAlert(input),
             }"
         >
+            <!-- <div v-if="input.property === 'hasPart'">
+                <pre>{{ input }}</pre>
+            </div> -->
             <!-- input label -->
-            <div class="my-auto text-left text-sm pr-2">
-                <span v-if="showAlert(input)" class="text-orange-600">
+            <div class="my-auto text-left text-sm pr-2 flex flex-row">
+                <div v-if="showAlert(input)" class="text-orange-600 mx-2">
                     <i class="fas fa-asterisk"></i>
-                </span>
-                {{ renderLabel(input) }}
-                <div
-                    class="float-right text-xs text-gray-600"
-                    v-if="showAlert(input)"
-                >
+                </div>
+                <div class="mx-2">
+                    {{ renderLabel(input) }}
+                </div>
+                <div class="flex-grow"></div>
+                <div class="text-xs text-gray-600 mx-2" v-if="showAlert(input)">
                     This property is required.
+                </div>
+                <div>
+                    <el-button
+                        circle
+                        @click="loadPropertyDefinition(input)"
+                        size="mini"
+                        type="primary"
+                    >
+                        <i class="fas fa-question fa-fw"></i>
+                    </el-button>
                 </div>
             </div>
             <!-- end: input label -->
@@ -89,6 +102,14 @@
             </div>
             <div class="text-sm text-gray-600">{{ input.help }}</div>
         </div>
+        <!-- data inspector drawer-->
+        <definition-drawer-component
+            :drawer="view.definitionDrawer"
+            :property="view.property"
+            :type="view.type"
+            @close="closeDefinitionDrawer"
+        />
+        <!-- end: data inspector drawer-->
     </div>
 </template>
 
@@ -99,6 +120,7 @@ import { cloneDeep, isArray, isString, isEmpty, difference } from "lodash";
 import AddControl from "./AddControl.component.vue";
 import RenderProfileItemComponent from "./RenderProfileItem.component.vue";
 import RenderProfileItemLinkerComponent from "./RenderProfileItemLinker.component.vue";
+import DefinitionDrawerComponent from "./DefinitionDrawer.component.vue";
 import {
     SimpleTypes,
     isSimpleType,
@@ -116,6 +138,7 @@ export default {
             import("./RenderCoreComponent.component.vue"),
         RenderProfileItemComponent,
         RenderProfileItemLinkerComponent,
+        DefinitionDrawerComponent,
     },
     props: {
         uuid: {
@@ -128,6 +151,10 @@ export default {
             inputs: [],
             // container: {},
             template: [],
+            view: {
+                definitionDrawer: false,
+                property: undefined,
+            },
         };
     },
     computed: {
@@ -217,6 +244,24 @@ export default {
                 }
                 return item;
             });
+        },
+        loadPropertyDefinition(input) {
+            if (
+                input.property.match(
+                    /^(http:\/\/|https:\/\/)[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i
+                )
+            ) {
+                this.view.property = input.property;
+            } else {
+                this.view.property = `https://schema.org/${input.property}`;
+            }
+            this.view.definitionDrawer = true;
+        },
+        closeDefinitionDrawer() {
+            this.view = {
+                definitionDrawer: false,
+                property: undefined,
+            };
         },
     },
 };

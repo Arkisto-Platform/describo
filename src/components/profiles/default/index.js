@@ -51,17 +51,6 @@ export default {
                 help: "The date of publication crate.",
             },
             {
-                property: "audience",
-                label: "Audience",
-                "@type": "Select",
-                options: [
-                    "Researchers",
-                    "Archivists",
-                    "Librarians",
-                    "Management",
-                ],
-            },
-            {
                 property: "author",
                 label: "Author",
 
@@ -95,7 +84,7 @@ export default {
             {
                 property: "funder",
                 label: "Funder",
-                "@type": "Organization",
+                "@type": ["Organization", "Person "],
             },
             {
                 property: "contentLocation",
