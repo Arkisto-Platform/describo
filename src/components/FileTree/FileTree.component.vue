@@ -4,7 +4,6 @@
             <div v-if="enableFileSelector">
                 <el-button @click="addParts" type="success">
                     update crate content
-                    <!-- <i class="fas fa-long-arrow-alt-right"></i> -->
                 </el-button>
             </div>
             <div class="my-2 pb-2 border-b-2" v-if="enableFileSelector">
@@ -29,13 +28,11 @@
                     :load="loadNode"
                 ></el-tree>
             </div>
-            <!-- :default-expand-all="true" -->
         </div>
     </div>
 </template>
 
 <script>
-// import FileTreeLoader from "./file-tree-loader";
 import Worker from "./file-tree.worker.js";
 import path from "path";
 import { flattenDeep, uniq, compact } from "lodash";
@@ -55,9 +52,6 @@ export default {
     data() {
         return {
             target: this.browseTarget || this.$store.state.target,
-            // ftloader: new FileTreeLoader({
-            //     target: this.browseTarget || this.$store.state.target
-            // }),
             data: [
                 {
                     path: "",
@@ -113,13 +107,8 @@ export default {
         addParts() {
             let selectedNodes = this.$refs.tree.getCheckedNodes();
             selectedNodes = selectedNodes.filter((n) => n.path !== this.target);
-            selectedNodes = selectedNodes.map((node) => [
-                node.uuid,
-                node.parent,
-            ]);
-            selectedNodes = flattenDeep(selectedNodes);
+            selectedNodes = selectedNodes.map((node) => node.uuid);
             selectedNodes = uniq(selectedNodes);
-            selectedNodes = compact(selectedNodes);
             selectedNodes = selectedNodes.filter((n) => n != "/");
             selectedNodes = selectedNodes.map(
                 (node) => this.$refs.tree.getNode(node).data
