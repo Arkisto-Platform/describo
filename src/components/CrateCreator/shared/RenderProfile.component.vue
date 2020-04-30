@@ -6,6 +6,8 @@
             class="my-1 p-1"
             :class="{
                 'border-orange-600 border-l-4 bg-red-200': showAlert(input),
+                'bg-yellow-400 py-10':
+                    view.property && view.property.match(input.property),
             }"
         >
             <!-- <div v-if="input.property === 'hasPart'">
