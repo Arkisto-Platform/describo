@@ -1,13 +1,14 @@
 export default {
     inputs: [
-        { property: "name", "@type": "Text", required: true },
-        { property: "familyName", "@type": "Text" },
-        { property: "givenName", "@type": "Text" },
+        { property: "name", "@type": "Text", required: true, multiple: false },
+        { property: "familyName", "@type": "Text", multiple: false },
+        { property: "givenName", "@type": "Text", multiple: false },
         {
             property: "contactPoint",
             "@type": "Text",
+            multiple: false,
         },
-        { property: "email", "@type": "Text" },
-        { property: "affiliation", "@type": "Organization" },
+        { property: "email", "@type": "Text", multiple: false },
+        { property: "affiliation", "@type": "Organization", multiple: false },
     ],
 };

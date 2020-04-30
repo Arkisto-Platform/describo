@@ -1,9 +1,9 @@
 export default {
     inputs: [
-        { property: "title", "@type": "Text", required: true, multiple: true },
-        { property: "description", "@type": "TextArea", multiple: true },
+        { property: "title", "@type": "Text", required: true },
+        { property: "description", "@type": "TextArea" },
         { property: "rights", "@type": "Text" },
-        { property: "rightsHolder", "@type": "Text", multiple: true },
+        { property: "rightsHolder", "@type": "Text" },
         { property: "originalFormat", "@type": "Text" },
         { property: "identifier", "@type": "Text" },
         { property: "license", "@type": ["CreativeWork"] },

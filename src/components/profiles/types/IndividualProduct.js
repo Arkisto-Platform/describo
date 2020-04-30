@@ -1,10 +1,20 @@
 export default {
     inputs: [
-        { property: "name", "@type": "Text", required: true },
-        { property: "description", "@type": "TextArea" },
-        { property: "URL", "@type": "Text" },
-        { property: "manufacturer", "@type": "Type", required: true },
-        { property: "model", "@type": "Text", required: true },
-        { property: "serialNumber", "@type": "Text", required: true },
+        { property: "name", "@type": "Text", required: true, multiple: false },
+        { property: "description", "@type": "TextArea", multiple: false },
+        { property: "URL", "@type": "Text", multiple: false },
+        {
+            property: "manufacturer",
+            "@type": "Type",
+            required: true,
+            multiple: false,
+        },
+        { property: "model", "@type": "Text", required: true, multiple: false },
+        {
+            property: "serialNumber",
+            "@type": "Text",
+            required: true,
+            multiple: false,
+        },
     ],
 };

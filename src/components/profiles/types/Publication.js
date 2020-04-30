@@ -5,6 +5,6 @@ export default {
         { property: "issn", "@type": "Text", required: true },
         { property: "identifier", "@type": "Text", required: true },
         { property: "datePublished", "@type": "Date", required: true },
-        { property: "author", "@type": "Person", multiple: true },
+        { property: "author", "@type": "Person" },
     ],
 };

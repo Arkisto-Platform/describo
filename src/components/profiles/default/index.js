@@ -20,6 +20,7 @@ export default {
 
                 // whether this element is required - used by strict
                 required: true,
+                multiple: false,
                 help: "A name for this crate.",
             },
             {
@@ -27,23 +28,24 @@ export default {
                 label: "Description",
                 "@type": "TextArea",
                 help: "A description of the content of this crate.",
+                multiple: false,
             },
             {
                 property: "license",
                 label: "License",
                 "@type": "CreativeWork",
                 help: "A license for this crate",
+                multiple: false,
             },
             {
                 property: "keywords",
                 "@type": "Text",
                 help: "A description of the content of this crate.",
-                multiple: true,
             },
             {
                 property: "datePublished",
                 label: "Date Published",
-
+                multiple: false,
                 // the type of element: one of the core types in components/CrateCreator/components
                 "@type": "Date",
                 help: "The date of publication crate.",
@@ -67,7 +69,6 @@ export default {
                 "@type": ["Person", "Organization"],
 
                 // can there be multiple authors?
-                multiple: true,
                 required: true,
             },
             {
@@ -78,26 +79,23 @@ export default {
                 "@type": ["Organization", "Person"],
 
                 required: true,
-                multiple: true,
             },
             {
                 property: "contactPoint",
                 label: "Contact Point",
                 "@type": "ContactPoint",
                 required: true,
-                multiple: true,
+                multiple: false,
             },
             {
                 property: "citation",
                 label: "Citation",
                 "@type": "ScholarlyArticle",
-                multiple: true,
             },
             {
                 property: "funder",
                 label: "Funder",
                 "@type": "Organization",
-                multiple: true,
             },
             {
                 property: "contentLocation",
