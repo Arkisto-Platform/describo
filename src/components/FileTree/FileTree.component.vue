@@ -70,7 +70,7 @@ export default {
                 isLeaf: "isLeaf",
             },
             defaultExpandedKeys: [],
-            selectAllChildren: true,
+            selectAllChildren: false,
         };
     },
     methods: {
