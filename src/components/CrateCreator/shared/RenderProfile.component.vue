@@ -3,10 +3,10 @@
         <div
             v-for="input in template"
             :key="input.property"
-            class="my-1 p-1"
+            class="my-1 p-2 hover:bg-orange-200"
             :class="{
                 'border-orange-600 border-l-4 bg-red-200': showAlert(input),
-                'bg-yellow-400 py-10':
+                'bg-yellow-400 py-6':
                     view.property && view.property.match(input.property),
             }"
         >
