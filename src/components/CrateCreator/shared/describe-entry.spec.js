@@ -5,15 +5,6 @@ import {
 } from "./describe-entry";
 import { isArray, isString } from "lodash";
 
-const typeDefinitions = {
-    Person: {
-        inputs: [{ property: "name", "@type": "Text" }],
-    },
-    Organisation: {
-        inputs: [{ property: "name", "@type": "Text" }],
-    },
-};
-
 test("setFlags: type Value - return show false, enabled true", () => {
     let item = { "@type": "Value", value: "v" };
     expect(setFlags({ item }).showAddControl).toBe(false);
@@ -52,11 +43,12 @@ test("it should join an empty item with a template", () => {
     };
 
     const template = updateTemplate({ inputs, item })[0];
+    // console.log(template);
     expect(template.property).toBe("name");
-    expect(template.data).toBe("");
+    expect(template.data).toEqual([]);
 });
 test("it should join a populated item with a template", () => {
-    const inputs = [{ property: "name", "@type": "Text" }];
+    const inputs = [{ property: "name", "@type": "Text", multiple: false }];
     const item = {
         "@type": "ContactPoint",
         uuid: "#3",
@@ -104,7 +96,9 @@ test("it should add item properties extra to template in as well", () => {
     expect(template[1].property).toBe("description");
 });
 test("test handling a required item that is not a multiple", () => {
-    let inputs = [{ property: "name", "@type": "Text", required: true }];
+    let inputs = [
+        { property: "name", "@type": "Text", required: true, multiple: false },
+    ];
     let item = {
         "@type": "ContactPoint",
         uuid: "#3",
@@ -116,7 +110,9 @@ test("test handling a required item that is not a multiple", () => {
     expect(template).toHaveProperty("data", "");
     expect(template.showAddControl).toBe(false);
 
-    inputs = [{ property: "name", "@type": "Text", required: true }];
+    inputs = [
+        { property: "name", "@type": "Text", required: true, multiple: false },
+    ];
     item = {
         "@type": "ContactPoint",
         uuid: "#3",
@@ -194,6 +190,7 @@ test("test handling an that is not required and can't have multiples", () => {
         {
             property: "name",
             "@type": "Text",
+            multiple: false,
         },
     ];
     let item = {
