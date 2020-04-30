@@ -8,7 +8,7 @@ export default {
         { property: "encodingFormat", "@type": "Text", multiple: false },
         { property: "identifier", "@type": ["PropertyValue"] },
         { property: "description", "@type": "TextArea", multiple: false },
-        { property: "keywords", "@type": "Text" },
+        { property: "keywords", "@type": "Text", multiple: false },
         { property: "license", "@type": "CreativeWork", multiple: false },
         { property: "dateCreated", "@type": "Date", multiple: false },
         { property: "dateModified", "@type": "Date", multiple: false },

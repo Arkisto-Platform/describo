@@ -41,6 +41,7 @@ export default {
                 property: "keywords",
                 "@type": "Text",
                 help: "A description of the content of this crate.",
+                multiple: false,
             },
             {
                 property: "datePublished",
