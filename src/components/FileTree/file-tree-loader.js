@@ -48,6 +48,9 @@ export default class FileTreeLoader {
                         nodePath.join(child.parent, child.name)[0],
                         nodePath.join(child.parent, child.name)
                     );
+                    if (platform() === "win32") {
+                        child.uuid = child.uuid.replace(/\\/g, "/");
+                    }
                     child.uuid = child.isDir ? `${child.uuid}/` : child.uuid;
                     return child;
                 })
