@@ -44,7 +44,11 @@ export default class FileTreeLoader {
                     child = mapKeys(child, (val, key) => camelCase(key));
                     child.parent = path === root ? "/" : path.replace(root, "");
                     child.isLeaf = !child.isDir;
-                    child.uuid = nodePath.join(child.parent, child.name);
+                    child.uuid = nodePath.relative(
+                        nodePath.join(child.parent, child.name)[0],
+                        nodePath.join(child.parent, child.name)
+                    );
+                    child.uuid = child.isDir ? `${child.uuid}/` : child.uuid;
                     return child;
                 })
             ),
