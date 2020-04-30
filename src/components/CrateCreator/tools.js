@@ -27,17 +27,17 @@ export function linkParentAndItem({ store, parentId, itemId, property }) {
 
     // look up the property def in the parent and figure out whether to
     //   add this as a multiple or single
-    let multiple = false;
+    let multiple = true;
+    let typeDefinition;
     if (parent["@type"] === "RootDataset") {
-        let typeDefinition = store.getters
+        typeDefinition = store.getters
             .getProfile()
             .filter((i) => i.property === property);
-        multiple = false;
         if (typeDefinition.length) {
             multiple = typeDefinition[0].multiple || multiple;
         }
     } else {
-        let typeDefinition = store.getters.getTypeDefinition(parent["@type"]);
+        typeDefinition = store.getters.getTypeDefinition(parent["@type"]);
         if (typeDefinition) {
             typeDefinition.inputs.filter((i) => i.property === property);
             if (typeDefinition.length) {
@@ -48,11 +48,14 @@ export function linkParentAndItem({ store, parentId, itemId, property }) {
 
     // set up the parent
     if (property && !parent[property]) parent[property] = [];
-    if (isPlainObject(parent[property]) && multiple) {
-        parent[property] = [parent[property]];
+    if (multiple) {
+        if (isPlainObject(parent[property])) {
+            parent[property] = [parent[property]];
+        }
         parent[property].push({ uuid: itemId, "@type": item["@type"] });
         parent[property] = uniqBy(parent[property], "uuid");
     } else {
+        console.log("here");
         parent[property] = { uuid: itemId, "@type": item["@type"] };
     }
 
