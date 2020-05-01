@@ -33,19 +33,18 @@ export function linkParentAndItem({ store, parentId, itemId, property }) {
         typeDefinition = store.getters
             .getProfile()
             .filter((i) => i.property === property);
-        if (typeDefinition.length) {
-            multiple = typeDefinition[0].multiple || multiple;
+        if (typeDefinition.length && "multiple" in typeDefinition[0]) {
+            multiple = typeDefinition[0].multiple;
         }
     } else {
         typeDefinition = store.getters.getTypeDefinition(parent["@type"]);
         if (typeDefinition) {
             typeDefinition.inputs.filter((i) => i.property === property);
-            if (typeDefinition.length) {
-                multiple = typeDefinition[0].multiple || multiple;
+            if (typeDefinition.length && "multiple" in typeDefinition[0]) {
+                multiple = typeDefinition[0].multiple;
             }
         }
     }
-
     // set up the parent
     if (property && !parent[property]) parent[property] = [];
     if (multiple) {
@@ -55,7 +54,6 @@ export function linkParentAndItem({ store, parentId, itemId, property }) {
         parent[property].push({ uuid: itemId, "@type": item["@type"] });
         parent[property] = uniqBy(parent[property], "uuid");
     } else {
-        console.log("here");
         parent[property] = { uuid: itemId, "@type": item["@type"] };
     }
 
