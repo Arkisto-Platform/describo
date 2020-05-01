@@ -92,6 +92,10 @@ export default {
                 label: "Content Location",
                 "@type": "Place",
             },
+            {
+                property: "hasPart",
+                "@type": ["File", "Dataset"],
+            },
         ],
     },
 };
