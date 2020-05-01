@@ -9,6 +9,7 @@ import Place from "./Place";
 import Publication from "./Publication";
 import RepositoryCollection from "./RepositoryCollection";
 import RepositoryObject from "./RepositoryObject";
+import ScholarlyArticle from "./ScholarlyArticle";
 import Script from "./Script";
 import SoftwareApplication from "./SoftwareApplication";
 import Workflow from "./Workflow";
@@ -26,6 +27,7 @@ export default {
     Publication,
     RepositoryCollection,
     RepositoryObject,
+    ScholarlyArticle,
     Script,
     SoftwareApplication,
     Workflow,
