@@ -171,6 +171,13 @@ export default {
             },
             deep: true,
         },
+        uuid: function() {
+            this.template = [];
+            this.$nextTick(() => {
+                this.loadProfileInputs();
+                this.updateTemplate();
+            });
+        },
     },
     beforeMount() {
         this.loadProfileInputs();
