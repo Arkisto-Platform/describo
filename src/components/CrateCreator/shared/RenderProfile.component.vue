@@ -15,7 +15,7 @@
             </div> -->
             <!-- input label -->
             <div class="my-auto text-left text-sm pr-2 flex flex-row">
-                <div v-if="showAlert(input)" class="text-orange-600 mx-2">
+                <div v-show="showAlert(input)" class="text-orange-600 mx-2">
                     <i class="fas fa-asterisk"></i>
                 </div>
                 <div class="mx-2">
