@@ -10,7 +10,9 @@ import {
     uniqBy,
     merge,
     isArray,
+    isPlainObject,
     flattenDeep,
+    has,
 } from "lodash";
 
 const state = reset();
@@ -40,61 +42,11 @@ export const mutations = {
             return;
         }
         payload = cloneDeep(payload);
-        if ("@reverse" in payload) {
-            for (let prop of Object.keys(payload["@reverse"])) {
-                // convert @reverse prop's to arrays if not already
-                if (!isArray(payload["@reverse"][prop])) {
-                    payload["@reverse"][prop] = [payload["@reverse"][prop]];
-                }
-            }
-        }
-
-        let item = {};
-        if (state.itemsById[payload.uuid]) {
-            // clone the existing entry
-            item = cloneDeep(state.itemsById[payload.uuid]);
-
-            // iterate over the props in the new entry
-            if ("@reverse" in payload && "@reverse" in item) {
-                for (let prop of Object.keys(payload["@reverse"])) {
-                    // if the prop is in new and old
-                    if (
-                        prop in payload["@reverse"] &&
-                        prop in item["@reverse"]
-                    ) {
-                        // join sensibly
-                        payload["@reverse"][prop] = [
-                            ...item["@reverse"][prop],
-                            ...payload["@reverse"][prop],
-                        ];
-
-                        // then ensure uniq entries only
-                        payload["@reverse"][prop] = uniqBy(
-                            payload["@reverse"][prop],
-                            "uuid"
-                        );
-                    }
-
-                    // merge the old and new entry
-                    payload["@reverse"] = merge(
-                        item["@reverse"],
-                        payload["@reverse"]
-                    );
-                }
-            }
-            // update the item
-            state.itemsById[payload.uuid] = {
-                ...payload,
-            };
-        } else {
-            state.itemsById[payload.uuid] = payload;
-        }
-
+        state.itemsById[payload.uuid] = payload;
         state.itemsById = { ...state.itemsById };
         state.graph = Object.keys(state.itemsById).map(
             (key) => state.itemsById[key]
         );
-        // state.itemsByType = groupBy(state.graph, "@type");
         state.itemsByType = groupItemsByType(state.graph);
     },
     removeFromGraph(state, payload) {
@@ -113,35 +65,38 @@ export const mutations = {
         let item = cloneDeep(state.itemsById[uuid]);
         if (!item) return;
 
-        if (payload["@reverse"] && item["@reverse"]) {
-            for (let prop of Object.keys(payload["@reverse"])) {
-                let reference = payload["@reverse"][prop];
-                if (item["@reverse"][prop]) {
-                    item["@reverse"][prop] = item["@reverse"][prop].filter(
-                        (i) => {
-                            return i.uuid !== reference.uuid;
-                        }
-                    );
-                }
+        // if pointing to anything in the graph throw an error
+        for (let key of Object.keys(item)) {
+            if (key === "@reverse") continue;
+            if (isPlainObject(item[key]) && item[key].uuid) {
+                check(item[key], key);
+            } else if (isArray(item[key])) {
+                item[key].forEach((element) => check(element, key));
             }
-            state.itemsById[uuid] = { ...item };
-
-            let reverseProperties = Object.keys(payload["@reverse"]);
-            for (let prop of reverseProperties) {
-                if (item["@reverse"][prop] && !item["@reverse"][prop].length)
-                    delete item["@reverse"][prop];
-            }
-
-            reverseProperties = Object.keys(item["@reverse"]);
-            if (!reverseProperties.length) delete state.itemsById[uuid];
-        } else if (!payload["@reverse"]) {
-            delete state.itemsById[uuid];
         }
+        // if any @reverse properties exist throw an error
+        if ("@reverse" in item) {
+            for (let key of Object.keys(item["@reverse"])) {
+                const entries = [];
+                if (isPlainObject(item["@reverse"][key]))
+                    entries.push(item["@reverse"][key]);
+                if (isArray(item["@reverse"][key]))
+                    entries = item["@reverse"][key];
+                entries.forEach((entry) => check(entry, key));
+            }
+        }
+        delete state.itemsById[uuid];
         state.graph = Object.keys(state.itemsById).map(
             (key) => state.itemsById[key]
         );
-        // state.itemsByType = groupBy(state.graph, "@type");
         state.itemsByType = groupItemsByType(state.graph);
+
+        function check(obj, prop) {
+            if (isPlainObject(obj) && obj.uuid)
+                throw Error(
+                    `'${obj.uuid} - ${prop}' points to another item in the graph. Can't be removed.`
+                );
+        }
     },
     addNewItem(state, payload) {
         state.addNewItem = cloneDeep(payload);
@@ -163,13 +118,13 @@ export const getters = {
     },
     getItemsByType: (state) => (type) => {
         try {
-            return cloneDeep(state.itemsByType[type]);
+            return cloneDeep(state.itemsByType[type]) || [];
         } catch (error) {
             return [];
         }
     },
     getTypeDefinition: (state) => (type) => {
-        if (type in state.typeDefinitions) {
+        if (has(state.typeDefinitions, type)) {
             return cloneDeep(state.typeDefinitions[type]);
         } else {
             return undefined;

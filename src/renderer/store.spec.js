@@ -100,168 +100,6 @@ test("it should not create two of the same item in the store", () => {
     expect(Object.keys(state.itemsById).length).toBe(1);
     expect(state.itemsByType.Person.length).toBe(1);
 });
-test("it should handle @reverse inputs sensibly - including adding and removing back ref's", () => {
-    // add ref author = ./
-    let ref1 = {
-        uuid: "#1",
-        "@type": "Person",
-        name: "one",
-        "@reverse": {
-            author: { uuid: "./" },
-        },
-    };
-    store.commit("saveToGraph", ref1);
-    expect(Object.keys(state.itemsById["#1"]["@reverse"]).length).toBe(1);
-    expect(state.itemsById["#1"]["@reverse"].author.length).toBe(1);
-    // console.log(JSON.stringify(state.graph, null, 2));
-
-    // add ref author = #4
-    ref1 = {
-        uuid: "#1",
-        "@type": "Person",
-        name: "one",
-        "@reverse": {
-            author: { uuid: "#4" },
-        },
-    };
-    store.commit("saveToGraph", ref1);
-    expect(Object.keys(state.itemsById["#1"]["@reverse"]).length).toBe(1);
-    expect(state.itemsById["#1"]["@reverse"].author.length).toBe(2);
-    // console.log(JSON.stringify(state.graph, null, 2));
-
-    // add ref participant = ./
-    ref1 = {
-        uuid: "#1",
-        "@type": "Person",
-        name: "one",
-        "@reverse": {
-            participant: { uuid: "./" },
-        },
-    };
-    store.commit("saveToGraph", ref1);
-    expect(Object.keys(state.itemsById["#1"]["@reverse"]).length).toBe(2);
-    expect(state.itemsById["#1"]["@reverse"].author.length).toBe(2);
-    expect(state.itemsById["#1"]["@reverse"].participant.length).toBe(1);
-    // console.log(JSON.stringify(state.graph, null, 2));
-
-    // add ref participant = #elephants
-    ref1 = {
-        uuid: "#1",
-        "@type": "Person",
-        name: "one",
-        "@reverse": {
-            participant: { uuid: "#elephants" },
-        },
-    };
-    store.commit("saveToGraph", ref1);
-    expect(Object.keys(state.itemsById["#1"]["@reverse"]).length).toBe(2);
-    expect(state.itemsById["#1"]["@reverse"].author.length).toBe(2);
-    expect(state.itemsById["#1"]["@reverse"].participant.length).toBe(2);
-    // console.log(JSON.stringify(state.graph, null, 2));
-
-    // re-add ref author = ./
-    ref1 = {
-        uuid: "#1",
-        "@type": "Person",
-        name: "one",
-        "@reverse": {
-            author: { uuid: "./" },
-        },
-    };
-    store.commit("saveToGraph", ref1);
-    expect(Object.keys(state.itemsById["#1"]["@reverse"]).length).toBe(2);
-    expect(state.itemsById["#1"]["@reverse"].author.length).toBe(2);
-    expect(state.itemsById["#1"]["@reverse"].participant.length).toBe(2);
-
-    // remove ref author = ./
-    ref1 = {
-        uuid: "#1",
-        "@type": "Person",
-        name: "one",
-        "@reverse": {
-            author: { uuid: "./" },
-        },
-    };
-    store.commit("removeFromGraph", ref1);
-    expect(Object.keys(state.itemsById["#1"]["@reverse"]).length).toBe(2);
-    expect(state.itemsById["#1"]["@reverse"].author.length).toBe(1);
-    expect(state.itemsById["#1"]["@reverse"].participant.length).toBe(2);
-
-    // remove ref author = #4
-    ref1 = {
-        uuid: "#1",
-        "@type": "Person",
-        name: "one",
-        "@reverse": {
-            author: { uuid: "#4" },
-        },
-    };
-    store.commit("removeFromGraph", ref1);
-    expect(Object.keys(state.itemsById["#1"]["@reverse"]).length).toBe(1);
-    expect(state.itemsById["#1"]["@reverse"].author).toBeUndefined;
-    expect(state.itemsById["#1"]["@reverse"].participant.length).toBe(2);
-
-    // remove ref participant = #4 (doesn't exist so no changes)
-    ref1 = {
-        uuid: "#1",
-        "@type": "Person",
-        name: "one",
-        "@reverse": {
-            participant: { uuid: "#4" },
-        },
-    };
-    store.commit("removeFromGraph", ref1);
-    expect(Object.keys(state.itemsById["#1"]["@reverse"]).length).toBe(1);
-    expect(state.itemsById["#1"]["@reverse"].author).toBeUndefined;
-    expect(state.itemsById["#1"]["@reverse"].participant.length).toBe(2);
-
-    // remove ref participant = ./
-    ref1 = {
-        uuid: "#1",
-        "@type": "Person",
-        name: "one",
-        "@reverse": {
-            participant: { uuid: "./" },
-        },
-    };
-    store.commit("removeFromGraph", ref1);
-    expect(Object.keys(state.itemsById["#1"]["@reverse"]).length).toBe(1);
-    expect(state.itemsById["#1"]["@reverse"].participant.length).toBe(1);
-
-    // remove ref participant = #elephants
-    ref1 = {
-        uuid: "#1",
-        "@type": "Person",
-        name: "one",
-        "@reverse": {
-            participant: { uuid: "#elephants" },
-        },
-    };
-    store.commit("removeFromGraph", ref1);
-    expect(state.itemsById["#1"]).toBeUndefined;
-});
-test("it should be able to merge an item with a reverse with an existing version without", () => {
-    // add ref author = ./
-    let ref1 = {
-        uuid: "#1",
-        "@type": "Person",
-        name: "one",
-    };
-    store.commit("saveToGraph", ref1);
-
-    // add ref author = #4
-    ref1 = {
-        uuid: "#1",
-        "@type": "Person",
-        name: "one",
-        "@reverse": {
-            author: { uuid: "#4" },
-        },
-    };
-    store.commit("saveToGraph", ref1);
-    expect(Object.keys(state.itemsById["#1"]["@reverse"]).length).toBe(1);
-    expect(state.itemsById["#1"]["@reverse"].author.length).toBe(1);
-});
 test("it should remove an item without an @reverse property", () => {
     let ref1 = {
         uuid: "#1",
@@ -282,7 +120,7 @@ test("it should be able to save type definitions to the store", () => {
 });
 test("it should not find a type definition", () => {
     const t = getters.getTypeDefinition(state)("Product");
-    console.log(t);
+    // console.log(t);
     expect(t).toBeUndefined();
 });
 test("it should be able to retrieve an item by id", () => {
@@ -305,4 +143,3 @@ test("it should be able to retrieve items by type", () => {
     const i = getters.getItemsByType(state)("Person");
     expect(i.length).toBe(1);
 });
-test("it should be able to retrieve a definition", () => {});

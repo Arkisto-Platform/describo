@@ -1,88 +1,68 @@
 import { generateId } from "components/CrateCreator/tools";
 import path from "path";
 import { parseISO } from "date-fns";
-import { cloneDeep, compact } from "lodash";
+import { cloneDeep, compact, orderBy, groupBy } from "lodash";
+import {
+    linkItemToParent,
+    unlinkItemFromParentAndChildren,
+} from "components/CrateCreator/tools";
 
 export function writeParts({ store, nodes }) {
     // get the root dataset
     const rootDataset = store.getters.getItemsByType("RootDataset")[0];
 
-    // remove existing parts
-    if (rootDataset.hasPart) {
-        rootDataset.hasPart.forEach((part) =>
-            store.commit("removeFromGraph", part)
-        );
-    }
-    let files = store.state.graph.filter((e) => e["@type"] === "File");
-    files.forEach((file) => store.commit("removeFromGraph", file));
-
-    const target = store.state.target;
-    let identifiers;
-    switch (target.type) {
-        case "local":
-            identifiers = writeLocalFilesToGraph({
-                store,
-                folder: target.folder,
-                nodes,
-            });
-    }
-
-    // get all datasets and tie them to the root dataset
-    const datasets = cloneDeep(
-        store.state.graph.filter((e) => e["@type"] === "Dataset")
-    );
-    files = cloneDeep(store.state.graph.filter((e) => e["@type"] === "File"));
-    const datasetParts = datasets.map((d) => {
-        return {
-            uuid: d.uuid,
-        };
+    // remove existing files
+    let files = store.getters.getItemsByType("File");
+    files.forEach((file) => {
+        unlinkItemFromParentAndChildren({
+            store,
+            parentId: file["@reverse"].hasPart[0].uuid,
+            itemId: file.uuid,
+            property: "hasPart",
+        });
     });
-    const fileParts = files.map((f) => {
-        if (f.parent === "/")
-            return {
-                uuid: f.uuid,
-            };
-    });
-    rootDataset.hasPart = [...datasetParts, ...compact(fileParts)];
-    store.commit("saveToGraph", rootDataset);
 
+    // remove existing datasets
+    let datasets = store.getters.getItemsByType("Dataset");
     datasets.forEach((dataset) => {
-        dataset.hasPart = files
-            .filter((f) => f.parent === dataset.uuid)
-            .map((f) => {
-                return {
-                    uuid: f.uuid,
-                };
-            });
-        store.commit("saveToGraph", dataset);
+        unlinkItemFromParentAndChildren({
+            store,
+            parentId: rootDataset.uuid,
+            itemId: dataset.uuid,
+            property: "hasPart",
+        });
     });
-}
 
-function writeLocalFilesToGraph({ store, folder, nodes }) {
-    let identifiers = nodes.map((node) => {
-        if (node.isLeaf) {
+    // create and link datasets
+    datasets = orderBy(
+        nodes.filter((n) => n.isDir),
+        "uuid"
+    );
+    createNodes({ store, nodes: datasets, rootDataset });
+
+    // create and link files
+    files = orderBy(
+        nodes.filter((n) => n.isLeaf),
+        "uuid"
+    );
+    createNodes({ store, nodes: files, rootDataset });
+
+    function createNodes({ store, nodes, rootDataset }) {
+        for (let node of nodes) {
+            const parent = node.parent || rootDataset.uuid;
             node = {
                 uuid: node.uuid,
                 name: node.path,
-                parent: node.parent,
-                "@type": "File",
-                contentSize: node.size,
+                "@type": node.isDir ? "Dataset" : "File",
                 dateModified: parseISO(node.modTime).toISOString(),
             };
             store.commit("saveToGraph", node);
-            return node["@id"];
-        } else if (node.isDir) {
-            node = {
-                uuid: node.uuid,
-                name: node.path,
-                parent: node.parent,
-                "@type": "Dataset",
-                dateModified: parseISO(node.modTime).toISOString(),
-                hasPart: [],
-            };
-            store.commit("saveToGraph", node);
-            return node["@id"];
+            linkItemToParent({
+                store,
+                parentId: parent,
+                itemId: node.uuid,
+                property: "hasPart",
+            });
         }
-    });
-    return compact(identifiers);
+    }
 }

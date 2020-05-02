@@ -13,8 +13,8 @@
             </div>
         </div>
         <div class="bg-green-200 p-2 rounded-r-lg">
-            <el-button @click="removeItem" size="mini" class="rounded-lg">
-                <i class="fas fa-times"></i>
+            <el-button type="danger" @click="removeItem" class="rounded-lg">
+                <i class="fas fa-trash-alt"></i>
             </el-button>
         </div>
     </div>
@@ -22,7 +22,8 @@
 
 <script>
 import { isArray, isPlainObject } from "lodash";
-import { unlinkParentAndItem } from "components/CrateCreator/tools";
+import { unlinkItemFromParentAndChildren } from "components/CrateCreator/tools";
+import { unlink } from "fs";
 export default {
     props: {
         item: {
@@ -51,7 +52,7 @@ export default {
             });
         },
         removeItem() {
-            unlinkParentAndItem({
+            unlinkItemFromParentAndChildren({
                 store: this.$store,
                 parentId: this.reference,
                 itemId: this.item.data.uuid,

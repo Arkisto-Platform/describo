@@ -9,36 +9,69 @@ let state = {};
 let store = {};
 const nodes = [
     {
-        uuid: "/005",
-        path: "005",
-        name: "005",
+        uuid: "a/c/",
+        path: "a/c",
+        name: "a/c",
         size: -1,
         mimeType: "inode/directory",
         modTime: "2020-02-25T10:16:53.020336279+11:00",
         isDir: true,
-        parent: "/",
+        parent: "a/",
         isLeaf: false,
     },
     {
-        uuid: "/005/NT1-005-005A.eaf",
+        uuid: "a/c/NT1-005-005A.eaf",
         path: "NT1-005-005A.eaf",
         name: "NT1-005-005A.eaf",
         size: 653986,
         mimeType: "application/octet-stream",
         modTime: "2020-02-25T10:13:22.823580306+11:00",
         isDir: false,
-        parent: "/005",
+        parent: "a/c/",
         isLeaf: true,
     },
     {
-        uuid: "/file.txt",
+        uuid: "a/",
+        path: "a",
+        name: "a",
+        size: -1,
+        mimeType: "inode/directory",
+        modTime: "2020-02-25T10:16:53.020336279+11:00",
+        isDir: true,
+        parent: "",
+        isLeaf: false,
+    },
+    {
+        uuid: "b/",
+        path: "b",
+        name: "b",
+        size: -1,
+        mimeType: "inode/directory",
+        modTime: "2020-02-25T10:16:53.020336279+11:00",
+        isDir: true,
+        parent: "",
+        isLeaf: false,
+    },
+    {
+        uuid: "b/NT1-005-005A.eaf",
         path: "NT1-005-005A.eaf",
         name: "NT1-005-005A.eaf",
         size: 653986,
         mimeType: "application/octet-stream",
         modTime: "2020-02-25T10:13:22.823580306+11:00",
         isDir: false,
-        parent: "/",
+        parent: "b/",
+        isLeaf: true,
+    },
+    {
+        uuid: "file.txt",
+        path: "file.txt",
+        name: "file.txt",
+        size: 653986,
+        mimeType: "application/octet-stream",
+        modTime: "2020-02-25T10:13:22.823580306+11:00",
+        isDir: false,
+        parent: "",
         isLeaf: true,
     },
 ];
@@ -63,6 +96,9 @@ beforeEach(() => {
         getters: getters,
     });
     store.commit("saveToGraph", rootDataset);
+    store.commit("saveProfileInputs", [
+        { property: "hasPart", multiple: true },
+    ]);
 });
 
 test("it should be able to save files to the dataset and store", () => {
@@ -72,12 +108,7 @@ test("it should be able to save files to the dataset and store", () => {
     };
     writeParts({ store, nodes });
     // console.log(JSON.stringify(state.graph, null, 2));
-    expect(state.graph.length).toBe(4);
-    expect(state.graph[0]["@type"]).toBe("RootDataset");
-    expect(state.graph[1]["@type"]).toBe("Dataset");
-    expect(state.graph[2]["@type"]).toBe("File");
-    expect(state.graph[0].hasPart.length).toBe(2);
-    expect(state.graph[1].hasPart.length).toBe(1);
+    expect(state.graph.length).toBe(7);
 });
 
 test("the dataset and store should not end up with multiple copies of the same file", () => {
@@ -88,9 +119,5 @@ test("the dataset and store should not end up with multiple copies of the same f
     writeParts({ store, nodes });
     writeParts({ store, nodes });
     // console.log(JSON.stringify(state.graph, null, 2));
-    expect(state.graph.length).toBe(4);
-    expect(state.graph[0]["@type"]).toBe("RootDataset");
-    expect(state.graph[1]["@type"]).toBe("Dataset");
-    expect(state.graph[2]["@type"]).toBe("File");
-    expect(state.graph[0].hasPart.length).toBe(2);
+    expect(state.graph.length).toBe(7);
 });

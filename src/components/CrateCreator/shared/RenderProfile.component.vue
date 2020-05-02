@@ -239,6 +239,7 @@ export default {
                         }
                         item.enabled = true;
                     } else {
+                        this.$emit("link-item");
                         let newItem = {
                             "@type": type,
                             uuid: generateId(),

@@ -48,15 +48,10 @@
                         ></component>
                     </div>
                     <div v-else class="flex flex-col">
-                        <render-profile-component :uuid="item.uuid" />
-                        <!-- <render-type-component
+                        <render-profile-component
                             :uuid="item.uuid"
-                            :enable-remove="enableRemove"
-                            @save="done"
-                            @remove="remove"
-                        /> -->
-                        <!-- <pre>{{ addNewItem }}</pre> -->
-                        <!-- <pre>{{ item }}</pre> -->
+                            @link-item="linkItem"
+                        />
                         <div class="flex flex-row mt-1">
                             <el-button
                                 @click="remove()"
@@ -77,6 +72,10 @@
                             </el-button>
                         </div>
                     </div>
+                    <render-profile-reverse-component
+                        :uuid="item.uuid"
+                        class="mt-8"
+                    />
                 </div>
             </div>
         </div>
@@ -92,14 +91,16 @@ import {
 
 import {
     generateId,
-    linkParentAndItem,
-    unlinkParentAndItem,
+    linkItemToParent,
+    unlinkItemFromParentAndChildren,
 } from "components/CrateCreator/tools";
+
+import RenderProfileReverseComponent from "./RenderProfileReverse.component.vue";
 
 export default {
     mixins: [CustomComponentMixins],
     components: {
-        RenderTypeComponent: () => import("./RenderType.component.vue"),
+        RenderProfileReverseComponent,
         RenderProfileComponent: () => import("./RenderProfile.component"),
     },
     props: {
@@ -160,7 +161,7 @@ export default {
         },
         remove() {
             if (this.addNewItem && this.addNewItem.parentId) {
-                unlinkParentAndItem({
+                unlinkItemFromParentAndChildren({
                     store: this.$store,
                     parentId: this.addNewItem.parentId,
                     itemId: this.addNewItem.itemId,
@@ -174,15 +175,18 @@ export default {
             this.$store.commit("addNewItem", undefined);
             this.$refs.drawer.closeDrawer();
         },
-        done(drawerDoneHandler) {
+        linkItem() {
             if (this.addNewItem && this.addNewItem.parentId) {
-                linkParentAndItem({
+                linkItemToParent({
                     store: this.$store,
                     parentId: this.addNewItem.parentId,
                     itemId: this.addNewItem.itemId,
                     property: this.addNewItem.property,
                 });
             }
+        },
+        done(drawerDoneHandler) {
+            this.linkItem();
             this.item = {};
             this.type = undefined;
             this.$store.commit("addNewItem", undefined);

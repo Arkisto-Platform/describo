@@ -38,7 +38,7 @@
 import { difference, isString } from "lodash";
 import SelectExistingEntryComponent from "components/CrateCreator/CoreComponents/SelectExistingEntry.component.vue";
 import { SimpleTypes } from "components/CrateCreator/CoreComponents/simple/component.mixins";
-import { linkParentAndItem } from "components/CrateCreator/tools";
+import { linkItemToParent } from "components/CrateCreator/tools";
 
 export default {
     components: {
@@ -76,7 +76,7 @@ export default {
             this.enabledTypes = difference(types, SimpleTypes);
         },
         linkSelection(selection) {
-            linkParentAndItem({
+            linkItemToParent({
                 store: this.$store,
                 parentId: this.parentId,
                 itemId: selection.uuid,
