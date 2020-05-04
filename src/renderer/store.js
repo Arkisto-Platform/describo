@@ -23,6 +23,9 @@ export const mutations = {
     setProfile(state, payload) {
         state.profile = payload.profile;
     },
+    setWriteToDisk(state, payload) {
+        state.enableWriteToDisk = payload;
+    },
     saveProfileInputs(state, payload) {
         state.profileInputs = { ...payload };
     },
@@ -131,7 +134,7 @@ export const getters = {
         }
     },
     getProfile: (state) => () => {
-        return cloneDeep(state.profileInputs);
+        return cloneDeep(state.profileInputs).inputs;
     },
 };
 
@@ -154,6 +157,8 @@ function reset() {
         itemsByType: {},
         itemsById: {},
         addNewItem: undefined,
+        enableWriteToDisk:
+            process.env.NODE_ENV === "development" ? false : true,
     };
 }
 
