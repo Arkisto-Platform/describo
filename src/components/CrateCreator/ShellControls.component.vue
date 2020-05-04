@@ -165,6 +165,7 @@ export default {
         },
         async writeCrateToDisk() {
             if (!this.enableWriteToDisk) return;
+
             this.error = undefined;
             this.saved = false;
             this.saving = true;
@@ -174,11 +175,9 @@ export default {
                     inputs: this.$store.state.profileInputs.inputs,
                 });
                 crateTool.assembleCrate({ data: this.$store.state.graph });
-                if (this.enableCrateWriteToDisk) {
-                    await crateTool.writeCrate({
-                        target: this.$store.state.target,
-                    });
-                }
+                await crateTool.writeCrate({
+                    target: this.$store.state.target,
+                });
                 await new Promise((resolve) => setTimeout(resolve, 1500));
                 this.saving = false;
                 this.saved = true;
