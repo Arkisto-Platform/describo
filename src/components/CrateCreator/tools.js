@@ -146,7 +146,7 @@ export function unlinkItemFromParentAndChildren({
     }
 
     // remove the item from the parent
-    if (property && parent[property]) {
+    if (property && parent && parent[property]) {
         if (
             isPlainObject(parent[property]) &&
             parent[property].uuid === itemId

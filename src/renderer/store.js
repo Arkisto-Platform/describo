@@ -130,7 +130,10 @@ export const getters = {
         if (has(state.typeDefinitions, type)) {
             return cloneDeep(state.typeDefinitions[type]);
         } else {
-            return undefined;
+            return {
+                inputs: [],
+                metadata: {},
+            };
         }
     },
     getProfile: (state) => () => {

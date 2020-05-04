@@ -221,17 +221,9 @@ export default {
             if (type === "RootDataset") {
                 this.typeDefinition = this.$store.state.profileInputs;
             } else {
-                try {
-                    this.typeDefinition = this.$store.getters.getTypeDefinition(
-                        type
-                    );
-                } catch (error) {
-                    //no type definition
-                    this.typeDefinition = {
-                        inputs: [],
-                        metadata: {},
-                    };
-                }
+                this.typeDefinition = this.$store.getters.getTypeDefinition(
+                    type
+                );
             }
         },
         updateTemplate() {
