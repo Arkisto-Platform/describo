@@ -96,9 +96,9 @@ beforeEach(() => {
         getters: getters,
     });
     store.commit("saveToGraph", rootDataset);
-    store.commit("saveProfileInputs", [
-        { property: "hasPart", multiple: true },
-    ]);
+    store.commit("saveProfileInputs", {
+        inputs: [{ property: "hasPart", multiple: true }],
+    });
 });
 
 test("it should be able to save files to the dataset and store", () => {
@@ -117,6 +117,7 @@ test("the dataset and store should not end up with multiple copies of the same f
         folder: "/Users/mlarosa/src/pdsc/data/NT1",
     };
     writeParts({ store, nodes });
+    // console.log(JSON.stringify(state.graph, null, 2));
     writeParts({ store, nodes });
     // console.log(JSON.stringify(state.graph, null, 2));
     expect(state.graph.length).toBe(7);
