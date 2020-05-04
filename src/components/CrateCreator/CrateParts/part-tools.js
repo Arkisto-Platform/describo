@@ -14,23 +14,31 @@ export function writeParts({ store, nodes }) {
     // remove existing files
     let files = store.getters.getItemsByType("File");
     files.forEach((file) => {
-        unlinkItemFromParentAndChildren({
-            store,
-            parentId: file["@reverse"].hasPart[0].uuid,
-            itemId: file.uuid,
-            property: "hasPart",
-        });
+        for (let property of Object.keys(file["@reverse"])) {
+            file["@reverse"][property].forEach((reference) => {
+                unlinkItemFromParentAndChildren({
+                    store,
+                    parentId: reference.uuid,
+                    itemId: file.uuid,
+                    property,
+                });
+            });
+        }
     });
 
     // remove existing datasets
     let datasets = store.getters.getItemsByType("Dataset");
     datasets.forEach((dataset) => {
-        unlinkItemFromParentAndChildren({
-            store,
-            parentId: rootDataset.uuid,
-            itemId: dataset.uuid,
-            property: "hasPart",
-        });
+        for (let property of Object.keys(dataset["@reverse"])) {
+            dataset["@reverse"][property].forEach((reference) => {
+                unlinkItemFromParentAndChildren({
+                    store,
+                    parentId: reference.uuid,
+                    itemId: dataset.uuid,
+                    property,
+                });
+            });
+        }
     });
 
     // create and link datasets
