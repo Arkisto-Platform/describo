@@ -18,6 +18,7 @@
         <div v-else>
             <shell-controls-component
                 :crate-loading-errors="crateLoadingErrors"
+                @error="(e) => (error = e)"
             />
         </div>
         <!-- loading indicator -->

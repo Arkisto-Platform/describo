@@ -190,6 +190,7 @@ export default {
                 };
                 this.saving = false;
                 this.saved = false;
+                this.$emit("error", error);
             }
         },
     },
