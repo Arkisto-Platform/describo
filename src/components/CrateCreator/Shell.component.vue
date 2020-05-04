@@ -112,23 +112,9 @@ export default {
                 .filter((t) => t !== "RootDataset")
                 .sort();
         },
-        addNewItem: function() {
-            const newItem = this.$store.state.addNewItem;
-            return newItem;
-        },
     },
     beforeMount() {
         this.loadProfile();
-    },
-    watch: {
-        addNewItem: {
-            handler: function() {
-                if (this.addNewItem && this.addNewItem.itemId) {
-                    this.view.addItem = true;
-                }
-            },
-            deep: true,
-        },
     },
     methods: {
         async loadProfile() {

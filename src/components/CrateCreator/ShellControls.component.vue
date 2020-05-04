@@ -146,6 +146,15 @@ export default {
         "$store.state.graph": function() {
             this.writeCrateToDisk();
         },
+        "$store.state.addNewItem": {
+            handler: function() {
+                const item = this.$store.state.addNewItem;
+                if (item && item.itemId) {
+                    this.view.addItem = true;
+                }
+            },
+            deep: true,
+        },
     },
     methods: {
         toggleCrateWrite() {
