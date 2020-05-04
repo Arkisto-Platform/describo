@@ -123,6 +123,7 @@
 <script>
 import { shortName } from "src/renderer/filters";
 import { updateTemplate } from "./describe-entry";
+import { mappings } from "components/profiles/type-mappings";
 import { cloneDeep, isArray, isString, isEmpty, difference } from "lodash";
 import AddControl from "./AddControl.component.vue";
 import RenderProfileReportComponent from "./RenderProfileReport.component.vue";
@@ -213,7 +214,10 @@ export default {
         },
         loadProfileInputs() {
             const container = this.$store.getters.getItemById(this.uuid);
-            const type = container["@type"];
+            let type = container["@type"];
+            if (isArray(type)) {
+                type = mappings[type.sort().join(", ")];
+            }
             if (type === "RootDataset") {
                 this.inputs = this.$store.state.profileInputs;
             } else {
