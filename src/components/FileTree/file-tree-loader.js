@@ -48,6 +48,11 @@ export default class FileTreeLoader {
                         nodePath.join(child.parent, child.name)[0],
                         nodePath.join(child.parent, child.name)
                     );
+                    child.parent =
+                        child.parent === "/"
+                            ? ""
+                            : `${path.replace(`${root}/`, "")}/`;
+
                     if (platform() === "win32") {
                         child.uuid = child.uuid.replace(/\\/g, "/");
                     }
