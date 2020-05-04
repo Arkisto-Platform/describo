@@ -8,7 +8,7 @@
             @current-change="currentChange"
         >
         </el-pagination>
-        <el-table :data="items" class="w-full">
+        <el-table :data="items" class="w-full" @row-click="throttledEditItem" row-class-name="cursor-pointer">
             <el-table-column
                 prop="uuid"
                 label="Identifier"
@@ -17,7 +17,10 @@
             <el-table-column prop="name" label="Name"></el-table-column>
             <el-table-column prop="name" label="Actions" width="180">
                 <template slot-scope="scope">
-                    <el-button type="success" @click="editItem(scope.row)">
+                    <el-button
+                        type="success"
+                        @click="throttledEditItem(scope.row)"
+                    >
                         <i class="fas fa-edit"></i>
                     </el-button>
                 </template>
@@ -27,7 +30,7 @@
 </template>
 
 <script>
-import { isEmpty } from "lodash";
+import { isEmpty, throttle } from "lodash";
 export default {
     props: {
         type: {
@@ -37,11 +40,12 @@ export default {
     },
     data() {
         return {
+            throttledEditItem: throttle(this.editItem, 1000),
             item: {},
             profileInputs: [],
             enableRemove: false,
             total: undefined,
-            pageSize: 5,
+            pageSize: 10,
             page: 0,
         };
     },
