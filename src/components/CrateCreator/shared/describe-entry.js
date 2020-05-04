@@ -1,8 +1,17 @@
-import { uniq, isString, isArray, isPlainObject, isUndefined } from "lodash";
+import {
+    uniq,
+    isString,
+    isArray,
+    isPlainObject,
+    isUndefined,
+    has,
+} from "lodash";
 import { isSimpleType } from "components/CrateCreator/CoreComponents/simple/component.mixins";
 import { parseJSON, isValid } from "date-fns";
 
-export function updateTemplate({ inputs, item }) {
+export function updateTemplate({ typeDefinition, item }) {
+    const inputs = typeDefinition.inputs;
+
     let template = [];
     const ignoreProperties = ["uuid", "@type", "@reverse"];
     let inputProperties = inputs.map((i) => i.property);
@@ -38,20 +47,22 @@ export function updateTemplate({ inputs, item }) {
             return input;
         });
 
-        // join in any properties that are not defined in the template
-        for (let property of Object.keys(item)) {
-            if (
-                !ignoreProperties.includes(property) &&
-                !inputProperties.includes(property)
-            ) {
-                // a property is defined in the item but not in the type definition
-                report.extraProperties.push(property);
-                template.push(
-                    determinePropertyDataType({
-                        property,
-                        data: item[property],
-                    })
-                );
+        if (typeDefinition.metadata.allowAdditionalProperties) {
+            // join in any properties that are not defined in the template
+            for (let property of Object.keys(item)) {
+                if (
+                    !ignoreProperties.includes(property) &&
+                    !inputProperties.includes(property)
+                ) {
+                    // a property is defined in the item but not in the type definition
+                    report.extraProperties.push(property);
+                    template.push(
+                        determinePropertyDataType({
+                            property,
+                            data: item[property],
+                        })
+                    );
+                }
             }
         }
     } else if (!inputs.length && Object.keys(item).length > 2) {

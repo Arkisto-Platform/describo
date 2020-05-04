@@ -248,7 +248,7 @@ export default {
 
             let rootDatasetName = {};
             const profile = cloneDeep(this.profile[selection]);
-            this.$store.commit("saveProfileInputs", profile.inputs);
+            this.$store.commit("saveProfileInputs", profile);
 
             const crateTool = new CrateTool();
             let data, errors;

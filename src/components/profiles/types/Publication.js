@@ -1,4 +1,7 @@
 export default {
+    metadata: {
+        allowAdditionalProperties: true,
+    },
     inputs: [
         { property: "name", "@type": "Text", required: true },
         { property: "journal", "@type": "Text", required: true },

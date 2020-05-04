@@ -1,4 +1,7 @@
 export default {
+    metadata: {
+        allowAdditionalProperties: true,
+    },
     inputs: [
         { property: "title", "@type": "Text", required: true },
         { property: "description", "@type": "TextArea" },

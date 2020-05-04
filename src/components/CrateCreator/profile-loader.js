@@ -85,7 +85,7 @@ export default class ProfileLoader {
             // if metadata key ensure only - ['about', 'version']
             response = validateKeys({
                 element: profile.metadata,
-                validKeys: ["about", "version"],
+                validKeys: ["about", "version", "allowAdditionalProperties"],
             });
             if (response.errors.length) {
                 valid = response.valid;

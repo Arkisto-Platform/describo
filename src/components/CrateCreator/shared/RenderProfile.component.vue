@@ -158,7 +158,7 @@ export default {
     },
     data() {
         return {
-            inputs: [],
+            typeDefinition: [],
             report: {},
             template: [],
             view: {
@@ -219,23 +219,25 @@ export default {
                 type = mappings[type.sort().join(", ")];
             }
             if (type === "RootDataset") {
-                this.inputs = this.$store.state.profileInputs;
+                this.typeDefinition = this.$store.state.profileInputs;
             } else {
                 try {
-                    this.inputs = this.$store.getters.getTypeDefinition(
+                    this.typeDefinition = this.$store.getters.getTypeDefinition(
                         type
-                    ).inputs;
+                    );
                 } catch (error) {
                     //no type definition
-                    this.inputs = [];
+                    this.typeDefinition = {
+                        inputs: [],
+                        metadata: {},
+                    };
                 }
             }
         },
         updateTemplate() {
             let { template, report } = updateTemplate({
                 item: this.container,
-                inputs: cloneDeep(this.inputs),
-                typeDefinitions: cloneDeep(this.$store.state.typeDefinitions),
+                typeDefinition: cloneDeep(this.typeDefinition),
             });
             this.report = report;
             this.template = template;

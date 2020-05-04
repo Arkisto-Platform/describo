@@ -90,9 +90,6 @@ export default {
             this.writeCrateToDisk();
             return this.$store.getters.getItemsByType("RootDataset")[0];
         },
-        profileInputs: function() {
-            return this.$store.state.profileInputs;
-        },
     },
     methods: {
         async writeCrateToDisk() {
@@ -102,7 +99,7 @@ export default {
             try {
                 this.valid = crateTool.verifyCrate({
                     data: this.$store.state.graph,
-                    inputs: this.$store.state.profileInputs,
+                    inputs: this.$store.state.profileInputs.inputs,
                 });
                 crateTool.assembleCrate({ data: this.$store.state.graph });
                 if (this.enableCrateWriteToDisk) {

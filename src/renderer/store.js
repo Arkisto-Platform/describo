@@ -24,7 +24,7 @@ export const mutations = {
         state.profile = payload.profile;
     },
     saveProfileInputs(state, payload) {
-        state.profileInputs = [...payload];
+        state.profileInputs = { ...payload };
     },
     saveTypeDefinitions(state, payload) {
         state.typeDefinitions = cloneDeep(payload);
@@ -148,7 +148,7 @@ function reset() {
     return {
         target: null,
         profile: null,
-        profileInputs: [],
+        profileInputs: {},
         typeDefinitions: {},
         graph: [],
         itemsByType: {},

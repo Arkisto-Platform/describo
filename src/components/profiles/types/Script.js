@@ -1,4 +1,7 @@
 export default {
+    metadata: {
+        allowAdditionalProperties: true,
+    },
     inputs: [
         {
             property: "'@type",
