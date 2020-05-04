@@ -1,13 +1,5 @@
 <template>
     <div class="flex flex-col">
-        <div class="flex flex-row my-2">
-            <div v-show="saving" class="text-orange-600 pt-2">
-                <i class="fas fa-save"></i> saving the crate
-            </div>
-            <div v-show="saved" class="text-green-600 pt-2">
-                <i class="fas fa-check"></i> saved
-            </div>
-        </div>
         <el-tabs type="border-card" v-model="activeTab">
             <el-tab-pane label="Manage Content" name="manage">
                 <file-tree-component
@@ -26,7 +18,6 @@
                     />
                     <dataset-component
                         :uuid="selectedPart.uuid"
-                        @done="writeCrateToDisk"
                         @cancel="selectedPart = undefined"
                         v-if="
                             selectedPart && selectedPart['@type'] === 'Dataset'
@@ -34,7 +25,6 @@
                     />
                     <file-component
                         :uuid="selectedPart.uuid"
-                        @done="writeCrateToDisk"
                         @cancel="selectedPart = undefined"
                         v-if="selectedPart && selectedPart['@type'] === 'File'"
                     />
@@ -64,9 +54,6 @@ export default {
     data() {
         return {
             activeTab: "manage",
-            error: false,
-            saved: false,
-            saving: false,
             selectedPart: undefined,
         };
     },
@@ -81,18 +68,6 @@ export default {
     methods: {
         addNodesToCrate(nodes) {
             writeParts({ store: this.$store, nodes });
-            this.writeCrateToDisk();
-        },
-        writeCrateToDisk() {
-            this.selectedPart = undefined;
-            this.saved = false;
-            this.saving = true;
-            crateTool.assembleCrate({ data: this.$store.state.graph });
-            crateTool.writeCrate({ target: this.$store.state.target });
-            setTimeout(() => {
-                this.saving = false;
-                this.saved = true;
-            }, 1000);
         },
         editPart(part) {
             this.selectedPart = part;
