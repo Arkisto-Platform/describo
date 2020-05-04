@@ -7,8 +7,15 @@ export function updateTemplate({ inputs, item }) {
     const ignoreProperties = ["uuid", "@type", "@reverse"];
     let inputProperties = inputs.map((i) => i.property);
 
+    let report = {
+        type: item["@type"],
+        templateAvailable: false,
+        extraProperties: [],
+    };
     // we have a type definition - populate its properties
     if (inputs.length) {
+        report.templateAvailable = true;
+
         template = inputs.map((input) => {
             // is it a simple or a complex type?
             if (isUndefined(input.multiple)) input.multiple = true;
@@ -38,35 +45,27 @@ export function updateTemplate({ inputs, item }) {
                 !inputProperties.includes(property)
             ) {
                 // a property is defined in the item but not in the type definition
+                report.extraProperties.push(property);
                 template.push(
                     determinePropertyDataType({
                         property,
                         data: item[property],
                     })
                 );
-                // template.push({
-                //     property,
-                //     "@type": "Text",
-                //     data: item[property],
-                // });
             }
         }
     } else if (!inputs.length && Object.keys(item).length > 2) {
         // if we DON'T have a set of inputs but we DO have an item
         //  create a template with text inputs for each item property
-        for (let prop of Object.keys(item)) {
-            if (!ignoreProperties.includes(prop)) {
+        for (let property of Object.keys(item)) {
+            if (!ignoreProperties.includes(property)) {
+                report.extraProperties.push(property);
                 template.push(
                     determinePropertyDataType({
-                        property: prop,
-                        data: item[prop],
+                        property: property,
+                        data: item[property],
                     })
                 );
-                // template.push({
-                //     property: prop,
-                //     "@type": "Text",
-                //     data: item[prop],
-                // });
             }
         }
     } else {
@@ -80,7 +79,7 @@ export function updateTemplate({ inputs, item }) {
 
     // add flag to determine whether to show add control
     template = template.map((item) => setFlags({ item }));
-    return template;
+    return { template, report };
 }
 
 export function setFlags({ item }) {

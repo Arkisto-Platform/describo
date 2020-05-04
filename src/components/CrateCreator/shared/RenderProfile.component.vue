@@ -1,5 +1,10 @@
 <template>
     <div class="flex flex-col">
+        <render-profile-report-component
+            :report="report"
+            v-if="!report.templateAvailable || report.extraProperties.length"
+        />
+
         <div
             v-for="input in template"
             :key="input.property"
@@ -120,6 +125,7 @@ import { shortName } from "src/renderer/filters";
 import { updateTemplate } from "./describe-entry";
 import { cloneDeep, isArray, isString, isEmpty, difference } from "lodash";
 import AddControl from "./AddControl.component.vue";
+import RenderProfileReportComponent from "./RenderProfileReport.component.vue";
 import RenderProfileItemComponent from "./RenderProfileItem.component.vue";
 import RenderProfileItemLinkerComponent from "./RenderProfileItemLinker.component.vue";
 import DefinitionDrawerComponent from "./DefinitionDrawer.component.vue";
@@ -138,6 +144,7 @@ export default {
         AddControl,
         RenderItemComponent: () =>
             import("./RenderCoreComponent.component.vue"),
+        RenderProfileReportComponent,
         RenderProfileItemComponent,
         RenderProfileItemLinkerComponent,
         DefinitionDrawerComponent,
@@ -151,7 +158,7 @@ export default {
     data() {
         return {
             inputs: [],
-            // container: {},
+            report: {},
             template: [],
             view: {
                 definitionDrawer: false,
@@ -221,11 +228,12 @@ export default {
             }
         },
         updateTemplate() {
-            let template = updateTemplate({
+            let { template, report } = updateTemplate({
                 item: this.container,
                 inputs: cloneDeep(this.inputs),
                 typeDefinitions: cloneDeep(this.$store.state.typeDefinitions),
             });
+            this.report = report;
             this.template = template;
         },
         add({ type, property }) {
