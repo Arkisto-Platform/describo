@@ -6,6 +6,7 @@ import GeoCoordinates from "./GeoCoordinates";
 import IndividualProduct from "./IndividualProduct";
 import Person from "./Person";
 import Place from "./Place";
+import PropertyValue from "./PropertyValue";
 import Publication from "./Publication";
 import RepositoryCollection from "./RepositoryCollection";
 import RepositoryObject from "./RepositoryObject";
@@ -24,6 +25,7 @@ export default {
     IndividualProduct,
     Person,
     Place,
+    PropertyValue,
     Publication,
     RepositoryCollection,
     RepositoryObject,
