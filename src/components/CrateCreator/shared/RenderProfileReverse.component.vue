@@ -8,12 +8,13 @@
             :key="idx"
             class="my-1"
         >
-            <div class="flex flex-row flex-wrap space-x-2">
+            <div class="flex flex-row flex-wrap">
                 <div
                     v-for="reference of items"
                     :key="loopKey({ property, uuid: reference.uuid })"
                 >
                     <render-profile-reverse-item-component
+                        class="m-1"
                         :property="property"
                         :itemId="uuid"
                         :parentId="reference.uuid"
