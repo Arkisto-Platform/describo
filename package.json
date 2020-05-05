@@ -10,10 +10,9 @@
         "dist:dir": "npm run dist --dir -c.compression=store -c.mac.identity=null",
         "test": "./node_modules/.bin/jest",
         "test:watch": "./node_modules/.bin/jest --watch",
-        "build:mac": "electron-webpack && electron-builder --mac",
-        "build:linux": "electron-webpack && electron-builder --linux",
-        "build:win": "./bin/build-windows.sh",
-        "publish": "electron-builder --publish always"
+        "build:mac": "electron-webpack && electron-builder --mac --publish always",
+        "build:linux": "electron-webpack && electron-builder --linux --publish always",
+        "build:win": "./bin/build-windows.sh"
     },
     "build": {
         "afterSign": "bin/notarize.js",
@@ -24,15 +23,15 @@
             "gatekeeperAssess": false,
             "entitlements": "./mac.plist",
             "entitlementsInherit": "./mac.plist",
-            "target": [
-                "dmg",
-                "zip"
-            ]
+            "target": "dmg"
         },
         "dmg": {
             "sign": false
         },
         "win": {},
+        "linux": {
+            "target": "tar.bz2"
+        },
         "publish": [
             "github"
         ],
