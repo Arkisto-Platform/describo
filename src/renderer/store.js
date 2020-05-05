@@ -80,7 +80,7 @@ export const mutations = {
         // if any @reverse properties exist throw an error
         if ("@reverse" in item) {
             for (let key of Object.keys(item["@reverse"])) {
-                const entries = [];
+                let entries = [];
                 if (isPlainObject(item["@reverse"][key]))
                     entries.push(item["@reverse"][key]);
                 if (isArray(item["@reverse"][key]))
