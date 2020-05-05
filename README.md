@@ -67,7 +67,11 @@ The built executable will be in the `dist` folder in the top level.
 
 See https://www.electron.build/code-signing for information about code signing.
 
+### Building a Linux release
+
 ### Building MacOS releases
+
+MacOS releases can only be built on MacOS.
 
 You will need an Apple developer certificate to sign the release as well as an app specific password. To set up the
 app specfic password follow the instructions at [https://support.apple.com/en-au/HT204397](https://support.apple.com/en-au/HT204397)
@@ -82,14 +86,15 @@ export APPLEIDPASS= < app specific password >
 
 Like the MacOS release a developer certificate is required to sign the app but (I think) Windows doesn't stop anyone running an unsigned application.
 
+Also, you'll need docker installed as the Windows build happens inside a docker container.
+
 ## Publishing a release
 
-In order to publish a release you will first need a `Github Personal Access` token in order to push the release to the repo so create one if you don't already have one.
+In order to publish a release you will first need a `Github Personal Access Token` in order to push the release to the repo so create one if you don't already have one.
 
 Then you can do `./publish.sh`. This will:
 
 -   ask if you want to bump the major, minor, patch numbers
--   build the 3 distributables
--   publish the release to the `releases` page of the repo.
+-   build the 3 distributables and publish each release to the `releases` page of the repository
 
 Once the release is published you then need to verify the draft and release it from the releases page.
