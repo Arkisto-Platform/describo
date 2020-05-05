@@ -174,7 +174,6 @@ export default {
                     data: this.$store.state.graph,
                     inputs: this.$store.state.profileInputs.inputs,
                 });
-                console.log(this.valid);
                 crateTool.assembleCrate({ data: this.$store.state.graph });
                 await crateTool.writeCrate({
                     target: this.$store.state.target,
