@@ -3,10 +3,21 @@ export default {
         allowAdditionalProperties: true,
     },
     inputs: [
-        { property: "name", "@type": "Text", required: true, multiple: false },
+        {
+            property: "name",
+            "@type": "Text",
+            required: true,
+            multiple: false,
+            group: "important",
+        },
+        {
+            property: "description",
+            "@type": "TextArea",
+            multiple: false,
+            group: "important",
+        },
         { property: "alternativeHeadline", "@type": "Text", multiple: false },
         { property: "alternateName", "@type": "Text", multiple: false },
-        { property: "description", "@type": "TextArea", multiple: false },
         { property: "keywords", "@type": "Text", multiple: false },
         { property: "license", "@type": "CreativeWork", multiple: false },
         { property: "dateCreated", "@type": "Date", multiple: false },

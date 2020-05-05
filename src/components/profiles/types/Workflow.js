@@ -4,12 +4,23 @@ export default {
     },
     inputs: [
         {
-            property: "'@type",
-            value: '["File", "SoftwareSourceCode", "Workflow"]',
+            property: "name",
+            "@type": "Text",
             required: true,
+            multiple: false,
+            group: "important",
         },
-        { property: "name", "@type": "Text", required: true, multiple: false },
-        { property: "description", "@type": "TextArea", multiple: false },
+        {
+            property: "description",
+            "@type": "TextArea",
+            multiple: false,
+            group: "important",
+        },
+        {
+            property: "hasPart",
+            "@type": ["WorkflowSketch"],
+            group: "important",
+        },
         { property: "license", "@type": "CreativeWork" },
         { property: "author", "@type": ["Person", "Organization"] },
     ],

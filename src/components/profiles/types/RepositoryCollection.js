@@ -3,8 +3,19 @@ export default {
         allowAdditionalProperties: true,
     },
     inputs: [
-        { property: "title", "@type": "Text", required: true, multiple: false },
-        { property: "description", "@type": "TextArea", multiple: false },
+        {
+            property: "title",
+            "@type": "Text",
+            required: true,
+            multiple: false,
+            group: "important",
+        },
+        {
+            property: "description",
+            "@type": "TextArea",
+            multiple: false,
+            group: "important",
+        },
         { property: "rights", "@type": "Text" },
         { property: "publisher", "@type": ["Organization"] },
         { property: "hasMember", "@type": ["RepositoryObject"] },

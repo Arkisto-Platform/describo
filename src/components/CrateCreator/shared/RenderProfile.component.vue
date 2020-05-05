@@ -13,6 +13,7 @@
                 'border-orange-600 border-l-4 bg-red-200': showAlert(input),
                 'bg-yellow-400 py-6':
                     view.property && view.property.match(input.property),
+                hidden: input.group !== 'important' && !showAllProperties,
             }"
         >
             <!-- <div v-if="input.property === 'hasPart'">
@@ -110,6 +111,17 @@
             </div>
             <div class="text-sm text-gray-600">{{ input.help }}</div>
         </div>
+
+        <div class="flex flex-row justify-center my-4">
+            <el-button
+                class="flex-grow"
+                type="primary"
+                @click="showAllProperties = !showAllProperties"
+                v-if="!showAllProperties"
+            >
+                Show all available properties
+            </el-button>
+        </div>
         <!-- data inspector drawer-->
         <definition-drawer-component
             :drawer="view.definitionDrawer"
@@ -169,6 +181,7 @@ export default {
             typeDefinition: [],
             report: {},
             template: [],
+            showAllProperties: false,
             view: {
                 definitionDrawer: false,
                 property: undefined,

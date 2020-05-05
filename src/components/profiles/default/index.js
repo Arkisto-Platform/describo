@@ -23,6 +23,7 @@ export default {
                 required: true,
                 multiple: false,
                 help: "A name for this crate.",
+                group: "important",
             },
             {
                 property: "description",
@@ -30,6 +31,7 @@ export default {
                 "@type": "TextArea",
                 help: "A description of the content of this crate.",
                 multiple: false,
+                group: "important",
             },
             {
                 property: "license",
@@ -37,6 +39,7 @@ export default {
                 "@type": "CreativeWork",
                 help: "A license for this crate",
                 multiple: false,
+                group: "important",
             },
             {
                 property: "keywords",
@@ -51,6 +54,7 @@ export default {
                 // the type of element: one of the core types in components/CrateCreator/components
                 "@type": "Date",
                 help: "The date of publication crate.",
+                group: "important",
             },
             {
                 property: "author",
@@ -61,6 +65,7 @@ export default {
 
                 // can there be multiple authors?
                 required: true,
+                group: "important",
             },
             {
                 property: "publisher",
@@ -70,6 +75,7 @@ export default {
                 "@type": ["Organization", "Person"],
 
                 required: true,
+                group: "important",
             },
             {
                 property: "contactPoint",
@@ -77,6 +83,7 @@ export default {
                 "@type": "ContactPoint",
                 required: true,
                 multiple: false,
+                group: "important",
             },
             {
                 property: "citation",
@@ -95,7 +102,14 @@ export default {
             },
             {
                 property: "hasPart",
-                "@type": ["File", "Dataset"],
+                "@type": [
+                    "File",
+                    "Dataset",
+                    "Workflow",
+                    "RepositoryCollection",
+                    "RepositoryObject",
+                ],
+                group: "important",
             },
         ],
     },

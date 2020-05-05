@@ -3,7 +3,13 @@ export default {
         allowAdditionalProperties: true,
     },
     inputs: [
-        { property: "name", "@type": "Text", required: true, multiple: false },
+        {
+            property: "name",
+            "@type": "Text",
+            required: true,
+            multiple: false,
+            group: "impportant",
+        },
         { property: "familyName", "@type": "Text", multiple: false },
         { property: "givenName", "@type": "Text", multiple: false },
         {

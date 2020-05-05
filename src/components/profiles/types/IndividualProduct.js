@@ -3,7 +3,13 @@ export default {
         allowAdditionalProperties: true,
     },
     inputs: [
-        { property: "name", "@type": "Text", required: true, multiple: false },
+        {
+            property: "name",
+            "@type": "Text",
+            required: true,
+            multiple: false,
+            group: "important",
+        },
         { property: "description", "@type": "TextArea", multiple: false },
         { property: "URL", "@type": "Text", multiple: false },
         {
@@ -11,13 +17,21 @@ export default {
             "@type": "Type",
             required: true,
             multiple: false,
+            group: "important",
         },
-        { property: "model", "@type": "Text", required: true, multiple: false },
+        {
+            property: "model",
+            "@type": "Text",
+            required: true,
+            multiple: false,
+            group: "important",
+        },
         {
             property: "serialNumber",
             "@type": "Text",
             required: true,
             multiple: false,
+            group: "important",
         },
     ],
 };

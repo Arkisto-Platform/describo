@@ -56,6 +56,7 @@ export default class ProfileLoader {
             "help",
             "options",
             "multiple",
+            "group",
         ];
         const validTypes = [
             "Value",

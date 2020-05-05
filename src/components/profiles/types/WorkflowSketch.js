@@ -4,12 +4,13 @@ export default {
     },
     inputs: [
         {
-            property: "'@type",
-            value: '["File", "ImageObject", "WorkflowSketch"]',
+            property: "name",
+            "@type": "Text",
             required: true,
+            multiple: false,
+            group: "important",
         },
-        { property: "name", "@type": "Text", required: true, multiple: false },
+        { property: "about", "@type": ["Workflow"], group: "important" },
         { property: "encodingFormat", "@type": "Text", multiple: false },
-        { property: "about", "@type": ["Workflow"] },
     ],
 };
