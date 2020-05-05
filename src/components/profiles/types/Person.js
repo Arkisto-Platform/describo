@@ -8,7 +8,7 @@ export default {
             "@type": "Text",
             required: true,
             multiple: false,
-            group: "impportant",
+            group: "important",
         },
         { property: "familyName", "@type": "Text", multiple: false },
         { property: "givenName", "@type": "Text", multiple: false },
