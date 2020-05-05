@@ -69,7 +69,14 @@ See https://www.electron.build/code-signing for information about code signing.
 
 ### Building MacOS releases
 
-You will need an Apple developer certificate to sign the release and the application notarization is not yet set up so MacOS Catalina (latest) will not currently run the executable.
+You will need an Apple developer certificate to sign the release as well as an app specific password. To set up the
+app specfic password follow the instructions at [https://support.apple.com/en-au/HT204397](https://support.apple.com/en-au/HT204397)
+
+Ensure you have xcode installed as the notarization stage uses a tool called `altool` that comes
+with xcode full not xcode command line tools.
+
+export APPLEID= < your apple developer id - you must have an apple developer cert >
+export APPLEIDPASS= < app specific password >
 
 ### Building Windows releases
 

@@ -1,6 +1,6 @@
 {
     "name": "describo",
-    "version": "0.1.0",
+    "version": "1.0.0-alpha",
     "description": "The tool to describe and package data.",
     "main": "index.js",
     "scripts": {
@@ -16,6 +16,7 @@
         "publish": "electron-builder --publish always"
     },
     "build": {
+        "afterSign": "bin/notarize.js",
         "appId": "au.edu.uts.describo",
         "productName": "Describo",
         "mac": {
@@ -27,6 +28,9 @@
                 "dmg",
                 "zip"
             ]
+        },
+        "dmg": {
+            "sign": false
         },
         "win": {},
         "publish": [
@@ -94,8 +98,10 @@
         "connect-history-api-fallback": "^1.6.0",
         "copy-webpack-plugin": "^5.1.1",
         "css-loader": "^3.5.2",
+        "dotenv": "^8.2.0",
         "electron": "^8.2.3",
         "electron-builder": "^22.5.1",
+        "electron-notarize": "^0.3.0",
         "electron-webpack": "^2.8.2",
         "electron-webpack-vue": "^2.4.0",
         "file-loader": "^5.1.0",
