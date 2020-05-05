@@ -89,7 +89,7 @@ export default class CrateTool {
             rootDataset: this.getRootDataset({ data, fromGraph: true }),
         });
         // console.log(JSON.stringify(data, null, 2));
-        ({ data, errors } = verify({ data }));
+        ({ data, errors } = this.verify({ data }));
         return { data, errors };
 
         function mapIdentifiers({ data, rootDatasetUUID }) {
@@ -175,68 +175,66 @@ export default class CrateTool {
                 }
             }
         }
+    }
 
-        function verify({ data }) {
-            const skipChecks = ["CreativeWork", "CreateAction"];
-            const elementsById = groupBy(data, "uuid");
-            // console.log(JSON.stringify(elementsById, null, 2));
-            let errors = [];
-            for (let item of data) {
-                // console.log(JSON.stringify(item, null, 2));
-                // ensure each item has an @id property
-                if (!item.uuid) {
-                    errors.push(
-                        `Missing property '@id' from item: '${JSON.stringify(
-                            item
-                        )}`
-                    );
-                }
-                // ensure each item has an @type property
-                if (!item["@type"]) {
-                    errors.push(
-                        `Missing property '@type' from item with @id=${item.uuid}`
-                    );
-                }
+    verify({ data }) {
+        const skipChecks = ["CreativeWork", "CreateAction"];
+        const elementsById = groupBy(data, "uuid");
+        // console.log(JSON.stringify(elementsById, null, 2));
+        let errors = [];
+        for (let item of data) {
+            // console.log(JSON.stringify(item, null, 2));
+            // ensure each item has an @id property
+            if (!item.uuid) {
+                errors.push(
+                    `Missing property '@id' from item: '${JSON.stringify(item)}`
+                );
+            }
+            // ensure each item has an @type property
+            if (!item["@type"]) {
+                errors.push(
+                    `Missing property '@type' from item with @id=${item.uuid}`
+                );
+            }
 
-                // stop here if item in skipChecks
-                if (skipChecks.includes(item["@type"])) continue;
+            // stop here if item in skipChecks
+            if (skipChecks.includes(item["@type"])) continue;
 
-                // ensure each item except for the root dataset has a reverse property
-                if (item["@type"] !== "RootDataset" && !item["@reverse"]) {
-                    errors.push(
-                        `Orphaned item found @id=${item.uuid}, @type=${item["@type"]}`
-                    );
-                }
+            // ensure each item except for the root dataset has a reverse property
+            if (item["@type"] !== "RootDataset" && !item["@reverse"]) {
+                errors.push(
+                    `Orphaned item found @id=${item.uuid}, @type=${item["@type"]}`
+                );
+            }
 
-                // walk all items and make sure all references are resolvable
-                walkObject({ obj: item });
+            // walk all items and make sure all references are resolvable
+            walkObject({ obj: item });
 
-                function walkObject({ obj }) {
-                    for (let property of Object.keys(obj)) {
-                        if (isArray(obj[property])) {
-                            obj[property].forEach((element) => {
-                                if (isPlainObject(element)) {
-                                    if (!elementsById[element.uuid]) {
-                                        errors.push(
-                                            `Unable to resolve item reference for property: ${property} in item @id=${obj[property].uuid}, @type=${obj[property]["@type"]}`
-                                        );
-                                    }
-                                }
-                            });
-                        } else if (isPlainObject(obj[property])) {
-                            if ("uuid" in obj[property]) {
-                                if (!elementsById[obj[property].uuid]) {
+            function walkObject({ obj }) {
+                for (let property of Object.keys(obj)) {
+                    if (isArray(obj[property])) {
+                        obj[property].forEach((element) => {
+                            if (isPlainObject(element)) {
+                                if (!elementsById[element.uuid]) {
                                     errors.push(
                                         `Unable to resolve item reference for property: ${property} in item @id=${obj[property].uuid}, @type=${obj[property]["@type"]}`
                                     );
                                 }
                             }
+                        });
+                    } else if (isPlainObject(obj[property])) {
+                        if ("uuid" in obj[property]) {
+                            if (!elementsById[obj[property].uuid]) {
+                                errors.push(
+                                    `Unable to resolve item reference for property: ${property} in item @id=${obj[property].uuid}, @type=${obj[property]["@type"]}`
+                                );
+                            }
                         }
                     }
                 }
             }
-            return { data, errors };
         }
+        return { data, errors };
     }
 
     assembleCrate({ data }) {
