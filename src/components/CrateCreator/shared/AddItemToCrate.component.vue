@@ -169,12 +169,21 @@ export default {
                     property: this.addNewItem.property,
                 });
             }
-            this.$store.commit("removeFromGraph", {
-                uuid: this.addNewItem.itemId,
-            });
-            this.item = {};
-            this.$store.commit("addNewItem", undefined);
-            this.$refs.drawer.closeDrawer();
+            try {
+                this.$store.commit("removeFromGraph", {
+                    uuid: this.addNewItem.itemId,
+                });
+                this.item = {};
+                this.$store.commit("addNewItem", undefined);
+                this.$refs.drawer.closeDrawer();
+            } catch (error) {
+                this.$message({
+                    type: "error",
+                    showClose: true,
+                    duration: 6000,
+                    message: `The item can't be deleted until all references to it and from it have been deleted first.`,
+                });
+            }
         },
         linkItem() {
             if (this.addNewItem && this.addNewItem.parentId) {
