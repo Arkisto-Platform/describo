@@ -18,6 +18,7 @@
                         placeholder="Select an item type to add to the crate"
                         class="w-full"
                         @change="loadComponent"
+                        :filterable="true"
                     >
                         <el-option
                             v-for="item in typeDefinitions"
