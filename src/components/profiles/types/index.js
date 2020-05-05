@@ -1,4 +1,5 @@
 import ContactPoint from "./ContactPoint";
+import CreateAction from "./CreateAction";
 import CreativeWork from "./CreativeWork";
 import Dataset from "./Dataset";
 import File from "./File";
@@ -18,6 +19,7 @@ import WorkflowSketch from "./WorkflowSketch";
 
 export default {
     ContactPoint,
+    CreateAction,
     CreativeWork,
     Dataset,
     File,
