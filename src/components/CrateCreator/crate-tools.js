@@ -135,16 +135,29 @@ export default class CrateTool {
                 if (mapping) {
                     mapping.forEach((m) => {
                         if (d.uuid === m.tgtUUID) {
+                            // no @reverse prop - add it
                             if (!d["@reverse"]) d["@reverse"] = {};
-                            if (!d["@reverse"][m.srcProperty])
+
+                            // no @reverse.srcProperty - create as array
+                            if (!d["@reverse"][m.srcProperty]) {
                                 d["@reverse"][m.srcProperty] = [];
+                            }
+
+                            // @reverse.srcProperty is {} = convert to array
                             if (isPlainObject(d["@reverse"][m.srcProperty]))
                                 d["@reverse"][m.srcProperty] = [
                                     d["@reverse"][m.srcProperty],
                                 ];
-                            d["@reverse"][m.srcProperty].push({
-                                uuid: m.srcUUID,
-                            });
+
+                            // push srcProperty reverse
+                            const existingReverseMaps = d["@reverse"][
+                                m.srcProperty
+                            ].map((i) => i.uuid);
+                            if (!existingReverseMaps.includes(m.srcUUID)) {
+                                d["@reverse"][m.srcProperty].push({
+                                    uuid: m.srcUUID,
+                                });
+                            }
                         }
                     });
                 }
