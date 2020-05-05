@@ -16,10 +16,7 @@
             @load-selection="loadSelection"
         />
         <div v-else>
-            <shell-controls-component
-                :crate-loading-errors="crateLoadingErrors"
-                @error="(e) => (error = e)"
-            />
+            <shell-controls-component @error="(e) => (error = e)" />
         </div>
         <!-- loading indicator -->
         <el-progress

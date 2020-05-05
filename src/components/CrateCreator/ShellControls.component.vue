@@ -108,14 +108,9 @@ import CrateLoadingErrorsComponent from "./shared/CrateLoadingErrors.component.v
 import AddItemToCrateComponent from "./shared/AddItemToCrate.component.vue";
 import CrateTool from "components/CrateCreator/crate-tools";
 const crateTool = new CrateTool();
+import { debounce } from "lodash";
 
 export default {
-    props: {
-        crateLoadingErrors: {
-            type: Array,
-            required: true,
-        },
-    },
     components: {
         DataInspectorComponent,
         CrateExportComponent,
@@ -124,6 +119,7 @@ export default {
     },
     data() {
         return {
+            debounceWriteToDisk: debounce(this.writeCrateToDisk, 1000),
             view: {
                 addItem: false,
                 dataInspector: false,
@@ -132,6 +128,7 @@ export default {
             },
             saved: false,
             saving: false,
+            crateLoadingErrors: [],
         };
     },
     computed: {
@@ -144,7 +141,7 @@ export default {
     },
     watch: {
         "$store.state.graph": function() {
-            this.writeCrateToDisk();
+            this.debounceWriteToDisk();
         },
         "$store.state.addNewItem": {
             handler: function() {
@@ -164,6 +161,9 @@ export default {
             this.$store.commit("setWriteToDisk", !current);
         },
         async writeCrateToDisk() {
+            this.crateLoadingErrors = crateTool.verify({
+                data: this.$store.state.graph,
+            }).errors;
             if (!this.enableWriteToDisk) return;
 
             this.error = undefined;
@@ -174,6 +174,7 @@ export default {
                     data: this.$store.state.graph,
                     inputs: this.$store.state.profileInputs.inputs,
                 });
+                console.log(this.valid);
                 crateTool.assembleCrate({ data: this.$store.state.graph });
                 await crateTool.writeCrate({
                     target: this.$store.state.target,
