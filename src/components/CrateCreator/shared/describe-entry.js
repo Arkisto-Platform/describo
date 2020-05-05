@@ -141,9 +141,10 @@ export function determinePropertyDataType({ property, data }) {
             return { property, "@type": "Text", data: [data], multiple: true };
         }
     } else if (isArray(data)) {
-        const types = data.map((d) => {
+        let types = data.map((d) => {
             return d["@type"] || "Text";
         });
-        return { property, "@type": uniq(types).sort(), data, multiple: true };
+        types = uniq(types).sort();
+        return { property, "@type": types, data, multiple: true };
     }
 }

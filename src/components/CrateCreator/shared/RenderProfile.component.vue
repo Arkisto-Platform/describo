@@ -86,7 +86,8 @@
                     <div
                         v-if="
                             isSimpleType(input['@type']) ||
-                                isSimpleType(instance['@type'])
+                                isSimpleType(instance['@type']) ||
+                                dataIsSimpleType(instance)
                         "
                     >
                         <render-item-component
@@ -124,7 +125,14 @@
 import { shortName } from "src/renderer/filters";
 import { updateTemplate } from "./describe-entry";
 import { mappings } from "components/profiles/type-mappings";
-import { cloneDeep, isArray, isString, isEmpty, difference } from "lodash";
+import {
+    cloneDeep,
+    isArray,
+    isPlainObject,
+    isString,
+    isEmpty,
+    difference,
+} from "lodash";
 import AddControl from "./AddControl.component.vue";
 import RenderProfileReportComponent from "./RenderProfileReport.component.vue";
 import RenderProfileItemComponent from "./RenderProfileItem.component.vue";
@@ -192,6 +200,9 @@ export default {
         this.updateTemplate();
     },
     methods: {
+        dataIsSimpleType(input) {
+            return isPlainObject(input) && input.uuid ? false : true;
+        },
         isSimpleType(type) {
             return isSimpleType(type);
         },
