@@ -1,5 +1,14 @@
 #!/bin/bash
 
+
+if [ -z "${APPLEID}" ] ; then
+    echo "APPLEID not set in env. Follow the instructions in the section on building MacOS releases and try again."
+    exit -1
+fi
+if [ -z "${APPLEIDPASS}" ] ; then
+    echo "APPLEIDPASS not set in env. Follow the instructions in the section on building MacOS releases and try again."
+    exit -1
+fi
 read -p 'Please enter an appropriate GitHub personal access token so that the release can be pushed. > ' token
 
 if [ -z $token ] ; then
@@ -21,14 +30,13 @@ if [ "$resp" == 'y' ] ; then
 fi
 
 export GH_TOKEN="${token}"
-npm run build:linux
-npm run build:mac
-npm run build:win
 
 PACKAGE_VERSION=$(awk '/version/{gsub(/("|",)/,"",$2);print $2};' package.json)
 git tag -a "v${PACKAGE_VERSION}" -e
   
-npm run publish
+npm run build:linux
+npm run build:mac
+npm run build:win
 
 cat <<EOF
 
