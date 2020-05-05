@@ -1,6 +1,10 @@
 <template>
     <div class="flex flex-row">
-        <div class="cursor-pointer bg-green-200 p-2 rounded-l-lg" @click="edit">
+        <div
+            class="cursor-pointer bg-green-200 p-2 rounded-l-lg"
+            @click="edit"
+            v-if="itemData"
+        >
             <div class="flex flex-col space-y-1">
                 <div class="text-gray-600 text-xs">
                     @id&nbsp;
@@ -13,7 +17,12 @@
             </div>
         </div>
         <div class="bg-green-200 p-2 rounded-r-lg">
-            <el-button type="danger" @click="removeItem" class="rounded-lg">
+            <el-button
+                type="danger"
+                @click="removeItem"
+                class="rounded-lg"
+                size="small"
+            >
                 <i class="fas fa-trash-alt"></i>
             </el-button>
         </div>
@@ -37,7 +46,14 @@ export default {
     },
     computed: {
         itemData: function() {
-            return this.$store.getters.getItemById(this.item.data.uuid);
+            const item = this.$store.getters.getItemById(this.item.data.uuid);
+            if (!item) {
+                console.log(
+                    `Oops - can't get data for property: '${this.item.property}'`
+                );
+                console.log(this.item);
+            }
+            return item;
         },
     },
     data() {
