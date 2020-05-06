@@ -9,18 +9,7 @@
         <div class="flex flex-col bg-gray-200 h-full">
             <div class="m-4">
                 <div class="text-xl my-2">{{ title }}</div>
-                <div class="flex flex-row my-2">
-                    <el-button
-                        ref="datasetSelectionBtn"
-                        @click="inspect('dataset')"
-                        type="primary"
-                        class="hover:bg-orange-200 hover:text-gray-800"
-                        :class="{
-                            'bg-orange-200 text-gray-800': title === 'Dataset',
-                        }"
-                    >
-                        <i class="fas fa-eye"></i> inspect dataset
-                    </el-button>
+                <div class="flex flex-row justify-around my-2">
                     <el-button
                         ref="graphSelectionBtn"
                         @click="inspect('graph')"
@@ -31,6 +20,17 @@
                         }"
                     >
                         <i class="fas fa-eye"></i> inspect graph
+                    </el-button>
+                                        <el-button
+                        ref="datasetSelectionBtn"
+                        @click="inspect('dataset')"
+                        type="primary"
+                        class="hover:bg-orange-200 hover:text-gray-800"
+                        :class="{
+                            'bg-orange-200 text-gray-800': title === 'Dataset',
+                        }"
+                    >
+                        <i class="fas fa-eye"></i> inspect root dataset
                     </el-button>
                     <el-button
                         ref="crateSelectionBtn"
@@ -82,7 +82,7 @@ export default {
     },
     watch: {
         drawer: function(n, o) {
-            if (n) this.inspect("dataset");
+            if (n) this.inspect("graph");
         },
     },
     methods: {
