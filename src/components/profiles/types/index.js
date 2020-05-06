@@ -5,6 +5,7 @@ import Dataset from "./Dataset";
 import File from "./File";
 import GeoCoordinates from "./GeoCoordinates";
 import IndividualProduct from "./IndividualProduct";
+import Organization from "./Organization";
 import Person from "./Person";
 import Place from "./Place";
 import PropertyValue from "./PropertyValue";
@@ -25,6 +26,7 @@ export default {
     File,
     GeoCoordinates,
     IndividualProduct,
+    Organization,
     Person,
     Place,
     PropertyValue,
