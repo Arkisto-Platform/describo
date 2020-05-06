@@ -24,7 +24,7 @@
             "gatekeeperAssess": false,
             "entitlements": "./mac.plist",
             "entitlementsInherit": "./mac.plist",
-            "target": "dmg"
+            "target": ["dmg", "zip"]
         },
         "dmg": {
             "sign": false
