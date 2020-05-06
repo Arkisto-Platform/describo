@@ -19,14 +19,15 @@ if [ -z "${APPLEIDPASS}" ] ; then
         exit -1
     fi
 fi
-export APPLEID=$APPLEID
-export APPLEIDPASS=$APPLEIDPASS
 echo 
 read -p 'Please enter an appropriate GitHub personal access token so that the release can be pushed. > ' token
 if [ -z $token ] ; then
     echo "A token was not provided. Exiting."
     exit -1
 fi
+export APPLEID=$APPLEID
+export APPLEIDPASS=$APPLEIDPASS
+export GH_TOKEN="${token}"
 
 echo
 read -p 'Should I bump the patch version number? [y/N] ' resp
@@ -42,7 +43,6 @@ if [ "$resp" == 'y' ] ; then
     npm version major 
 fi
 
-export GH_TOKEN="${token}"
 
 PACKAGE_VERSION=$(awk '/version/{gsub(/("|",)/,"",$2);print $2};' package.json)
 git tag -a "v${PACKAGE_VERSION}" -e
