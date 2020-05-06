@@ -84,6 +84,7 @@
 </template>
 
 <script>
+import { uniq } from "lodash";
 import {
     CustomComponents,
     isCustomComponent,
@@ -131,7 +132,7 @@ export default {
             const typeDefinitions = Object.keys(
                 this.$store.state.typeDefinitions
             );
-            return [...typeDefinitions, ...CustomComponents].sort();
+            return uniq([...typeDefinitions, ...CustomComponents]).sort();
         },
         addNewItem: function() {
             const item = this.$store.state.addNewItem;
