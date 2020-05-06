@@ -116,6 +116,10 @@ export function unlinkItemFromParentAndChildren({
                 reference["@reverse"][key] = reference["@reverse"][key].filter(
                     (i) => i.uuid !== item.uuid
                 );
+                if (isEmpty(reference["@reverse"][key]))
+                    delete reference["@reverse"][key];
+                if (isEmpty(reference["@reverse"]))
+                    delete reference["@reverse"];
                 store.commit("saveToGraph", reference);
                 delete item[key];
             } else if (isArray(item[key])) {
@@ -127,6 +131,10 @@ export function unlinkItemFromParentAndChildren({
                         reference["@reverse"][key] = reference["@reverse"][
                             key
                         ].filter((i) => i.uuid !== item.uuid);
+                        if (isEmpty(reference["@reverse"][key]))
+                            delete reference["@reverse"][key];
+                        if (isEmpty(reference["@reverse"]))
+                            delete reference["@reverse"];
                         store.commit("saveToGraph", reference);
                     } else {
                         return element;
