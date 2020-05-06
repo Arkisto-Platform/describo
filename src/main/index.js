@@ -17,8 +17,8 @@ function createMainWindow() {
         webPreferences: {
             nodeIntegration: true,
             nodeIntegrationInWorker: true,
-            webSecurity: process.env.NODE_ENV !== "development"
-        }
+            webSecurity: process.env.NODE_ENV !== "development",
+        },
     });
     window.webContents.session.clearCache(() => {});
 
@@ -32,7 +32,7 @@ function createMainWindow() {
             formatUrl({
                 pathname: path.join(__dirname, "index.html"),
                 protocol: "file",
-                slashes: true
+                slashes: true,
             })
         );
     }
@@ -77,13 +77,14 @@ app.on("ready", () => {
 function onUpdateDownloaded() {
     let buttonPressed = dialog.showMessageBox({
         type: "info",
-        buttons: ["Update now and restart", "Update later"],
         defaultId: 0,
         title: "Update Available",
-        message: `A new version of the application is available.`
+        message: `A new version of the application is available. Restart to install the update.`,
     });
 
     if (buttonPressed === 0) {
-        autoUpdater.quitAndInstall();
+        setImmediate(() => {
+            autoUpdater.quitAndInstall();
+        });
     }
 }
