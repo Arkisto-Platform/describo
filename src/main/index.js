@@ -77,15 +77,9 @@ app.on("ready", () => {
 function onUpdateDownloaded() {
     let buttonPressed = dialog.showMessageBox({
         type: "info",
-        buttons: ["Update now and restart", "Update later"],
+        buttons: ["Got it!"],
         defaultId: 0,
         title: "Update Available",
-        message: `A new version of the application is available. Restart to install the update.`,
+        message: `A new version of the application is available. It will be installed the next time you restart Describo!.`,
     });
-
-    if (buttonPressed === 0) {
-        setImmediate(() => {
-            autoUpdater.quitAndInstall();
-        });
-    }
 }
