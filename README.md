@@ -2,15 +2,19 @@
 
 The tool to describe and package data.
 
--   [describo](#describo)
-    -   [Technology](#technology)
-    -   [Running the development environment](#running-the-development-environment)
-    -   [Repository Structure](#repository-structure)
-    -   [Building a release](#building-a-release)
-        -   [Code signing](#code-signing)
-        -   [Building MacOS releases](#building-macos-releases)
-        -   [Building Windows releases](#building-windows-releases)
-    -   [Publishing a release](#publishing-a-release)
+- [describo](#describo)
+  - [Technology](#technology)
+  - [Running the development environment](#running-the-development-environment)
+  - [Tests](#tests)
+  - [Repository Structure](#repository-structure)
+  - [Building a release](#building-a-release)
+    - [Code signing](#code-signing)
+    - [Building a Linux release](#building-a-linux-release)
+    - [Building MacOS releases](#building-macos-releases)
+      - [DO THIS FIRST](#do-this-first)
+    - [Building Windows releases](#building-windows-releases)
+  - [Publishing a release](#publishing-a-release)
+
 
 ## Technology
 
@@ -70,6 +74,33 @@ See https://www.electron.build/code-signing for information about code signing.
 ### Building a Linux release
 
 ### Building MacOS releases
+
+#### DO THIS FIRST
+
+There is a bug in electron-builder where a zip file is required for autoupdate to work but the code to generate
+it results in a bundle that doesn't work on Catalina! So, you need to apply the following patch to 
+`node_modules/app-builder-lib/out/targets/ArchiveTarget.js`.
+
+```
+diff --git a/ArchiveTarget.js.orig b/ArchiveTarget.js
+index 72a59df..f872592 100644
+--- a/ArchiveTarget.js.orig
++++ b/ArchiveTarget.js
+@@ -119,9 +119,9 @@ class ArchiveTarget extends _core().Target {
+       };
+       await (0, _archive().archive)(format, artifactPath, dirToArchive, archiveOptions);
+
+-      if (this.isWriteUpdateInfo && format === "zip") {
+-        updateInfo = await (0, _differentialUpdateInfoBuilder().appendBlockmap)(artifactPath);
+-      }
++        //if (this.isWriteUpdateInfo && format === "zip") {
++        //updateInfo = await (0, _differentialUpdateInfoBuilder().appendBlockmap)(artifactPath);
++        //}
+     }
+
+     await packager.info.callArtifactBuildCompleted({
+
+```
 
 MacOS releases can only be built on MacOS.
 
