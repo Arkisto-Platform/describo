@@ -4,7 +4,7 @@
         <lookup-ror-component @selected-organisation="save" v-if="newItem" />
 
         <!-- create /edit organisation -->
-        <create-organisation-component :properties.sync="properties" />
+        <render-profile-component :uuid="uuid" />
 
         <div class="flex flex-row mt-2">
             <el-button @click="remove" type="danger" v-if="enableRemove">
@@ -19,13 +19,14 @@
 </template>
 
 <script>
-import CreateOrganisationComponent from "./CreateOrganisation.component.vue";
 import LookupRorComponent from "./LookupROR.component.vue";
+import { generateId, unlinkItemAndRemove } from "components/CrateCreator/tools";
 
 export default {
     components: {
-        CreateOrganisationComponent,
         LookupRorComponent,
+        RenderProfileComponent: () =>
+            import("components/CrateCreator/shared/RenderProfile.component"),
     },
     props: {
         uuid: { type: String, required: true },
@@ -34,10 +35,6 @@ export default {
     data() {
         return {
             editing: true,
-            properties: {
-                name: undefined,
-                description: undefined,
-            },
         };
     },
     computed: {
@@ -50,10 +47,6 @@ export default {
     },
     created() {
         const item = this.$store.getters.getItemById(this.uuid);
-        if (item) {
-            this.properties.name = item.name;
-            this.properties.description = item.description;
-        }
     },
     methods: {
         remove() {
@@ -62,9 +55,6 @@ export default {
         save(selection) {
             if (selection && selection.uuid) {
                 // select an org from ROR
-                //  delete current org
-                this.$store.commit("removeFromGraph", this.item);
-
                 //  create new org with ROR info
                 const newItem = {
                     uuid: selection.uuid,
@@ -77,13 +67,6 @@ export default {
                     ...this.$store.state.addNewItem,
                     itemId: selection.uuid,
                 });
-            } else {
-                const item = {
-                    ...this.item,
-                    name: this.properties.name,
-                    description: this.properties.description,
-                };
-                this.$store.commit("saveToGraph", item);
             }
             this.$emit("save");
         },
