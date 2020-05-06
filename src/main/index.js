@@ -77,6 +77,7 @@ app.on("ready", () => {
 function onUpdateDownloaded() {
     let buttonPressed = dialog.showMessageBox({
         type: "info",
+        buttons: ["Update now and restart", "Update later"],
         defaultId: 0,
         title: "Update Available",
         message: `A new version of the application is available. Restart to install the update.`,
