@@ -47,7 +47,7 @@ export GH_TOKEN="${token}"
 PACKAGE_VERSION=$(awk '/version/{gsub(/("|",)/,"",$2);print $2};' package.json)
 git tag -a "v${PACKAGE_VERSION}" -e
   
-# npm run build:linux
+npm run build:linux
 npm run build:mac
 npm run build:win
 
