@@ -3,7 +3,8 @@
         <el-button
             @click="add(type)"
             type="success"
-            size="small"
+            round
+            size="mini"
             v-for="(type, idx) of types"
             :key="idx"
         >

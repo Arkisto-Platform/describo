@@ -1,7 +1,7 @@
 <template>
-    <div class="flex flex-row">
+    <div class="flex flex-row shadow-lg">
         <div
-            class="cursor-pointer bg-green-200 p-2 rounded-l-lg"
+            class="cursor-pointer bg-green-200 p-2 rounded-l"
             @click="edit"
             v-if="itemData"
         >
@@ -16,7 +16,7 @@
                 </div>
             </div>
         </div>
-        <div class="bg-green-200 p-2 rounded-r-lg">
+        <div class="bg-green-200 p-2 rounded-r">
             <el-button
                 type="danger"
                 @click="removeItem"

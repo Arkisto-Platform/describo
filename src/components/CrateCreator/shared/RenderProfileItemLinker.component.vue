@@ -2,10 +2,11 @@
     <div class="flex flex-col" :class="{ 'p-4 bg-teal-200': showLinker }">
         <div class="flex flex-row">
             <el-button
+                round
                 class="mr-2"
                 @click="showLinker = !showLinker"
                 type="primary"
-                size="small"
+                size="mini"
             >
                 <i class="fas fa-link"></i>
             </el-button>

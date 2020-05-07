@@ -24,7 +24,7 @@
                 <div v-show="showAlert(input)" class="text-orange-600 mx-2">
                     <i class="fas fa-asterisk"></i>
                 </div>
-                <div class="mx-2">
+                <div class="text-lg">
                     {{ renderLabel(input) }}
                 </div>
                 <div class="flex-grow"></div>
@@ -33,15 +33,16 @@
                 </div>
                 <div>
                     <el-button
-                        circle
                         @click="loadPropertyDefinition(input)"
                         size="mini"
                         type="primary"
+                        round
                     >
                         <i class="fas fa-question fa-fw"></i>
                     </el-button>
                 </div>
             </div>
+            <div class="text-sm text-gray-600">{{ input.help }}</div>
             <!-- end: input label -->
 
             <!-- add control -->
@@ -72,7 +73,7 @@
                     />
                 </div>
                 <!-- show tag for complex type entries -->
-                <div v-else class="flex flex-row">
+                <div v-else class="flex flex-row p-2">
                     <render-profile-item-component
                         v-if="input.data"
                         :item="input"
@@ -81,7 +82,7 @@
                 </div>
             </div>
 
-            <div v-if="input.multiple" class="flex flex-row flex-wrap">
+            <div v-if="input.multiple" class="flex flex-row flex-wrap p-2">
                 <div v-for="instance of input.data" :key="loopKey(instance)">
                     <!-- render simple types in place -->
                     <div
@@ -109,7 +110,6 @@
                     </div>
                 </div>
             </div>
-            <div class="text-sm text-gray-600">{{ input.help }}</div>
         </div>
 
         <div class="flex flex-row justify-center my-4">
