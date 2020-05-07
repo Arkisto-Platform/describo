@@ -7,12 +7,22 @@
         <render-profile-component :uuid="uuid" />
 
         <div class="flex flex-row mt-2">
-            <el-button @click="remove" type="danger" v-if="enableRemove">
+            <el-button
+                @click="remove"
+                type="danger"
+                v-if="enableRemove"
+                size="small"
+            >
                 <i class="fas fa-trash-alt"></i>
             </el-button>
             <div class="flex-grow"></div>
-            <el-button @click="save()" type="success">
-                <i class="fas fa-check"></i>
+            <el-button
+                @click="save()"
+                type="success"
+                :disabled="!item.name"
+                size="small"
+            >
+                <i class="fas fa-check"></i> save
             </el-button>
         </div>
     </div>
