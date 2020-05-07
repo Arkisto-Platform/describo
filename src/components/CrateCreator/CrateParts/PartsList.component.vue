@@ -35,7 +35,7 @@
             </el-table-column>
             <el-table-column prop="uuid" label="Identifier" width="600">
                 <template slot-scope="scope">
-                    <div class="bg-green-200 px-2 py-1 rounded-lg">
+                    <div class="bg-green-200 p-2 rounded-lg">
                         <div class="flex flex-col space-y-1">
                             <div class="text-gray-600 text-xs">
                                 @id&nbsp;
