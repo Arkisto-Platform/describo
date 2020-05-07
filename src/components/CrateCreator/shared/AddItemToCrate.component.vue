@@ -58,6 +58,7 @@
                                 @click="remove()"
                                 type="danger"
                                 class="ml-1"
+                                size="small"
                                 v-if="enableRemove"
                             >
                                 <i class="fas fa-trash-alt"></i>
