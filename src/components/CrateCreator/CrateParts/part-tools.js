@@ -10,34 +10,43 @@ import {
 export function writeParts({ store, nodes }) {
     // get the root dataset
     const rootDataset = store.getters.getItemsByType("RootDataset")[0];
+    const existingDatasetIds = nodes.filter((n) => n.isDir).map((n) => n.uuid);
+    const existingFileIds = nodes.filter((n) => n.isLeaf).map((n) => n.uuid);
 
-    // remove existing files
+    // remove existing files if not in new set
     let files = store.getters.getItemsByType("File");
     files.forEach((file) => {
-        for (let property of Object.keys(file["@reverse"])) {
-            file["@reverse"][property].forEach((reference) => {
-                unlinkItemFromParentAndChildren({
-                    store,
-                    parentId: reference.uuid,
-                    itemId: file.uuid,
-                    property,
+        if (!existingFileIds.includes(file.uuid) && "@reverse" in file) {
+            for (let property of Object.keys(file["@reverse"])) {
+                file["@reverse"][property].forEach((reference) => {
+                    unlinkItemFromParentAndChildren({
+                        store,
+                        parentId: reference.uuid,
+                        itemId: file.uuid,
+                        property,
+                    });
                 });
-            });
+            }
         }
     });
 
-    // remove existing datasets
+    // remove existing datasets if not in new set
     let datasets = store.getters.getItemsByType("Dataset");
     datasets.forEach((dataset) => {
-        for (let property of Object.keys(dataset["@reverse"])) {
-            dataset["@reverse"][property].forEach((reference) => {
-                unlinkItemFromParentAndChildren({
-                    store,
-                    parentId: reference.uuid,
-                    itemId: dataset.uuid,
-                    property,
+        if (
+            !existingDatasetIds.includes(dataset.uuid) &&
+            "@reverse" in dataset
+        ) {
+            for (let property of Object.keys(dataset["@reverse"])) {
+                dataset["@reverse"][property].forEach((reference) => {
+                    unlinkItemFromParentAndChildren({
+                        store,
+                        parentId: reference.uuid,
+                        itemId: dataset.uuid,
+                        property,
+                    });
                 });
-            });
+            }
         }
     });
 
@@ -62,7 +71,9 @@ export function writeParts({ store, nodes }) {
                 uuid: node.uuid,
                 name: node.path,
                 "@type": node.isDir ? "Dataset" : "File",
-                dateModified: parseISO(node.modTime).toISOString(),
+                dateModified: node.modTime
+                    ? parseISO(node.modTime).toISOString()
+                    : undefined,
             };
             store.commit("saveToGraph", node);
             linkItemToParent({

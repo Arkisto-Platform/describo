@@ -35,7 +35,7 @@
 <script>
 import Worker from "./file-tree.worker.js";
 import path from "path";
-import { flattenDeep, uniq, compact } from "lodash";
+import { flattenDeep, uniq, uniqBy, compact } from "lodash";
 
 export default {
     props: {
@@ -90,13 +90,13 @@ export default {
             } else if (node.level === 1) {
                 return resolve(node.data.children);
             } else {
-                const parentPath = node.parent.data.path || "";
+                const parentPath = node.parent.data.path;
                 content = await new Promise((resolve) => {
                     const worker = new Worker();
                     worker.postMessage({
                         target: this.target,
                         root: this.target.folder,
-                        path: path.join(parentPath, node.data.path),
+                        path: path.join(this.target.folder, node.data.uuid),
                         filterFiles: this.enableFileSelector,
                     });
                     worker.addEventListener("message", (m) => resolve(m.data));
@@ -110,10 +110,24 @@ export default {
             selectedNodes = selectedNodes.map((node) => node.uuid);
             selectedNodes = uniq(selectedNodes);
             selectedNodes = selectedNodes.filter((n) => n != "/");
-            selectedNodes = selectedNodes.map(
-                (node) => this.$refs.tree.getNode(node).data
+            let nodes = [];
+
+            selectedNodes.forEach((n) =>
+                getNodeAndParent({ tree: this.$refs.tree, node: n })
             );
-            this.$emit("selected-nodes", selectedNodes);
+            nodes = flattenDeep(nodes);
+            nodes = uniqBy(nodes, "uuid");
+            this.$emit("selected-nodes", nodes);
+
+            function getNodeAndParent({ tree, node }) {
+                node = tree.getNode(node).data;
+                nodes.push(node);
+                if (node.parent !== "") {
+                    let parent = tree.getNode(node.parent).data;
+                    nodes.push(parent);
+                    getNodeAndParent({ tree, node: parent });
+                }
+            }
         },
     },
 };

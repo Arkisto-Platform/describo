@@ -1,34 +1,15 @@
 <template>
     <div>
-        <div class="border-b-2 m-2 p-2">
-            <span>Folder: {{ properties.uuid }}</span>
+        <div class="flex flex-row border-b-2 m-2 p-2">
+            <div class="text-xl">Folder: {{ item.uuid }}</div>
+            <div class="flex-grow"></div>
+            <el-button @click="$emit('done')" type="success" size="small">
+                <i class="fas fa-check"></i> done
+            </el-button>
         </div>
 
-        <el-form :model="properties" label-width="120px" @submit.native.prevent>
-            <el-form-item label="Name">
-                <el-input v-model="properties.name"></el-input>
-            </el-form-item>
-            <el-form-item label="Description">
-                <el-input
-                    v-model="properties.description"
-                    type="textarea"
-                    rows="5"
-                ></el-input>
-            </el-form-item>
-            <el-form-item label="Date Modified">{{
-                properties.dateModified | date
-            }}</el-form-item>
-        </el-form>
-
-        <div class="flex flex-row mt-2">
-            <el-button @click="cancel" type="danger">
-                <i class="fas fa-trash-alt"></i>
-                discard changes
-            </el-button>
-            <div class="flex-grow"></div>
-            <el-button @click="save" type="success">
-                <i class="fas fa-check"></i>
-            </el-button>
+        <div class="set-input-height overflow-scroll">
+            <render-profile-component :uuid="uuid" />
         </div>
     </div>
 </template>
@@ -38,41 +19,29 @@ import { save, restore } from "./dataset";
 import { getParams } from "components/CrateCreator/tools";
 
 export default {
+    components: {
+        RenderProfileComponent: () =>
+            import("components/CrateCreator/shared/RenderProfile.component"),
+    },
     props: {
         uuid: {
             type: String,
             required: true,
         },
     },
+    computed: {
+        item: function() {
+            return this.$store.getters.getItemById(this.uuid);
+        },
+    },
     data() {
-        return {
-            properties: {},
-        };
-    },
-    created() {
-        const properties = restore({
-            store: this.$store,
-            id: this.uuid,
-        });
-        this.$data.properties = { ...properties };
-    },
-    methods: {
-        cancel() {
-            this.$emit("cancel");
-        },
-        save() {
-            const params = getParams({
-                properties: this.properties,
-                reference: this.reference,
-            });
-            save({
-                store: this.$store,
-                dataset: params,
-            });
-            this.$emit("done");
-        },
+        return {};
     },
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.set-input-height {
+    height: calc(100vh - 450px);
+}
+</style>

@@ -18,14 +18,14 @@
                     />
                     <dataset-component
                         :uuid="selectedPart.uuid"
-                        @cancel="selectedPart = undefined"
+                        @done="selectedPart = undefined"
                         v-if="
                             selectedPart && selectedPart['@type'] === 'Dataset'
                         "
                     />
                     <file-component
                         :uuid="selectedPart.uuid"
-                        @cancel="selectedPart = undefined"
+                        @done="selectedPart = undefined"
                         v-if="selectedPart && selectedPart['@type'] === 'File'"
                     />
                 </div>
