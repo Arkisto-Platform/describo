@@ -5,7 +5,7 @@
     },
     "Collection": {
         "metadata": {
-            "about": "A profile to describe a PARADISEC item.",
+            "about": "A profile to describe a PARADISEC collection.",
             "allowAdditionalProperties": false
         },
         "inputs": [
@@ -85,7 +85,7 @@
     },
     "Item": {
         "metadata": {
-            "about": "A profile to describe a PARADISEC collection.",
+            "about": "A profile to describe a PARADISEC item.",
             "allowAdditionalProperties": false
         },
         "inputs": [
