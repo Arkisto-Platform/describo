@@ -3,6 +3,8 @@ import fs from "fs-extra";
 import defaultProfile from "components/profiles/default";
 import typeDefinitions from "components/profiles/types";
 import { cloneDeep, isString } from "lodash";
+import Store from "electron-store";
+const store = new Store();
 
 export default class ProfileLoader {
     constructor({ name }) {
@@ -19,7 +21,7 @@ export default class ProfileLoader {
                 typeDefinitions: {},
             };
         } else {
-            const profiles = JSON.parse(localStorage.getItem("profiles"));
+            const profiles = store.get("profiles");
             this.profile = cloneDeep(
                 profiles.filter((p) => p.name === this.name)[0].profile
             );

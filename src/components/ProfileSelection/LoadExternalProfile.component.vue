@@ -86,6 +86,8 @@ import { basename } from "path";
 import { uniqBy, orderBy } from "lodash";
 import isUrl from "validator/lib/isUrl";
 import { pathExists } from "fs-extra";
+import Store from "electron-store";
+const store = new Store();
 
 const isUrlCheckOptions = {
     require_host: true,
@@ -97,7 +99,7 @@ export default {
     data() {
         return {
             url: undefined,
-            profiles: JSON.parse(localStorage.getItem("profiles")),
+            profiles: store.get("profiles") || [],
         };
     },
     methods: {
@@ -146,17 +148,17 @@ export default {
             }
         },
         storeProfile({ profile, location }) {
-            let profiles = JSON.parse(localStorage.getItem("profiles")) || [];
-
             profile = {
                 ...profile.metadata,
                 location,
                 profile,
             };
-            profiles = profiles.filter((p) => p.name !== profile.name);
-            profiles.push(profile);
-            profiles = orderBy(profiles, ["name", "version"]);
-            localStorage.setItem("profiles", JSON.stringify(profiles));
+            this.profiles = this.profiles.filter(
+                (p) => p.name !== profile.name
+            );
+            this.profiles.push(profile);
+            this.profiles = orderBy(this.profiles, ["name", "version"]);
+            store.set("profiles", this.profiles);
             this.$emit("store-profile", profile.name);
         },
         refreshProfile(profile) {
@@ -167,10 +169,10 @@ export default {
             }
         },
         removeProfile(profile) {
-            let profiles = JSON.parse(localStorage.getItem("profiles"));
-            profiles = profiles.filter((p) => p.name !== profile.name);
-            this.profiles = profiles;
-            localStorage.setItem("profiles", JSON.stringify(profiles));
+            this.profiles = this.profiles.filter(
+                (p) => p.name !== profile.name
+            );
+            store.set("profiles", this.profiles);
         },
     },
 };
