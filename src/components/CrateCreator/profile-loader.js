@@ -4,11 +4,6 @@ import defaultProfile from "components/profiles/default";
 import typeDefinitions from "components/profiles/types";
 import { cloneDeep, isString } from "lodash";
 
-const profiles = {
-    default: defaultProfile,
-    typeDefinitions,
-};
-
 export default class ProfileLoader {
     constructor({ name }) {
         this.name = name;
@@ -16,24 +11,30 @@ export default class ProfileLoader {
     }
 
     async load() {
-        if (profiles[this.name]) {
-            this.profile = profiles[this.name];
+        if (this.name === "default") {
+            this.profile = defaultProfile;
+            return {
+                profile: cloneDeep(this.profile),
+                metadata: {},
+                typeDefinitions: {},
+            };
         } else {
             const profiles = JSON.parse(localStorage.getItem("profiles"));
-            const profile = cloneDeep(
+            this.profile = cloneDeep(
                 profiles.filter((p) => p.name === this.name)[0].profile
             );
-            delete profile.metadata;
-            this.profile = profile;
+            const profile = cloneDeep(this.profile);
+            delete profile.metadata, delete profile.TypeDefinitions;
+
+            return {
+                profile: profile,
+                metadata: this.profile.metadata,
+                typeDefinitions: this.profile.TypeDefinitions,
+            };
         }
-        return { profile: cloneDeep(this.profile) };
     }
 
-    async loadTypeDefinitions() {
-        return profiles.typeDefinitions;
-    }
-
-    verify() {
+    verify({ profile }) {
         let valid = true;
         let errors = [];
         const validInputProperties = [
@@ -59,8 +60,9 @@ export default class ProfileLoader {
         ];
 
         // for each definition
-        for (let type of Object.keys(this.profile)) {
-            const profile = this.profile[type];
+        const fullProfile = cloneDeep(profile);
+        for (let type of Object.keys(fullProfile)) {
+            profile = fullProfile[type];
 
             // ensure only two top level keys - ['metadata', 'inputs']
             let response = validateKeys({

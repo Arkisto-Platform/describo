@@ -77,6 +77,7 @@ import {
     round,
 } from "lodash";
 import { generateId } from "components/CrateCreator/tools";
+import internalTypeDefinitions from "components/profiles/types";
 import ProfileLoader from "./profile-loader";
 import RootDatasetComponent from "./RootDataset/Shell.component.vue";
 import CratePartsComponent from "./CrateParts/Shell.component.vue";
@@ -122,14 +123,20 @@ export default {
             });
 
             // load the profile
-            const { profile } = await profileLoader.load();
+            const {
+                profile,
+                typeDefinitions: customTypeDefinitions,
+                metadata,
+            } = await profileLoader.load();
 
             // get and store the type definitions
-            const typeDefinitions = await profileLoader.loadTypeDefinitions();
-            this.$store.commit("saveTypeDefinitions", typeDefinitions);
+            this.$store.commit("saveTypeDefinitions", {
+                ...internalTypeDefinitions,
+                ...customTypeDefinitions,
+            });
 
             // verify the profile
-            let { valid, errors } = profileLoader.verify();
+            let { valid, errors } = profileLoader.verify({ profile });
             if (!valid) {
                 this.error = `The profile is invalid and can't be loaded.`;
                 return;
