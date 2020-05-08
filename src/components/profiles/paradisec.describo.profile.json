@@ -1,0 +1,260 @@
+{
+    "metadata": {
+        "name": "PARADISEC Describo Profile",
+        "version": 1
+    },
+    "Collection": {
+        "metadata": {
+            "about": "A profile to describe a PARADISEC item.",
+            "allowAdditionalProperties": false
+        },
+        "inputs": [
+            {
+                "property": "additionalType",
+                "label": "Additional Type",
+                "@type": "Value",
+                "value": "collection",
+                "group": "important",
+                "multiple": false
+            },
+            {
+                "property": "name",
+                "label": "Title",
+                "@type": "Text",
+                "required": true,
+                "multiple": false,
+                "group": "important"
+            },
+            {
+                "property": "description",
+                "label": "Description",
+                "@type": "TextArea",
+                "required": true,
+                "multiple": false,
+                "group": "important"
+            },
+            {
+                "property": "comments",
+                "label": "Comments",
+                "@type": "Text"
+            },
+            {
+                "property": "dateCreated",
+                "@type": "Date",
+                "multiple": false
+            },
+            {
+                "property": "dateModified",
+                "@type": "Date",
+                "multiple": false
+            },
+            {
+                "property": "depositFormReceived",
+                "@type": "Date",
+                "multiple": false
+            },
+            {
+                "property": "hasMember",
+                "@type": "Text"
+            },
+            {
+                "property": "license",
+                "@type": "License",
+                "multiple": false
+            },
+            {
+                "property": "media",
+                "@type": "Text",
+                "multiple": false
+            },
+            {
+                "property": "orthographicNotes",
+                "@type": "TextArea",
+                "multiple": false
+            },
+            {
+                "property": "private",
+                "@type": "Text",
+                "multiple": false
+            },
+            {
+                "property": "contentLanguages",
+                "@type": "Language"
+            }
+        ]
+    },
+    "Item": {
+        "metadata": {
+            "about": "A profile to describe a PARADISEC collection.",
+            "allowAdditionalProperties": false
+        },
+        "inputs": [
+            {
+                "property": "additionalType",
+                "label": "Additional Type",
+                "@type": "Value",
+                "value": "item",
+                "group": "important",
+                "multiple": false
+            },
+            {
+                "property": "name",
+                "label": "Title",
+                "@type": "Text",
+                "required": true,
+                "multiple": false,
+                "group": "important"
+            },
+            {
+                "property": "description",
+                "label": "Description",
+                "@type": "TextArea",
+                "required": true,
+                "multiple": false,
+                "group": "important"
+            },
+            {
+                "property": "dateCreated",
+                "@type": "Date",
+                "multiple": false
+            },
+            {
+                "property": "dateModified",
+                "@type": "Date",
+                "multiple": false
+            },
+            {
+                "property": "adminComment",
+                "@type": "Text",
+                "multiple": false
+            },
+            {
+                "property": "dialect",
+                "@type": "Text",
+                "multiple": false
+            },
+            {
+                "property": "digitisedOn",
+                "@type": "Date",
+                "multiple": false
+            },
+            {
+                "property": "discourseType",
+                "@type": "Text",
+                "multiple": false
+            },
+            {
+                "property": "external",
+                "@type": "Text",
+                "multiple": false
+            },
+
+            {
+                "property": "bornDigital",
+                "@type": "Text",
+                "multiple": false
+            },
+            {
+                "property": "citeAs",
+                "@type": "Text",
+                "multiple": false
+            },
+            {
+                "property": "ingestNotes",
+                "@type": "Text",
+                "multiple": false
+            },
+            {
+                "property": "languageAsGiven",
+                "@type": "Text",
+                "multiple": false
+            },
+            {
+                "property": "license",
+                "@type": "License",
+                "multiple": false
+            },
+            {
+                "property": "hasPart",
+                "@type": ["'File"]
+            },
+            {
+                "property": "contentLanguages",
+                "@type": "Language"
+            },
+            {
+                "property": "subjectLanguages",
+                "@type": "Language"
+            },
+            {
+                "property": "private",
+                "@type": "Text",
+                "multiple": false
+            },
+            {
+                "property": "originatedOn",
+                "@type": "Date",
+                "multiple": false
+            },
+            {
+                "property": "originatedOnNarrative",
+                "@type": "Text",
+                "multiple": false
+            },
+            {
+                "property": "receivedOn",
+                "@type": "Text",
+                "multiple": false
+            },
+            {
+                "property": "publisher",
+                "@type": "Organization"
+            },
+            {
+                "property": "memberOf",
+                "@type": "Text"
+            }
+        ]
+    },
+    "TypeDefinitions": {
+        "License": {
+            "metadata": {
+                "allowAdditionalProperties": true
+            },
+            "inputs": [
+                {
+                    "property": "name",
+                    "@type": "Text",
+                    "required": true,
+                    "multiple": false,
+                    "group": "important"
+                },
+                {
+                    "property": "description",
+                    "@type": "TextArea",
+                    "multiple": false
+                }
+            ]
+        },
+        "Language": {
+            "metadata": {
+                "allowAdditionalProperties": true
+            },
+            "inputs": [
+                {
+                    "property": "name",
+                    "@type": "Select",
+                    "options": ["Abau", "Abkhaz", "Malay, Ambonese"],
+                    "required": true,
+                    "multiple": false,
+                    "group": "important"
+                },
+                {
+                    "property": "alternateName",
+                    "@type": "Select",
+                    "multiple": false
+                }
+            ]
+        }
+    }
+}
