@@ -1,4 +1,5 @@
 import { uniqBy, isEmpty, isPlainObject, isArray, compact } from "lodash";
+import isUrl from "validator/lib/isUrl";
 
 function uuidv4() {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
@@ -22,14 +23,11 @@ export function getParams({ properties, reference }) {
 }
 
 export function validateIdentifier(uuid) {
-    if (
-        !uuid.match(
-            /^(http:\/\/|https:\/\/)[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i
-        ) &&
-        !uuid.match("^#.*")
-    ) {
+    let id = uuid;
+    if (!isUrl(uuid) && !uuid.match("^#.*")) {
         id = `#${uuid}`;
     }
+    return id;
 }
 
 export function linkItemToParent({ store, parentId, itemId, property }) {

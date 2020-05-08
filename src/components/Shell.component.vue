@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col">
         <header-component />
-        <div class="m-4">
+        <div class="m-1">
             <router-view />
         </div>
     </div>
@@ -12,14 +12,14 @@ import HeaderComponent from "./Header.component.vue";
 
 export default {
     components: {
-        HeaderComponent
+        HeaderComponent,
     },
     data() {
         return {};
     },
     mounted() {
         this.$router.push({ path: "/introduction" }).catch(() => {});
-    }
+    },
 };
 </script>
 

@@ -13,13 +13,13 @@
             <render-selected-target-component class="ml-2 pt-1" />
         </div>
         <div class="flex flex-col" v-if="!target">
-            <div class="text-lg text-center">
+            <div class="text-lg text-center bg-yellow-200 py-10">
                 Get started by selecting the content you wish to describe.
             </div>
-            <div class="text-lg text-center text-indigo-700">
+            <!-- <div class="text-lg text-center text-indigo-700">
                 The RO-crate metadata file will be automatically saved to this
                 location as you construct it.
-            </div>
+            </div> -->
             <div class="flex flex-col">
                 <el-tabs
                     tab-position="left"
@@ -50,9 +50,10 @@
                         <div class="flex-grow"></div>
                         <div>
                             <el-button
-                                type="success"
+                                type="primary"
                                 @click="setTarget"
                                 :disabled="!this.browseTarget"
+                                round
                             >
                                 describe this target
                                 <i class="fas fa-long-arrow-alt-right"></i
