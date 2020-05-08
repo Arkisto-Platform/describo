@@ -30,12 +30,13 @@
                         round
                         @click="loadRemoteProfile"
                         size="small"
+                        :disabled="!url"
                     >
                         <i class="fas fa-globe"></i> load profile
                     </el-button>
                 </div>
             </div>
-            <div class="flex flex-col">
+            <div class="flex flex-col" v-if="profiles.length">
                 <div>Select a previously loaded profile.</div>
                 <div
                     v-for="profile of profiles"
@@ -112,6 +113,7 @@ export default {
             }
         },
         async loadRemoteProfile() {
+            if (!this.url) return;
             if (!isUrl(this.url, isUrlCheckOptions)) {
                 this.$message({
                     showClose: true,
