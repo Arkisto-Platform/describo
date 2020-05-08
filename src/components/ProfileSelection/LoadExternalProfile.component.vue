@@ -55,10 +55,21 @@
                         </div>
                         <div
                             class="pt-1 flex-grow"
-                            @click="loadProfile(profile)"
+                            @click="$emit('store-profile', profile.name)"
                         >
                             <i class="fas fa-chevron-right"></i>&nbsp;
                             {{ profile.name }} (version: {{ profile.version }})
+                        </div>
+                        <div>
+                            <el-button
+                                type="primary"
+                                class="mr-1"
+                                size="small"
+                                @click="refreshProfile(profile)"
+                                round
+                            >
+                                <i class="fas fa-sync-alt"></i>
+                            </el-button>
                         </div>
                     </div>
                 </div>
@@ -73,7 +84,14 @@ import { readJSON } from "fs-extra";
 import { basename } from "path";
 import { uniqBy, orderBy } from "lodash";
 import isUrl from "validator/lib/isUrl";
+import { pathExists } from "fs-extra";
 
+const isUrlCheckOptions = {
+    require_host: true,
+    require_protocol: true,
+    required_valid_protocol: true,
+    require_tld: process.env.NODE_ENV === "development" ? false : true,
+};
 export default {
     data() {
         return {
@@ -88,19 +106,13 @@ export default {
             });
             if (file.filePaths.length) {
                 file = file.filePaths[0];
-                let profile = await readJSON(file);
-                this.storeProfile({ profile, location: file });
+                this.loadProfile({ file });
+                // let profile = await readJSON(file);
+                // this.storeProfile({ profile, location: file });
             }
         },
         async loadRemoteProfile() {
-            const checkOptions = {
-                require_host: true,
-                require_protocol: true,
-                required_valid_protocol: true,
-                require_tld:
-                    process.env.NODE_ENV === "development" ? false : true,
-            };
-            if (!isUrl(this.url, checkOptions)) {
+            if (!isUrl(this.url, isUrlCheckOptions)) {
                 this.$message({
                     showClose: true,
                     message: `That doesn't look like a valid URL.`,
@@ -108,17 +120,28 @@ export default {
                 });
                 return;
             }
-            let response = await fetch(this.url);
-            if (response.status !== 200) {
-                this.$message({
-                    showClose: true,
-                    message: `There was an error retrieving that profile.`,
-                    type: "error",
-                });
-                return;
+            this.loadProfile({ url: this.url });
+        },
+        async loadProfile({ file, url }) {
+            if (file) {
+                const exists = await pathExists(file);
+                if (await pathExists(file)) {
+                    let profile = await readJSON(file);
+                    this.storeProfile({ profile, location: file });
+                }
+            } else if (url) {
+                let response = await fetch(url, { cache: "reload" });
+                if (response.status !== 200) {
+                    this.$message({
+                        showClose: true,
+                        message: `There was an error retrieving that profile.`,
+                        type: "error",
+                    });
+                    return;
+                }
+                const profile = await response.json();
+                this.storeProfile({ profile, location: url });
             }
-            const profile = await response.json();
-            this.storeProfile({ profile, location: this.url });
         },
         storeProfile({ profile, location }) {
             let profiles = JSON.parse(localStorage.getItem("profiles")) || [];
@@ -134,8 +157,12 @@ export default {
             localStorage.setItem("profiles", JSON.stringify(profiles));
             this.$emit("store-profile", profile.name);
         },
-        loadProfile(profile) {
-            this.$emit("store-profile", profile.name);
+        refreshProfile(profile) {
+            if (isUrl(profile.location, isUrlCheckOptions)) {
+                this.loadProfile({ url: profile.location });
+            } else {
+                this.loadProfile({ file: profile.location });
+            }
         },
         removeProfile(profile) {
             let profiles = JSON.parse(localStorage.getItem("profiles"));
