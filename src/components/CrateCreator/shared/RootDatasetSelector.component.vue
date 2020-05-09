@@ -1,8 +1,13 @@
 <template>
     <div class="flex flex-col items-center w-full">
-        <div class="flex flex-row">
+        <div class="flex flex-row py-10">
             <div class="mr-2 pt-1">Select a profile definition:</div>
-            <el-select class="style-select" v-model="selection" size="small">
+            <el-select
+                class="style-select"
+                v-model="selection"
+                size="small"
+                clearable
+            >
                 <el-option
                     v-for="(item, idx) in rootDatasetOptions"
                     :key="idx"
@@ -22,9 +27,10 @@
             </div>
         </div>
         <div
-            class="my-4 p-8 w-3/4 text-gray-700 border-2 border-gray-200 text-center"
+            class="my-4 p-8 w-3/4 text-gray-800 text-center bg-yellow-200"
+            v-if="selection"
         >
-            About: {{ selectionHelp }}
+            {{ selectionHelp }}
         </div>
     </div>
 </template>
