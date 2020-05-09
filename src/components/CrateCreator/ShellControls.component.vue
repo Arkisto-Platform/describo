@@ -38,13 +38,14 @@
                         v-show="!enableWriteToDisk"
                         class="pointer text-red-600 text-xl"
                     >
-                        <i class="far fa-save"></i> save to disk disabled
+                        <i class="far fa-save"></i> DRAFT mode: your changes can
+                        be lost
                     </div>
                     <div
                         v-show="enableWriteToDisk"
                         class="cursor-pointer text-green-600 text-xl"
                     >
-                        <i class="far fa-save"></i> save to disk enabled
+                        <i class="far fa-save"></i> saving enabled
                     </div>
                 </el-button>
             </div>
@@ -159,6 +160,7 @@ export default {
             this.saving = false;
             this.saved = false;
             this.$store.commit("setWriteToDisk", !current);
+            if (this.enableWriteToDisk) this.debounceWriteToDisk();
         },
         async writeCrateToDisk() {
             this.crateLoadingErrors = crateTool.verify({
