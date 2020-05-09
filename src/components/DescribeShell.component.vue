@@ -1,8 +1,8 @@
 <template>
-    <div class="flex flex-col px-6 py-3">
+    <div class="flex flex-col pt-2 pb-1">
         <div
             class="flex flex-col style-introduction text-xl text-center py-8"
-            v-if="!target && !profile"
+            v-if="!target"
         >
             <p class="my-4 text-3xl">Welcome to Describo!</p>
             <p class="my-2 text-gray-600">
@@ -20,15 +20,14 @@
                 <target-selection-component
                     :class="{
                         'w-3/5 mx-1': target && profile,
-                        'w-full py-2': !target || !profile,
+                        'w-full py-2 px-6': !target || !profile,
                     }"
                 />
                 <profile-selection-component
                     v-if="target"
                     :class="{
                         'w-2/5 mx-1': target && profile,
-                        'w-full border-b-2 border-gray-400':
-                            !target || !profile,
+                        'w-full px-6': !target || !profile,
                     }"
                 />
             </div>

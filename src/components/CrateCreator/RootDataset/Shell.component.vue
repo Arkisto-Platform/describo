@@ -1,8 +1,6 @@
 <template>
-    <div class="flex flex-col">
-        <div class="overflow-scroll set-input-section-height">
-            <render-profile-component :uuid="dataset.uuid" />
-        </div>
+    <div class="overflow-scroll set-input-section-height">
+        <render-profile-component :uuid="dataset.uuid" />
     </div>
 </template>
 
@@ -28,7 +26,7 @@ export default {
 
 <style lang="scss" scoped>
 .set-input-section-height {
-    height: calc(100vh - 210px);
+    height: calc(100vh - 215px);
 }
 .style-controls-row {
     width: 700px;
