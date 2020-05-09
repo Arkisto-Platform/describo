@@ -28,7 +28,7 @@ export default {
 
 <style lang="scss" scoped>
 .set-input-section-height {
-    height: calc(100vh - 320px);
+    height: calc(100vh - 210px);
 }
 .style-controls-row {
     width: 700px;

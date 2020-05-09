@@ -203,8 +203,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.set-tab-height {
-    height: calc(100vh - 270px);
-}
-</style>
+<style lang="scss" scoped></style>
