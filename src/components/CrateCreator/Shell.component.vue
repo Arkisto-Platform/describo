@@ -34,29 +34,55 @@
             class="mt-4 border-t-2 pt-4"
             v-if="ready && !showRootDatasetSelector"
         >
-            <el-tab-pane label="RO-Crate Root Dataset" name="crate" class="m-2">
+            <el-tab-pane label="Root Dataset" name="crate" class="m-2">
+                <span
+                    slot="label"
+                    class="flex flex-row text-lg font-light"
+                    :class="{
+                        'text-blue-600': activeTab !== 'crate',
+                        'text-2xl text-orange-500': activeTab === 'crate',
+                    }"
+                >
+                    <div class="mr-2">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <div>
+                        Root Dataset
+                    </div>
+                </span>
                 <root-dataset-component v-if="activeTab === 'crate'" />
             </el-tab-pane>
+
             <el-tab-pane label="Crate Contents" name="parts">
+                <span
+                    slot="label"
+                    class="flex flex-row text-lg font-light"
+                    :class="{
+                        'text-blue-600': activeTab !== 'parts',
+                        'text-2xl text-orange-500': activeTab === 'parts',
+                    }"
+                >
+                    <div class="mr-2">
+                        <i class="fas fa-archive"></i>
+                    </div>
+                    <div>
+                        Crate Contents
+                    </div>
+                </span>
                 <crate-parts-component v-if="activeTab === 'parts'" />
             </el-tab-pane>
+
             <el-tab-pane
                 :label="type"
                 :name="type"
                 v-for="type of types"
                 :key="type"
             >
-                <span slot="label">
-                    <span v-show="type === 'ContactPoint'">
-                        <i class="fas fa-address-book"></i>
-                    </span>
-                    <span v-show="type === 'Person'">
-                        <i class="fas fa-user"></i>
-                    </span>
-                    <span v-show="type === 'Organisation'">
-                        <i class="fas fa-university"></i>
-                    </span>
-                    {{ type }}
+                <span slot="label" class="text-lg text-gray-700 font-light">
+                    <shell-tab-icon-component
+                        :type="type"
+                        :selected="activeTab === type"
+                    />
                 </span>
                 <type-management-component
                     :type="type"
@@ -84,6 +110,7 @@ import CratePartsComponent from "./CrateParts/Shell.component.vue";
 import TypeManagementComponent from "./TypeManagement/Shell.component.vue";
 import RootDatasetSelectorComponent from "./shared/RootDatasetSelector.component.vue";
 import ShellControlsComponent from "./ShellControls.component.vue";
+import ShellTabIconComponent from "./ShellTabIcon.components.vue";
 import CrateTool from "components/CrateCreator/crate-tools";
 
 export default {
@@ -93,6 +120,7 @@ export default {
         TypeManagementComponent,
         RootDatasetSelectorComponent,
         ShellControlsComponent,
+        ShellTabIconComponent,
     },
     data() {
         return {
