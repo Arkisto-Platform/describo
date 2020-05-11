@@ -126,14 +126,22 @@ export default {
             const {
                 profile,
                 typeDefinitions: customTypeDefinitions,
+                enabledCoreTypes,
                 metadata,
             } = await profileLoader.load();
 
+            let types = {};
+            if (enabledCoreTypes && enabledCoreTypes.length) {
+                for (let type of enabledCoreTypes) {
+                    types[type] = internalTypeDefinitions[type];
+                }
+            } else {
+                types = cloneDeep(internalTypeDefinitions);
+            }
+            types = { ...types, ...customTypeDefinitions };
+
             // get and store the type definitions
-            this.$store.commit("saveTypeDefinitions", {
-                ...internalTypeDefinitions,
-                ...customTypeDefinitions,
-            });
+            this.$store.commit("saveTypeDefinitions", types);
 
             // verify the profile
             let { valid, errors } = profileLoader.verify({ profile });

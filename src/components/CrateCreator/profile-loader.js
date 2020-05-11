@@ -26,12 +26,15 @@ export default class ProfileLoader {
                 profiles.filter((p) => p.name === this.name)[0].profile
             );
             const profile = cloneDeep(this.profile);
-            delete profile.metadata, delete profile.TypeDefinitions;
+            delete profile.metadata;
+            delete profile.TypeDefinitions;
+            delete profile.EnabledCoreTypes;
 
             return {
                 profile: profile,
                 metadata: this.profile.metadata,
                 typeDefinitions: this.profile.TypeDefinitions,
+                enabledCoreTypes: this.profile.EnabledCoreTypes,
             };
         }
     }
