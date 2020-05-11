@@ -1,19 +1,16 @@
 <template>
     <div class="flex flex-row">
         <div class="flex flex-col w-full">
-            <div v-if="enableFileSelector">
-                <el-button @click="addParts" type="success">
-                    update crate content
-                </el-button>
-            </div>
             <div class="my-2 pb-2 border-b-2" v-if="enableFileSelector">
+                <div
+                    class="text-lg text-gray-800 bg-yellow-200 text-center p-8"
+                >
+                    You must expand each subfolder to load the child nodes.
+                    <br />If you don't you'll only get the folders.
+                </div>
                 <el-checkbox v-model="selectAllChildren"
                     >Select all children</el-checkbox
                 >
-                <div class="text-sm text-gray-600">
-                    Note: you must expand each subfolder to load the children
-                    when selecting all. Otherwise, you'll only get the folders.
-                </div>
             </div>
             <div class="overflow-scroll">
                 <el-tree
@@ -26,6 +23,7 @@
                     :default-expanded-keys="defaultExpandedKeys"
                     lazy
                     :load="loadNode"
+                    @check="debouncedAddParts"
                 ></el-tree>
             </div>
         </div>
@@ -35,7 +33,7 @@
 <script>
 import Worker from "./file-tree.worker.js";
 import path from "path";
-import { flattenDeep, uniq, uniqBy, compact } from "lodash";
+import { flattenDeep, uniq, uniqBy, compact, debounce } from "lodash";
 
 export default {
     props: {
@@ -51,6 +49,7 @@ export default {
     },
     data() {
         return {
+            debouncedAddParts: debounce(this.addParts, 1000),
             target: this.browseTarget || this.$store.state.target,
             data: [
                 {
