@@ -38,8 +38,8 @@
                         v-show="!enableWriteToDisk"
                         class="pointer text-red-600 text-xl"
                     >
-                        <i class="far fa-save"></i> DRAFT mode: your changes can
-                        be lost
+                        <i class="far fa-save"></i>
+                        DRAFT: your changes are not being saved!
                     </div>
                     <div
                         v-show="enableWriteToDisk"
