@@ -1,7 +1,7 @@
 {
     "metadata": {
         "name": "PARADISEC Describo Profile",
-        "version": 1
+        "version": 1.1
     },
     "Collection": {
         "metadata": {
@@ -224,10 +224,16 @@
             "inputs": [
                 {
                     "property": "name",
-                    "@type": "Text",
+                    "@type": "Select",
                     "required": true,
                     "multiple": false,
-                    "group": "important"
+                    "group": "important",
+                    "options": [
+                        "Open (subject to agreeing to PDSC access conditions",
+                        "Closed (subject to the access condition details)",
+                        "Mixed (check individual items)",
+                        "As yet unspecified"
+                    ]
                 },
                 {
                     "property": "description",
@@ -256,5 +262,12 @@
                 }
             ]
         }
-    }
+    },
+    "EnabledCoreTypes": [
+        "Person",
+        "Organization",
+        "GeoCoordinates",
+        "ContactPoint",
+        "PropertyValue"
+    ]
 }
