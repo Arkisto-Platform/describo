@@ -7,6 +7,7 @@ export default {
             property: "title",
             "@type": "Text",
             required: true,
+            multiple: false,
             group: "important",
         },
         { property: "description", "@type": "TextArea", group: "important" },

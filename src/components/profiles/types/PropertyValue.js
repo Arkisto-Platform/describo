@@ -3,7 +3,19 @@ export default {
         allowAdditionalProperties: true,
     },
     inputs: [
-        { property: "name", "@type": "Text", required: true, multiple: false },
-        { property: "value", "@type": "Text", required: true, multiple: false },
+        {
+            property: "name",
+            "@type": "Text",
+            required: true,
+            multiple: false,
+            group: "important",
+        },
+        {
+            property: "value",
+            "@type": "Text",
+            required: true,
+            multiple: false,
+            group: "important",
+        },
     ],
 };
