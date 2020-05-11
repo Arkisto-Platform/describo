@@ -1,7 +1,7 @@
 <template>
     <div
-        class="flex flex-row my-1"
-        :class="{ 'text-2xl text-orange-500': selected }"
+        class="flex flex-row my-1 hover:text-orange-600"
+        :class="{ 'text-2xl text-orange-600': selected }"
     >
         <div class="mr-2">
             <i :class="types[type]"></i>
@@ -34,11 +34,19 @@ export default {
                 DataDownload: "fas fa-download",
                 File: "fas fa-file",
                 GeoCoordinates: "fas fa-map-marker-alt",
+                IndividualProduct: "fas fa-barcode",
                 Organization: "fas fa-university",
                 Person: "fas fa-user",
                 Place: "fas fa-globe",
+                PropertyValue: "fas fa-paragraph",
+                Publication: "fas fa-newspaper",
+                RepositoryCollection: "fas fa-cubes",
+                RepositoryObject: "fas fa-cube",
                 ScholarlyArticle: "fas fa-scroll",
+                Script: "fas fa-code",
                 SoftwareApplication: "fas fa-code",
+                Workflow: "fas fa-project-diagram",
+                WorkflowSketch: "fas fa-project-diagram",
             },
         };
     },

@@ -39,8 +39,9 @@
                     slot="label"
                     class="flex flex-row text-lg font-light"
                     :class="{
-                        'text-blue-600': activeTab !== 'crate',
-                        'text-2xl text-orange-500': activeTab === 'crate',
+                        'text-blue-600 hover:text-orange-600':
+                            activeTab !== 'crate',
+                        'text-2xl text-orange-600': activeTab === 'crate',
                     }"
                 >
                     <div class="mr-2">
@@ -58,8 +59,9 @@
                     slot="label"
                     class="flex flex-row text-lg font-light"
                     :class="{
-                        'text-blue-600': activeTab !== 'parts',
-                        'text-2xl text-orange-500': activeTab === 'parts',
+                        'text-blue-600 hover:text-orange-600':
+                            activeTab !== 'parts',
+                        'text-2xl text-orange-600': activeTab === 'parts',
                     }"
                 >
                     <div class="mr-2">
