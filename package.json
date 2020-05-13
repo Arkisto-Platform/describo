@@ -18,7 +18,7 @@
         "afterSign": "bin/notarize.js",
         "appId": "au.edu.uts.describo",
         "productName": "Describo",
-        "copyright": "Copyright © 2020 University of Technology, Sydney, Australia",
+        "copyright": "Copyright © 2020 University of Technology Sydney",
         "mac": {
             "hardenedRuntime": true,
             "gatekeeperAssess": false,
