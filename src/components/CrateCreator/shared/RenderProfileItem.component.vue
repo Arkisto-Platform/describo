@@ -5,16 +5,7 @@
             @click="edit"
             v-if="itemData"
         >
-            <div class="flex flex-col space-y-1">
-                <div class="text-gray-600 text-xs">
-                    @id&nbsp;
-                    {{ itemData.uuid }}
-                </div>
-                <div class="text-gray-800 text-lg">
-                    {{ itemData["@type"] }}:
-                    {{ itemData.name }}
-                </div>
-            </div>
+            <render-item-information-component :uuid="item.data.uuid" />
         </div>
         <div class="bg-green-200 p-2 rounded-r">
             <el-button
@@ -32,8 +23,12 @@
 <script>
 import { isArray, isPlainObject } from "lodash";
 import { unlinkItemFromParentAndChildren } from "components/CrateCreator/tools";
+import RenderItemInformationComponent from "./RenderItemInformation.component.vue";
 import { unlink } from "fs";
 export default {
+    components: {
+        RenderItemInformationComponent,
+    },
     props: {
         item: {
             type: Object,

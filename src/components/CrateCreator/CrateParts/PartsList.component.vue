@@ -37,14 +37,9 @@
                 <template slot-scope="scope">
                     <div class="bg-green-200 p-2 rounded-lg">
                         <div class="flex flex-col space-y-1">
-                            <div class="text-gray-600 text-xs">
-                                @id&nbsp;
-                                {{ scope.row.uuid }}
-                            </div>
-                            <div class="text-gray-800 text-base">
-                                {{ scope.row["@type"] }}:
-                                {{ scope.row.name }}
-                            </div>
+                            <render-item-information-component
+                                :uuid="scope.row.uuid"
+                            />
                         </div>
                     </div>
                 </template>
@@ -71,7 +66,12 @@
 
 <script>
 import { orderBy } from "lodash";
+import RenderItemInformationComponent from "components/CrateCreator/shared/RenderItemInformation.component.vue";
+
 export default {
+    components: {
+        RenderItemInformationComponent,
+    },
     data() {
         return {
             total: 0,
