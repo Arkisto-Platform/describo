@@ -1,10 +1,10 @@
 <template>
     <div class="flex flex-col space-y-1">
-        <div class="text-gray-600 text-sm flex flex-row text-orange-600">
-            <type-icon-component :type="item['@type']" class="mr-2" />
+        <div class="flex flex-row text-sm font-light text-gray-600 pt-1">
+            <type-icon-component :type="item['@type']" class="mr-1" />
             {{ item["@type"] }}
         </div>
-        <div class="text-gray-800">
+        <div class="text-gray-800 text-xl">
             {{ item.name }}
         </div>
     </div>
