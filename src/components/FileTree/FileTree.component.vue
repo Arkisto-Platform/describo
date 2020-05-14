@@ -132,4 +132,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+.el-tree-node__label {
+    @apply text-lg text-gray-600 font-light;
+}
+</style>
