@@ -13,7 +13,9 @@
             <render-selected-target-component class="ml-2 pt-1" />
         </div>
         <div class="flex flex-col" v-if="!target">
-            <div class="text-lg text-center bg-yellow-200 py-10">
+            <div
+                class="text-2xl text-center bg-yellow-200 text-gray-800 font-light py-10"
+            >
                 Get started by selecting the content you wish to describe.
             </div>
             <!-- <div class="text-lg text-center text-indigo-700">
@@ -21,18 +23,20 @@
                 location as you construct it.
             </div> -->
             <div class="flex flex-col">
-                <el-tabs
-                    tab-position="left"
-                    type="border-card"
-                    class="mt-4 style-tab-container"
-                >
+                <el-tabs class="mt-4 p-4 style-tab-container bg-gray-200">
                     <el-tab-pane label="Local Folders">
+                        <span
+                            slot="label"
+                            class="text-xl text-gray-700 font-light"
+                        >
+                            Local Folders
+                        </span>
                         <local-folder-component
                             @set-target="setTarget"
                             @browse-target="setBrowseTarget"
                         />
                     </el-tab-pane>
-                    <el-tab-pane label="Amazon S3">
+                    <!-- <el-tab-pane label="Amazon S3">
                         <amazon-s3-component @set-target="setTarget" />
                     </el-tab-pane>
                     <el-tab-pane label="Google Drive">
@@ -42,11 +46,13 @@
                         <microsoft-one-drive-component
                             @set-target="setTarget"
                         />
-                    </el-tab-pane>
+                    </el-tab-pane> -->
                 </el-tabs>
-                <div class="flex flex-col p-4" v-if="browseTarget">
+                <div class="flex flex-col p-4 mt-4 border" v-if="browseTarget">
                     <div class="flex flex-row">
-                        <div class="text-lg pt-2">Describo Target</div>
+                        <div class="text-2xl font-light text-gray-800 pt-2">
+                            Describo Target
+                        </div>
                         <div class="flex-grow"></div>
                         <div>
                             <el-button
@@ -117,9 +123,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.style-tab-container {
-}
-
 .style-tree-view {
     height: 400px;
 }
