@@ -80,7 +80,7 @@
                 :key="type"
             >
                 <span slot="label" class="text-lg text-gray-700 font-light">
-                    <shell-tab-icon-component
+                    <shell-tab-label-component
                         :type="type"
                         :selected="activeTab === type"
                     />
@@ -109,7 +109,7 @@ import CratePartsComponent from "./CrateParts/Shell.component.vue";
 import TypeManagementComponent from "./TypeManagement/Shell.component.vue";
 import RootDatasetSelectorComponent from "./shared/RootDatasetSelector.component.vue";
 import ShellControlsComponent from "./ShellControls.component.vue";
-import ShellTabIconComponent from "./ShellTabIcon.components.vue";
+import ShellTabLabelComponent from "./ShellTabLabel.component.vue";
 import CrateTool from "components/CrateCreator/crate-tools";
 
 export default {
@@ -119,7 +119,7 @@ export default {
         TypeManagementComponent,
         RootDatasetSelectorComponent,
         ShellControlsComponent,
-        ShellTabIconComponent,
+        ShellTabLabelComponent,
     },
     data() {
         return {
