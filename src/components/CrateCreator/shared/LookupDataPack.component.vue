@@ -71,6 +71,7 @@ export default {
                 "@id": query,
                 name: query,
                 description: query,
+                limit: 20,
             });
             return cb(results);
         },
