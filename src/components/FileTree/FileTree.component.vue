@@ -1,16 +1,27 @@
 <template>
     <div class="flex flex-row">
         <div class="flex flex-col w-full">
-            <div class="my-2 pb-2 border-b-2" v-if="enableFileSelector">
+            <div
+                class=" flex flex-col space-y-3 my-2 pb-2 border-b-2"
+                v-if="enableFileSelector"
+            >
                 <div
                     class="text-lg text-gray-800 bg-yellow-200 text-center p-8"
                 >
                     You must expand each subfolder to load the child nodes.
                     <br />If you don't you'll only get the folders.
                 </div>
-                <el-checkbox v-model="selectAllChildren"
-                    >Select all children</el-checkbox
+                <div
+                    v-if="partsAdded"
+                    class="text-center text-xl text-gray-700 font-light bg-green-200 p-4 rounded-lg"
                 >
+                    The crate parts list has been updated.
+                </div>
+                <div>
+                    <el-checkbox v-model="selectAllChildren">
+                        Select all children
+                    </el-checkbox>
+                </div>
             </div>
             <div class="overflow-scroll">
                 <el-tree
@@ -50,6 +61,7 @@ export default {
     data() {
         return {
             debouncedAddParts: debounce(this.addParts, 1000),
+            partsAdded: false,
             target: this.browseTarget || this.$store.state.target,
             data: [
                 {
@@ -104,6 +116,7 @@ export default {
             }
         },
         addParts() {
+            this.partsAdded = false;
             let selectedNodes = this.$refs.tree.getCheckedNodes();
             selectedNodes = selectedNodes.filter((n) => n.path !== this.target);
             selectedNodes = selectedNodes.map((node) => node.uuid);
@@ -111,12 +124,16 @@ export default {
             selectedNodes = selectedNodes.filter((n) => n != "/");
             let nodes = [];
 
-            selectedNodes.forEach((n) =>
-                getNodeAndParent({ tree: this.$refs.tree, node: n })
-            );
+            selectedNodes.forEach((n) => {
+                if (n) getNodeAndParent({ tree: this.$refs.tree, node: n });
+            });
             nodes = flattenDeep(nodes);
             nodes = uniqBy(nodes, "uuid");
             this.$emit("selected-nodes", nodes);
+            this.partsAdded = true;
+            setTimeout(() => {
+                this.partsAdded = false;
+            }, 3000);
 
             function getNodeAndParent({ tree, node }) {
                 node = tree.getNode(node).data;
