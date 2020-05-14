@@ -16,7 +16,15 @@ export default class ProfileLoader {
         const database = new Database({ databaseFile });
         await database.connect();
         for (let pack of dataPacks) {
-            await database.load({ url: pack });
+            try {
+                await database.load({ url: pack });
+            } catch (error) {
+                $message({
+                    type: "error",
+                    duration: 10000,
+                    message: `There was an error loading the ${pack} data pack.`,
+                });
+            }
         }
         return database;
     }
