@@ -1,5 +1,5 @@
 <template>
-    <div>Describing: {{ target }}</div>
+    <div>{{ target }}</div>
 </template>
 
 <script>

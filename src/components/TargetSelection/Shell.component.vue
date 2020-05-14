@@ -11,7 +11,9 @@
                     <i class="fas fa-trash-alt"></i>
                 </el-button>
             </div>
-            <render-selected-target-component class="ml-2 pt-1" />
+            <render-selected-target-component
+                class="ml-2 text-xl text-gray-700 font-light"
+            />
         </div>
         <div class="flex flex-col" v-if="!target">
             <div

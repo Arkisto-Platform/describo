@@ -14,7 +14,7 @@
                     <i class="fas fa-trash-alt"></i>
                 </el-button>
             </div>
-            <div class="ml-2 pt-1">
+            <div class="ml-2 text-xl text-gray-700 font-light">
                 {{ profile.metadata.name }} (v{{ profile.metadata.version }})
             </div>
         </div>
