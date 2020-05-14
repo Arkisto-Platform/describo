@@ -71,7 +71,7 @@
                 <div v-if="!input.multiple">
                     <!-- render simple types in place -->
                     <div v-if="isSimpleType(input['@type'])">
-                        <render-item-component
+                        <render-core-component
                             class="flex-grow my-1"
                             :template="input"
                             :reference="container.uuid"
@@ -101,7 +101,7 @@
                                     dataIsSimpleType(instance)
                             "
                         >
-                            <render-item-component
+                            <render-core-component
                                 class="m-1"
                                 :template="{ ...input, data: instance }"
                                 :reference="container.uuid"
@@ -176,7 +176,7 @@ import {
 export default {
     components: {
         AddControl,
-        RenderItemComponent: () =>
+        RenderCoreComponent: () =>
             import("./RenderCoreComponent.component.vue"),
         RenderProfileReportComponent,
         RenderProfileItemComponent,
