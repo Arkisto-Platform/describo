@@ -7,6 +7,7 @@
             size="mini"
             v-for="(type, idx) of types"
             :key="idx"
+            class="focus:outline-none focus:border-2 focus:border-green-600"
         >
             <i class="fas fa-plus"></i>&nbsp;{{ type }}
         </el-button>

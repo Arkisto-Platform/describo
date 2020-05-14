@@ -9,7 +9,12 @@
             </div>
         </div>
         <div class="w-1/2 pt-3 pl-2">
-            <el-button type="primary" @click="storeProfile" round>
+            <el-button
+                type="primary"
+                @click="storeProfile"
+                round
+                class="focus:outline-none focus:border-2 focus:border-blue-600"
+            >
                 Use the default profile
                 <i
                     class="fas fa-long-arrow-alt-right"

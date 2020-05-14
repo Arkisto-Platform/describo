@@ -11,8 +11,8 @@
             <el-button
                 type="danger"
                 @click="removeItem"
-                class="rounded-lg"
                 size="small"
+                class="round-lg focus:outline-none focus:border-2 focus:border-red-600"
             >
                 <i class="fas fa-trash-alt"></i>
             </el-button>

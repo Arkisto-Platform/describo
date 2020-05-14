@@ -5,7 +5,12 @@
             v-if="profile"
         >
             <div>
-                <el-button @click="selectNewProfile" type="danger" size="small">
+                <el-button
+                    @click="selectNewProfile"
+                    type="danger"
+                    size="small"
+                    class="focus:outline-none focus:border-2 focus:border-red-600"
+                >
                     <i class="fas fa-trash-alt"></i>
                 </el-button>
             </div>

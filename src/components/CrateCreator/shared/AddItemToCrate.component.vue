@@ -57,7 +57,7 @@
                             <el-button
                                 @click="remove()"
                                 type="danger"
-                                class="ml-1"
+                                class="ml-1 focus:outline-none focus:border-2 focus:border-red-600"
                                 size="small"
                                 v-if="enableRemove"
                             >
@@ -68,6 +68,7 @@
                                 @click="done()"
                                 type="success"
                                 size="small"
+                                class="focus:outline-none focus:border-2 focus:border-green-600"
                                 :disabled="item && !item.name"
                             >
                                 <i class="fas fa-check"></i>&nbsp;save

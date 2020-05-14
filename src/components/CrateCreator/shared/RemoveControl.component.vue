@@ -1,5 +1,9 @@
 <template>
-    <el-button @click="remove()" type="danger" class="ml-1">
+    <el-button
+        @click="remove()"
+        type="danger"
+        class="ml-1 focus:outline-none focus:border-2 focus:border-red-600"
+    >
         <i class="fas fa-trash-alt"></i>
     </el-button>
 </template>

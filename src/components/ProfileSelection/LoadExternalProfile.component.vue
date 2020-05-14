@@ -14,6 +14,7 @@
                         round
                         @click="selectFolder"
                         size="small"
+                        class="focus:outline-none focus:border-2 focus:border-blue-600"
                     >
                         <i class="fas fa-folder-open"></i> select file
                     </el-button>
@@ -31,6 +32,7 @@
                         @click="loadRemoteProfile"
                         size="small"
                         :disabled="!url"
+                        class="focus:outline-none focus:border-2 focus:border-blue-600"
                     >
                         <i class="fas fa-globe"></i> load profile
                     </el-button>
@@ -48,7 +50,7 @@
                             <el-button
                                 @click="removeProfile(profile)"
                                 type="danger"
-                                class="mr-1"
+                                class="mr-1 focus:outline-none focus:border-2 focus:border-red-600"
                                 size="small"
                             >
                                 <i class="fas fa-trash-alt"></i>
@@ -68,10 +70,10 @@
                         <div>
                             <el-button
                                 type="primary"
-                                class="mr-1"
                                 size="small"
                                 @click="refreshProfile(profile)"
                                 round
+                                class="focus:outline-none focus:border-2 focus:border-blue-600"
                             >
                                 <i class="fas fa-sync-alt"></i>
                             </el-button>

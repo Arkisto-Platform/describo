@@ -6,6 +6,7 @@
                 <el-button
                     type="success"
                     size="small"
+                    class="focus:outline-none focus:border-2 focus:border-green-600"
                     @click="view.addItem = true"
                 >
                     <i class="fas fa-plus"></i> add item
@@ -16,6 +17,7 @@
                     @click="view.dataInspector = true"
                     type="primary"
                     size="small"
+                    class="focus:outline-none focus:border-2 focus:border-blue-600"
                 >
                     <i class="fas fa-eye"></i> inspect data
                 </el-button>
@@ -26,6 +28,7 @@
                     @click="view.crateLoadingErrors = true"
                     type="warning"
                     size="small"
+                    class="focus:outline-none focus:border-2 focus:border-orange-600"
                     v-if="crateLoadingErrors.length"
                 >
                     <i class="fas fa-eye"></i>
@@ -63,6 +66,7 @@
                     @click="view.crateExportDialog = true"
                     type="success"
                     size="small"
+                    class="focus:outline-none focus:border-2 focus:border-green-600"
                 >
                     <i class="fas fa-upload"></i>
                     export

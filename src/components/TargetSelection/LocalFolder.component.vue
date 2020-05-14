@@ -4,7 +4,12 @@
                 Select a folder on this computer
             </div> -->
         <div class="my-4">
-            <el-button type="primary" @click="selectFolder" round>
+            <el-button
+                type="primary"
+                @click="selectFolder"
+                round
+                class="focus:outline-none focus:border-2 focus:border-blue-600"
+            >
                 <i class="fas fa-folder-open"></i> Select a folder on this
                 computer
             </el-button>

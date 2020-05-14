@@ -15,7 +15,12 @@
                 </div>
                 <div class="flex flex-col my-4">
                     <div>
-                        <el-button @click="selectFolder">
+                        <el-button
+                            @click="selectFolder"
+                            type="primary"
+                            round
+                            class="focus:outline-none focus:border-2 focus:border-blue-600"
+                        >
                             <i class="fas fa-folder-open"></i> select folder
                         </el-button>
                     </div>
@@ -60,8 +65,10 @@
                     >
                         <el-button
                             @click="createArchive"
-                            type="success"
+                            type="primary"
                             :disabled="exporting"
+                            round
+                            class="focus:outline-none focus:border-2 focus:border-blue-600"
                             v-if="folder"
                             >Create Archive at {{ folder }}</el-button
                         >
@@ -77,6 +84,7 @@
                                 @click="cancelExport"
                                 type="danger"
                                 :disabled="aborted"
+                                class="focus:outline-none focus:border-2 focus:border-red-600"
                             >
                                 <i class="far fa-stop-circle"></i> Stop Export
                             </el-button>

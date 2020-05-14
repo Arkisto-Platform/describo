@@ -21,6 +21,7 @@
                     @click="emitSelection"
                     :disabled="!selection"
                     size="small"
+                    class="focus:outline-none focus:border-2 focus:border-blue-600"
                 >
                     <i class="fas fa-long-arrow-alt-right"></i>
                 </el-button>

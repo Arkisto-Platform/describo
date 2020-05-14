@@ -6,6 +6,7 @@
                     @click="describeNewFolder"
                     type="danger"
                     size="small"
+                    class="focus:outline-none focus:border-2 focus:border-red-600"
                 >
                     <i class="fas fa-trash-alt"></i>
                 </el-button>
@@ -60,6 +61,7 @@
                                 @click="setTarget"
                                 :disabled="!this.browseTarget"
                                 round
+                                class="focus:outline-none focus:border-2 focus:border-blue-600"
                             >
                                 describe this target
                                 <i class="fas fa-long-arrow-alt-right"></i

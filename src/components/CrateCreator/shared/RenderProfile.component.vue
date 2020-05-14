@@ -43,6 +43,7 @@
                             size="mini"
                             type="primary"
                             round
+                            class="focus:outline-none focus:border-2 focus:border-blue-600"
                         >
                             <i class="fas fa-question fa-fw"></i>
                         </el-button>
@@ -123,7 +124,7 @@
 
             <div class="flex flex-row justify-center my-4">
                 <el-button
-                    class="flex-grow"
+                    class="flex-grow focus:outline-none focus:border-2 focus:border-blue-600"
                     type="primary"
                     @click="showAllProperties = !showAllProperties"
                     v-if="!showAllProperties"

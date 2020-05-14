@@ -3,10 +3,10 @@
         <div class="flex flex-row">
             <el-button
                 round
-                class="mr-2"
                 @click="showLinker = !showLinker"
                 type="primary"
                 size="mini"
+                class="mr-2 focus:outline-none focus:border-2 focus:border-blue-600"
             >
                 <i class="fas fa-link"></i>
             </el-button>
