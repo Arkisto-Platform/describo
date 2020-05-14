@@ -37,12 +37,6 @@
 
 <script>
 export default {
-    props: {
-        profile: {
-            type: Object,
-            required: true,
-        },
-    },
     data() {
         return {
             selection: undefined,
@@ -51,12 +45,12 @@ export default {
     },
     computed: {
         selectionHelp: function() {
-            if (this.profile && this.selection)
-                return this.profile[this.selection].metadata.about;
+            return this.$store.state.profile.items[this.selection].metadata
+                .about;
         },
     },
     async mounted() {
-        this.rootDatasetOptions = Object.keys(this.profile);
+        this.rootDatasetOptions = Object.keys(this.$store.state.profile.items);
     },
     methods: {
         emitSelection() {

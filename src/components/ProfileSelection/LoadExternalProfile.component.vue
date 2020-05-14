@@ -56,7 +56,11 @@
                         </div>
                         <div
                             class="pt-1 flex-grow"
-                            @click="$emit('store-profile', profile.name)"
+                            @click="
+                                $emit('store-profile', {
+                                    profile: profile.profile,
+                                })
+                            "
                         >
                             <i class="fas fa-chevron-right"></i>&nbsp;
                             {{ profile.name }} (version: {{ profile.version }})
@@ -87,7 +91,7 @@ import { uniqBy, orderBy } from "lodash";
 import isUrl from "validator/lib/isUrl";
 import { pathExists } from "fs-extra";
 import Store from "electron-store";
-const store = new Store();
+const store = new Store({ name: "describo-state" });
 
 const isUrlCheckOptions = {
     require_host: true,
@@ -148,6 +152,7 @@ export default {
             }
         },
         storeProfile({ profile, location }) {
+            this.$emit("store-profile", { profile });
             profile = {
                 ...profile.metadata,
                 location,
@@ -159,7 +164,6 @@ export default {
             this.profiles.push(profile);
             this.profiles = orderBy(this.profiles, ["name", "version"]);
             store.set("profiles", this.profiles);
-            this.$emit("store-profile", profile.name);
         },
         refreshProfile(profile) {
             if (isUrl(profile.location, isUrlCheckOptions)) {

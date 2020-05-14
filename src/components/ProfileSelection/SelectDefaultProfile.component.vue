@@ -21,6 +21,8 @@
 </template>
 
 <script>
+import defaultProfile from "components/profiles/default";
+
 export default {
     components: {},
     data() {
@@ -28,7 +30,7 @@ export default {
     },
     methods: {
         storeProfile() {
-            this.$emit("store-profile", "default");
+            this.$emit("store-profile", { profile: defaultProfile });
         },
     },
 };

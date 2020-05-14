@@ -12,7 +12,6 @@
 
         <root-dataset-selector-component
             v-if="showRootDatasetSelector"
-            :profile="profile"
             @load-selection="loadSelection"
         />
         <div v-else>
@@ -105,8 +104,6 @@ import {
     round,
 } from "lodash";
 import { generateId } from "components/CrateCreator/tools";
-import internalTypeDefinitions from "components/profiles/types";
-import ProfileLoader from "./profile-loader";
 import RootDatasetComponent from "./RootDataset/Shell.component.vue";
 import CratePartsComponent from "./CrateParts/Shell.component.vue";
 import TypeManagementComponent from "./TypeManagement/Shell.component.vue";
@@ -147,40 +144,7 @@ export default {
     },
     methods: {
         async loadProfile() {
-            this.$store.commit("reset");
-            const profileLoader = new ProfileLoader({
-                name: this.$store.state.profile,
-            });
-
-            // load the profile
-            const {
-                profile,
-                typeDefinitions: customTypeDefinitions,
-                enabledCoreTypes,
-                metadata,
-            } = await profileLoader.load();
-
-            let types = {};
-            if (enabledCoreTypes && enabledCoreTypes.length) {
-                for (let type of enabledCoreTypes) {
-                    types[type] = internalTypeDefinitions[type];
-                }
-            } else {
-                types = cloneDeep(internalTypeDefinitions);
-            }
-            types = { ...types, ...customTypeDefinitions };
-
-            // get and store the type definitions
-            this.$store.commit("saveTypeDefinitions", types);
-
-            // verify the profile
-            let { valid, errors } = profileLoader.verify({ profile });
-            if (!valid) {
-                this.error = `The profile is invalid and can't be loaded.`;
-                return;
-            }
-            this.profile = cloneDeep(profile);
-            const DatasetTypes = Object.keys(profile);
+            const DatasetTypes = Object.keys(this.$store.state.profile.items);
             if (DatasetTypes.length > 1) {
                 this.showRootDatasetSelector = true;
             } else {
@@ -190,11 +154,9 @@ export default {
         },
         async loadSelection(selection) {
             if (!selection) return;
+            this.$store.commit("setActiveProfileType", selection);
 
             let rootDatasetName = {};
-            const profile = cloneDeep(this.profile[selection]);
-            this.$store.commit("saveProfileInputs", profile);
-
             const crateTool = new CrateTool();
             let data, errors;
             try {

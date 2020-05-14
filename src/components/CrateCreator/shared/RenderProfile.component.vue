@@ -1,135 +1,146 @@
 <template>
     <div class="flex flex-col">
-        <render-profile-report-component
-            :report="report"
-            v-if="!report.templateAvailable || report.extraProperties.length"
-        />
+        <!-- lookup data packs -->
+        <lookup-data-pack-component :uuid="uuid" />
 
-        <div
-            v-for="input in template"
-            :key="input.property"
-            class="my-1 p-2 hover:bg-gray-200"
-            :class="{
-                'border-orange-600 border-l-4 bg-red-200': showAlert(input),
-                'bg-yellow-400 py-6':
-                    view.property && view.property.match(input.property),
-                hidden: input.group !== 'important' && !showAllProperties,
-            }"
-        >
-            <!-- <div v-if="input.property === 'hasPart'">
-                <pre>{{ input }}</pre>
-            </div> -->
-            <!-- input label -->
-            <div class="my-auto text-left text-sm pr-2 flex flex-row">
-                <div v-show="showAlert(input)" class="text-orange-600 mx-2">
-                    <i class="fas fa-asterisk"></i>
-                </div>
-                <div class="text-lg">
-                    {{ renderLabel(input) }}
-                </div>
-                <div class="flex-grow"></div>
-                <div class="text-xs text-gray-600 mx-2" v-if="showAlert(input)">
-                    This property is required.
-                </div>
-                <div>
-                    <el-button
-                        @click="loadPropertyDefinition(input)"
-                        size="mini"
-                        type="primary"
-                        round
+        <div v-if="template.length">
+            <render-profile-report-component
+                :report="report"
+                v-if="
+                    !report.templateAvailable || report.extraProperties.length
+                "
+            />
+
+            <div
+                v-for="input in template"
+                :key="input.property"
+                class="my-1 p-2 hover:bg-gray-200"
+                :class="{
+                    'border-orange-600 border-l-4 bg-red-200': showAlert(input),
+                    'bg-yellow-400 py-6':
+                        view.property && view.property.match(input.property),
+                    hidden: input.group !== 'important' && !showAllProperties,
+                }"
+            >
+                <!-- input label -->
+                <div class="my-auto text-left text-sm pr-2 flex flex-row">
+                    <div v-show="showAlert(input)" class="text-orange-600 mx-2">
+                        <i class="fas fa-asterisk"></i>
+                    </div>
+                    <div class="text-lg">
+                        {{ renderLabel(input) }}
+                    </div>
+                    <div class="flex-grow"></div>
+                    <div
+                        class="text-xs text-gray-600 mx-2"
+                        v-if="showAlert(input)"
                     >
-                        <i class="fas fa-question fa-fw"></i>
-                    </el-button>
+                        This property is required.
+                    </div>
+                    <div>
+                        <el-button
+                            @click="loadPropertyDefinition(input)"
+                            size="mini"
+                            type="primary"
+                            round
+                        >
+                            <i class="fas fa-question fa-fw"></i>
+                        </el-button>
+                    </div>
                 </div>
-            </div>
-            <div class="text-sm text-gray-600">{{ input.help }}</div>
-            <!-- end: input label -->
+                <div class="text-sm text-gray-600">{{ input.help }}</div>
+                <!-- end: input label -->
 
-            <!-- add control -->
-            <div class="flex flex-row">
-                <render-profile-item-linker-component
-                    v-if="showLinker(input) && input.showAddControl"
-                    :types="input['@type']"
-                    :parentId="container.uuid"
-                    :property="input.property"
-                    @done="updateTemplate"
-                />
-                <add-control
-                    :template="input"
-                    @add="add"
-                    v-if="input.showAddControl"
-                />
-            </div>
-            <!-- end: add control -->
-
-            <div v-if="!input.multiple">
-                <!-- render simple types in place -->
-                <div v-if="isSimpleType(input['@type'])">
-                    <render-item-component
-                        class="flex-grow my-1"
-                        :template="input"
-                        :reference="container.uuid"
+                <!-- add control -->
+                <div class="flex flex-row">
+                    <render-profile-item-linker-component
+                        v-if="showLinker(input) && input.showAddControl"
+                        :types="input['@type']"
+                        :parentId="container.uuid"
+                        :property="input.property"
                         @done="updateTemplate"
                     />
-                </div>
-                <!-- show tag for complex type entries -->
-                <div v-else class="flex flex-row p-2">
-                    <render-profile-item-component
-                        v-if="input.data"
-                        :item="input"
-                        :reference="container.uuid"
+                    <add-control
+                        :template="input"
+                        @add="add"
+                        v-if="input.showAddControl"
                     />
                 </div>
-            </div>
+                <!-- end: add control -->
 
-            <div v-if="input.multiple" class="flex flex-row flex-wrap p-2">
-                <div v-for="instance of input.data" :key="loopKey(instance)">
+                <div v-if="!input.multiple">
                     <!-- render simple types in place -->
-                    <div
-                        v-if="
-                            isSimpleType(input['@type']) ||
-                                isSimpleType(instance['@type']) ||
-                                dataIsSimpleType(instance)
-                        "
-                    >
+                    <div v-if="isSimpleType(input['@type'])">
                         <render-item-component
-                            class="m-1"
-                            :template="{ ...input, data: instance }"
+                            class="flex-grow my-1"
+                            :template="input"
                             :reference="container.uuid"
                             @done="updateTemplate"
                         />
                     </div>
-
                     <!-- show tag for complex type entries -->
-                    <div v-else>
+                    <div v-else class="flex flex-row p-2">
                         <render-profile-item-component
-                            class="m-1"
-                            :item="{ ...input, data: instance }"
+                            v-if="input.data"
+                            :item="input"
                             :reference="container.uuid"
                         />
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="flex flex-row justify-center my-4">
-            <el-button
-                class="flex-grow"
-                type="primary"
-                @click="showAllProperties = !showAllProperties"
-                v-if="!showAllProperties"
-            >
-                Show all available properties
-            </el-button>
+                <div v-if="input.multiple" class="flex flex-row flex-wrap p-2">
+                    <div
+                        v-for="instance of input.data"
+                        :key="loopKey(instance)"
+                    >
+                        <!-- render simple types in place -->
+                        <div
+                            v-if="
+                                isSimpleType(input['@type']) ||
+                                    isSimpleType(instance['@type']) ||
+                                    dataIsSimpleType(instance)
+                            "
+                        >
+                            <render-item-component
+                                class="m-1"
+                                :template="{ ...input, data: instance }"
+                                :reference="container.uuid"
+                                @done="updateTemplate"
+                            />
+                        </div>
+
+                        <!-- show tag for complex type entries -->
+                        <div v-else>
+                            <render-profile-item-component
+                                class="m-1"
+                                :item="{ ...input, data: instance }"
+                                :reference="container.uuid"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-row justify-center my-4">
+                <el-button
+                    class="flex-grow"
+                    type="primary"
+                    @click="showAllProperties = !showAllProperties"
+                    v-if="!showAllProperties"
+                >
+                    Show all available properties
+                </el-button>
+            </div>
+
+            <!-- data inspector drawer-->
+            <definition-drawer-component
+                :drawer="view.definitionDrawer"
+                :property="view.property"
+                :type="view.type"
+                @close="closeDefinitionDrawer"
+            />
+            <!-- end: data inspector drawer-->
         </div>
-        <!-- data inspector drawer-->
-        <definition-drawer-component
-            :drawer="view.definitionDrawer"
-            :property="view.property"
-            :type="view.type"
-            @close="closeDefinitionDrawer"
-        />
-        <!-- end: data inspector drawer-->
     </div>
 </template>
 
@@ -137,6 +148,7 @@
 import { shortName } from "src/renderer/filters";
 import { updateTemplate } from "./describe-entry";
 import { mappings } from "components/profiles/type-mappings";
+import { isURL } from "validator";
 import {
     cloneDeep,
     isArray,
@@ -150,6 +162,7 @@ import RenderProfileReportComponent from "./RenderProfileReport.component.vue";
 import RenderProfileItemComponent from "./RenderProfileItem.component.vue";
 import RenderProfileItemLinkerComponent from "./RenderProfileItemLinker.component.vue";
 import DefinitionDrawerComponent from "./DefinitionDrawer.component.vue";
+import LookupDataPackComponent from "./LookupDataPack.component.vue";
 import {
     SimpleTypes,
     isSimpleType,
@@ -169,6 +182,7 @@ export default {
         RenderProfileItemComponent,
         RenderProfileItemLinkerComponent,
         DefinitionDrawerComponent,
+        LookupDataPackComponent,
     },
     props: {
         uuid: {
@@ -243,7 +257,7 @@ export default {
                 type = mappings[type.sort().join(", ")];
             }
             if (type === "RootDataset") {
-                this.typeDefinition = this.$store.state.profileInputs;
+                this.typeDefinition = this.$store.getters.getActiveProfileDefinition();
             } else {
                 this.typeDefinition = this.$store.getters.getTypeDefinition(
                     type
@@ -251,6 +265,14 @@ export default {
             }
         },
         updateTemplate() {
+            // if no inputs are defined we want to just show the data pack selector
+            if (
+                !this.typeDefinition.inputs ||
+                !this.typeDefinition.inputs.length
+            )
+                return;
+
+            // otherwise if inputs are defined - assemble the template for the profile renderer
             let { template, report } = updateTemplate({
                 item: this.container,
                 typeDefinition: cloneDeep(this.typeDefinition),
@@ -286,11 +308,7 @@ export default {
             });
         },
         loadPropertyDefinition(input) {
-            if (
-                input.property.match(
-                    /^(http:\/\/|https:\/\/)[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i
-                )
-            ) {
+            if (isURL(input.property)) {
                 this.view.property = input.property;
             } else {
                 this.view.property = `https://schema.org/${input.property}`;

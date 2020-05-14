@@ -109,6 +109,8 @@ export default {
         },
         describeNewFolder() {
             this.$store.commit("setTarget", null);
+            this.$store.commit("saveProfile", {});
+            this.$store.commit("setActiveProfileType", undefined);
         },
     },
 };

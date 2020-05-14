@@ -40,8 +40,8 @@ export function linkItemToParent({ store, parentId, itemId, property }) {
     let typeDefinition;
     if (parent["@type"] === "RootDataset") {
         typeDefinition = store.getters
-            .getProfile()
-            .filter((i) => i.property === property);
+            .getActiveProfileDefinition()
+            .inputs.filter((i) => i.property === property);
         if (typeDefinition.length && "multiple" in typeDefinition[0]) {
             multiple = typeDefinition[0].multiple;
         }

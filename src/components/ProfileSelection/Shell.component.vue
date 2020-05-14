@@ -9,23 +9,38 @@
                     <i class="fas fa-trash-alt"></i>
                 </el-button>
             </div>
-            <div class="ml-2 pt-1">Profile: {{ profile }}</div>
+            <div class="ml-2 pt-1">
+                {{ profile.metadata.name }} (v{{ profile.metadata.version }})
+            </div>
         </div>
         <div v-else class="flex flex-col mt-4">
-            <div class="text-lg text-center">
-                In order to describe a data folder you will need to create a
-                Research Object Crate (ROCrate) metadata file.
+            <div
+                v-if="loading"
+                class="flex flex-col justify-center items-center flex-grow style-loading-pane bg-gray-200"
+            >
+                <div class="text-xl font-light">
+                    Loading the profile and data packs. Hang tight!
+                </div>
+                <div class="my-2">
+                    <i class="fas fa-circle-notch fa-spin fa-3x"></i>
+                </div>
             </div>
-            <div class="flex flex-col mt-8">
-                <select-default-profile-component
-                    @store-profile="storeProfile"
-                    class="p-4 py-10 border-2 border-blue-200"
-                />
-                <div class="h-10"></div>
-                <load-external-profile-component
-                    @store-profile="storeProfile"
-                    class="p-4 py-10 border-2 border-blue-200"
-                />
+            <div v-else>
+                <div class="text-lg text-center">
+                    In order to describe a data folder you will need to create a
+                    Research Object Crate (ROCrate) metadata file.
+                </div>
+                <div class="flex flex-col mt-8">
+                    <select-default-profile-component
+                        @store-profile="storeProfile"
+                        class="p-4 py-10 border-2 border-blue-200"
+                    />
+                    <div class="h-10"></div>
+                    <load-external-profile-component
+                        @store-profile="storeProfile"
+                        class="p-4 py-10 border-2 border-blue-200"
+                    />
+                </div>
             </div>
         </div>
     </div>
@@ -34,6 +49,9 @@
 <script>
 import SelectDefaultProfileComponent from "./SelectDefaultProfile.component.vue";
 import LoadExternalProfileComponent from "./LoadExternalProfile.component.vue";
+import ProfileLoader from "./profile-loader";
+import internalTypeDefinitions from "components/profiles/types";
+import { cloneDeep } from "lodash";
 
 export default {
     components: {
@@ -46,17 +64,66 @@ export default {
         },
     },
     data() {
-        return {};
+        return {
+            loading: false,
+        };
     },
     methods: {
-        storeProfile(profile) {
-            this.$store.commit("setProfile", { profile });
+        async storeProfile({ profile }) {
+            this.loading = true;
+            // load the profile and verify it
+            const profileLoader = new ProfileLoader();
+            const { valid, errors } = profileLoader.verify({ profile });
+            if (!valid) {
+                this.$message({
+                    message:
+                        "There are errors in that profile and it can't be loaded.",
+                    type: "error",
+                    duration: 10000,
+                });
+            } else {
+                // load any data packs defined in the profile
+                const database = await profileLoader.loadDataPacks({
+                    $message: this.$message,
+                    dataPacks: profile.dataPacks,
+                });
+
+                // load type definitions
+                let types = {};
+                if (
+                    profile.enabledCoreTypes &&
+                    profile.enabledCoreTypes.length
+                ) {
+                    for (let type of profile.enabledCoreTypes) {
+                        types[type] = internalTypeDefinitions[type];
+                    }
+                } else {
+                    types = cloneDeep(internalTypeDefinitions);
+                }
+                types = { ...types, ...profile.typeDefinitions };
+                this.$store.commit("saveTypeDefinitions", types);
+
+                // commit the profile
+                this.$store.commit("saveProfile", { profile });
+
+                // save the database handle for later use
+                this.$store.commit("saveDatabaseHandle", { database });
+
+                // reset the internal data state
+                this.$store.commit("reset");
+            }
+            this.loading = false;
         },
         selectNewProfile() {
-            this.$store.commit("setProfile", { profile: null });
+            this.loading = false;
+            this.$store.commit("saveProfile", { profile: undefined });
         },
     },
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.style-loading-pane {
+    height: 500px;
+}
+</style>

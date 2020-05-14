@@ -4,7 +4,7 @@
     "description": "The tool to describe and package data.",
     "main": "index.js",
     "scripts": {
-        "develop": "npm install && electron-webpack dev",
+        "develop": "npm install && npm run postinstall && electron-webpack dev",
         "compile": "npm install && electron-webpack",
         "dist": "npm run compile && electron-builder",
         "dist:dir": "npm run dist --dir -c.compression=store -c.mac.identity=null",
@@ -12,7 +12,8 @@
         "test:watch": "./node_modules/.bin/jest --watch",
         "build:mac": "electron-webpack && electron-builder --mac --publish always",
         "build:linux": "electron-webpack && electron-builder --linux --publish always",
-        "build:win": "./bin/build-windows.sh"
+        "build:win": "./bin/build-windows.sh",
+        "postinstall": "./node_modules/.bin/electron-rebuild"
     },
     "build": {
         "afterSign": "bin/notarize.js",
@@ -70,6 +71,7 @@
         "archiver": "^4.0.1",
         "core-js": "^3.6.5",
         "date-fns": "^2.12.0",
+        "describo-data-service": "github:UTS-eResearch/describo-data-service",
         "electron-store": "^5.1.1",
         "electron-updater": "^4.3.1",
         "element-ui": "2.13.0",
@@ -83,6 +85,7 @@
         "ro-crate-html-js": "git+https://github.com/UTS-eResearch/ro-crate-html-js.git",
         "sha.js": "^2.4.11",
         "source-map-support": "^0.5.19",
+        "sqlite3": "^4.2.0",
         "tailwindcss": "^1.4.4",
         "tempy": "^0.5.0",
         "validator": "^13.0.0",
@@ -107,6 +110,7 @@
         "electron": "^8.2.5",
         "electron-builder": "^22.6.0",
         "electron-notarize": "^0.3.0",
+        "electron-rebuild": "^1.11.0",
         "electron-webpack": "^2.8.2",
         "electron-webpack-vue": "^2.4.0",
         "file-loader": "^6.0.0",

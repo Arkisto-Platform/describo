@@ -20,14 +20,17 @@ export const mutations = {
     setTarget(state, payload) {
         state.target = payload;
     },
-    setProfile(state, payload) {
-        state.profile = payload.profile;
-    },
     setWriteToDisk(state, payload) {
         state.enableWriteToDisk = payload;
     },
-    saveProfileInputs(state, payload) {
-        state.profileInputs = { ...payload };
+    saveProfile(state, payload) {
+        state.profile = payload.profile;
+    },
+    setActiveProfileType(state, item) {
+        state.activeProfileType = item;
+    },
+    saveDatabaseHandle(state, payload) {
+        state.database = payload.database;
     },
     saveTypeDefinitions(state, payload) {
         state.typeDefinitions = cloneDeep(payload);
@@ -136,8 +139,8 @@ export const getters = {
             };
         }
     },
-    getProfile: (state) => () => {
-        return cloneDeep(state.profileInputs).inputs;
+    getActiveProfileDefinition: (state) => () => {
+        return cloneDeep(state.profile.items[state.activeProfileType]);
     },
 };
 
@@ -153,8 +156,9 @@ export const store = new Vuex.Store(configuration);
 function reset() {
     return {
         target: null,
-        profile: null,
-        profileInputs: {},
+        profile: undefined,
+        activeProfileType: undefined,
+        database: undefined,
         typeDefinitions: {},
         graph: [],
         itemsByType: {},
