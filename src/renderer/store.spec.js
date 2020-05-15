@@ -118,11 +118,6 @@ test("it should be able to save type definitions to the store", () => {
     const t = getters.getTypeDefinition(state)("Product");
     expect(t).toBeDefined();
 });
-test("it should not find a type definition", () => {
-    const t = getters.getTypeDefinition(state)("Product");
-    // console.log(t);
-    expect(t).toBeUndefined();
-});
 test("it should be able to retrieve an item by id", () => {
     let item = {
         uuid: "#xxx",

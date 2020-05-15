@@ -36,36 +36,53 @@ test("setFlags: not multiple not required no data - return show true, enabled fa
     expect(setFlags({ item }).enabled).toBe(false);
 });
 test("it should join an empty item with a template", () => {
-    const inputs = [{ property: "name", "@type": "Text" }];
+    const typeDefinition = {
+        metadata: {
+            allowAdditionalProperties: true,
+        },
+        inputs: [{ property: "name", "@type": "Text" }],
+    };
     const item = {
         "@type": "ContactPoint",
         uuid: "#3",
     };
 
-    const template = updateTemplate({ inputs, item })[0];
+    let { template, report } = updateTemplate({ typeDefinition, item });
     // console.log(template);
+    template = template[0];
     expect(template.property).toBe("name");
     expect(template.data).toEqual([]);
 });
 test("it should join a populated item with a template", () => {
-    const inputs = [{ property: "name", "@type": "Text", multiple: false }];
+    const typeDefinition = {
+        metadata: {
+            allowAdditionalProperties: true,
+        },
+        inputs: [{ property: "name", "@type": "Text", multiple: false }],
+    };
     const item = {
         "@type": "ContactPoint",
         uuid: "#3",
         name: "something",
     };
 
-    const template = updateTemplate({ inputs, item })[0];
+    let { template, report } = updateTemplate({ typeDefinition, item });
     // console.log(template);
+    template = template[0];
     expect(template.data).toBe(item.name);
 });
 test("it should create a template with generic inputs", () => {
-    const inputs = [];
+    const typeDefinition = {
+        metadata: {
+            allowAdditionalProperties: true,
+        },
+        inputs: [],
+    };
     const item = {
         "@type": "ContactPoint",
         uuid: "#3",
     };
-    const template = updateTemplate({ inputs, item });
+    let { template, report } = updateTemplate({ typeDefinition, item });
     // console.log(template);
     expect(template).toEqual([
         {
@@ -83,91 +100,122 @@ test("it should create a template with generic inputs", () => {
     ]);
 });
 test("it should add item properties extra to template in as well", () => {
-    const inputs = [{ property: "name", "@type": "Text" }];
+    const typeDefinition = {
+        metadata: {
+            allowAdditionalProperties: true,
+        },
+        inputs: [{ property: "name", "@type": "Text" }],
+    };
     const item = {
         "@type": "ContactPoint",
         uuid: "#3",
         description: "desc",
     };
 
-    const template = updateTemplate({ inputs, item });
+    let { template, report } = updateTemplate({ typeDefinition, item });
     // console.log(JSON.stringify(template, null, 2));
     expect(template.length).toBe(2);
     expect(template[1].property).toBe("description");
 });
 test("test handling a required item that is not a multiple", () => {
-    let inputs = [
-        { property: "name", "@type": "Text", required: true, multiple: false },
-    ];
+    let typeDefinition = {
+        metadata: {
+            allowAdditionalProperties: true,
+        },
+        inputs: [
+            {
+                property: "name",
+                "@type": "Text",
+                required: true,
+                multiple: false,
+            },
+        ],
+    };
     let item = {
         "@type": "ContactPoint",
         uuid: "#3",
     };
 
-    let template = updateTemplate({ inputs, item })[0];
+    let { template, report } = updateTemplate({ typeDefinition, item });
     // console.log(template);
+    template = template[0];
     expect(template.required).toBe(true);
     expect(template).toHaveProperty("data", "");
     expect(template.showAddControl).toBe(false);
 
-    inputs = [
-        { property: "name", "@type": "Text", required: true, multiple: false },
-    ];
+    typeDefinition = {
+        metadata: {
+            allowAdditionalProperties: true,
+        },
+        inputs: [
+            {
+                property: "name",
+                "@type": "Text",
+                required: true,
+                multiple: false,
+            },
+        ],
+    };
     item = {
         "@type": "ContactPoint",
         uuid: "#3",
         name: "something",
     };
 
-    template = updateTemplate({ inputs, item })[0];
-    // console.log(template);
+    ({ template, report } = updateTemplate({ typeDefinition, item }));
+    template = template[0];
     expect(template.showAddControl).toBe(false);
     expect(isString(template.data)).toBe(true);
 });
 test("test handling a required item that can be a multiple", () => {
-    let inputs = [
-        { property: "name", "@type": "Text", required: true, multiple: true },
-    ];
+    let typeDefinition = {
+        metadata: {
+            allowAdditionalProperties: true,
+        },
+        inputs: [
+            {
+                property: "name",
+                "@type": "Text",
+                required: true,
+                multiple: true,
+            },
+        ],
+    };
     let item = {
         "@type": "ContactPoint",
         uuid: "#3",
         name: ["name"],
     };
 
-    let template = updateTemplate({ inputs, item })[0];
-    expect(template.required).toBe(true);
-    expect(template).toHaveProperty("data");
-    expect(template.showAddControl).toBe(true);
-    expect(isArray(template.data)).toBe(true);
-
-    item = {
-        "@type": "ContactPoint",
-        uuid: "#3",
-        name: "name",
-    };
-
-    template = updateTemplate({ inputs, item })[0];
+    let { template, report } = updateTemplate({ typeDefinition, item });
+    template = template[0];
     expect(template.required).toBe(true);
     expect(template).toHaveProperty("data");
     expect(template.showAddControl).toBe(true);
     expect(isArray(template.data)).toBe(true);
 });
 test("test handling an item that can have multiple but is not required", () => {
-    let inputs = [
-        {
-            property: "name",
-            "@type": "Text",
-            multiple: true,
+    let typeDefinition = {
+        metadata: {
+            allowAdditionalProperties: true,
         },
-    ];
+        inputs: [
+            {
+                property: "name",
+                "@type": "Text",
+                multiple: true,
+            },
+        ],
+    };
     let item = {
         "@type": "ContactPoint",
         uuid: "#3",
         name: ["name"],
     };
 
-    let template = updateTemplate({ inputs, item })[0];
+    let { template, report } = updateTemplate({ typeDefinition, item });
     // console.log(JSON.stringify(template, null, 2));
+    template = template[0];
     expect(template.required).toBe(undefined);
     expect(template).toHaveProperty("data");
     expect(template.showAddControl).toBe(true);
@@ -178,44 +226,57 @@ test("test handling an item that can have multiple but is not required", () => {
         uuid: "#3",
     };
 
-    template = updateTemplate({ inputs, item })[0];
+    ({ template, report } = updateTemplate({ typeDefinition, item }));
     // console.log(template);
+    template = template[0];
     expect(template.required).toBe(undefined);
     expect(template).toHaveProperty("data", []);
     expect(template.showAddControl).toBe(true);
     expect(isArray(template.data)).toBe(true);
 });
 test("test handling an that is not required and can't have multiples", () => {
-    let inputs = [
-        {
-            property: "name",
-            "@type": "Text",
-            multiple: false,
+    let typeDefinition = {
+        metadata: {
+            allowAdditionalProperties: true,
         },
-    ];
+        inputs: [
+            {
+                property: "name",
+                "@type": "Text",
+                multiple: false,
+            },
+        ],
+    };
     let item = {
         "@type": "ContactPoint",
         uuid: "#3",
         name: ["name"],
     };
 
-    let template = updateTemplate({ inputs, item })[0];
+    let { template, report } = updateTemplate({ typeDefinition, item });
     // console.log(template);
+    template = template[0];
     expect(template.required).toBe(undefined);
     expect(template).toHaveProperty("data", "name");
     expect(template.showAddControl).toBe(false);
     expect(isString(template.data)).toBe(true);
 });
 test("test creating a template from an item with one simple property", () => {
-    const inputs = [];
+    const typeDefinition = {
+        metadata: {
+            allowAdditionalProperties: true,
+        },
+        inputs: [],
+    };
     const item = {
         "@type": "ContactPoint",
         uuid: "#3",
         name: "something",
     };
 
-    const template = updateTemplate({ inputs, item })[0];
+    let { template, report } = updateTemplate({ typeDefinition, item });
     // console.log(template);
+    template = template[0];
     expect(template).toEqual({
         property: "name",
         "@type": "Text",

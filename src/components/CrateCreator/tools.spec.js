@@ -33,7 +33,8 @@ beforeEach(() => {
         uuid: "#person",
         "@type": "Person",
     };
-    store.commit("saveProfileInputs", defaultProfile.Dataset);
+    store.commit("saveProfile", { profile: defaultProfile });
+    store.commit("setActiveProfileType", "Dataset");
     store.commit("saveTypeDefinitions", typeDefinitions);
     store.commit("saveToGraph", rootDataset);
     store.commit("saveToGraph", person);

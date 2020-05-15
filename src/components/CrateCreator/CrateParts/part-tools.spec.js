@@ -96,9 +96,17 @@ beforeEach(() => {
         getters: getters,
     });
     store.commit("saveToGraph", rootDataset);
-    store.commit("saveProfileInputs", {
-        inputs: [{ property: "hasPart", multiple: true }],
+    store.commit("saveProfile", {
+        profile: {
+            metadata: {},
+            items: {
+                Dataset: {
+                    inputs: [{ property: "hasPart", multiple: true }],
+                },
+            },
+        },
     });
+    store.commit("setActiveProfileType", "Dataset");
 });
 
 test("it should be able to save files to the dataset and store", () => {
