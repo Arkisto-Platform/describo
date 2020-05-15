@@ -119,8 +119,8 @@ export default {
         },
         async addParts() {
             this.loading = true;
-            await new Promise((resolve) => setTimeout(resolve, 100));
             this.partsAdded = false;
+            await new Promise((resolve) => setTimeout(resolve, 100));
             let selectedNodes = this.$refs.tree.getCheckedNodes();
             selectedNodes = selectedNodes.filter((n) => n.path !== this.target);
             selectedNodes = selectedNodes.map((node) => node.uuid);
