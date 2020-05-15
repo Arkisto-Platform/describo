@@ -126,7 +126,8 @@ export default {
             const item = this.$store.getters.getItemById(
                 this.addNewItem.itemId
             );
-            return this.addNewItem.itemId && this.addNewItem.parentId
+            return (this.addNewItem.itemId && this.addNewItem.parentId) ||
+                !item["@reverse"]
                 ? true
                 : false;
         },
