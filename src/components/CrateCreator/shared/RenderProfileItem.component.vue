@@ -46,7 +46,6 @@ export default {
                 console.log(
                     `Oops - can't get data for property: '${this.item.property}'`
                 );
-                console.log(this.item);
             }
             return item;
         },
