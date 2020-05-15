@@ -23,12 +23,14 @@
                 v-if="loading"
                 class="flex flex-col justify-center items-center flex-grow style-loading-pane bg-gray-200"
             >
-                <div class="text-xl font-light">
+                <div class="text-xl text-gray-700 font-light">
                     Loading the profile and data packs. Hold on - this won't
                     take long.
                 </div>
                 <div class="my-2">
-                    <i class="fas fa-circle-notch fa-spin fa-3x"></i>
+                    <i
+                        class="text-gray-700 fas fa-circle-notch fa-spin fa-3x"
+                    ></i>
                 </div>
             </div>
             <div v-else>
