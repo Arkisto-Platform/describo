@@ -1,23 +1,31 @@
 <template>
-    <div class="flex flex-row">
-        <div
-            class="flex flex-col bg-yellow-200 rounded-lg p-2"
-            v-if="item.uuid"
-        >
-            <div class="flex flex-row">
-                <div>@id: {{ item.uuid }}</div>
+    <div class="flex flex-row bg-yellow-200 rounded-lg p-2">
+        <div class="flex flex-col" v-if="item.uuid">
+            <div class="flex flex-row text-gray-600 font-light">
+                <div>@type: {{ item["@type"] }}</div>
                 <div class="ml-2">
                     <i class="fas fa-long-arrow-alt-right"></i>
                     {{ property }}
                 </div>
             </div>
-            <div>@type: {{ item["@type"] }}</div>
-            <div>name: {{ item.name }}</div>
+            <div class="text-gray-800 text-xl">name: {{ item.name }}</div>
+        </div>
+        <div class="ml-2">
+            <el-button
+                @click="remove()"
+                type="danger"
+                class="ml-1 focus:outline-none focus:border-2 focus:border-red-600"
+                size="small"
+            >
+                <i class="fas fa-trash-alt"></i>
+            </el-button>
         </div>
     </div>
 </template>
 
 <script>
+import { unlinkItemFromParentAndChildren } from "components/CrateCreator/tools";
+
 export default {
     props: {
         property: {
@@ -40,6 +48,19 @@ export default {
     },
     data() {
         return {};
+    },
+    methods: {
+        remove() {
+            this.$emit("close");
+            this.$nextTick(() => {
+                unlinkItemFromParentAndChildren({
+                    store: this.$store,
+                    parentId: this.parentId,
+                    itemId: this.itemId,
+                    property: this.property,
+                });
+            });
+        },
     },
 };
 </script>
