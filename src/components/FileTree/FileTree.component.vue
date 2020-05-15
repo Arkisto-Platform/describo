@@ -25,6 +25,7 @@
             </div>
             <div class="overflow-scroll">
                 <el-tree
+                    v-loading="loading"
                     ref="tree"
                     :props="props"
                     node-key="uuid"
@@ -62,6 +63,7 @@ export default {
         return {
             debouncedAddParts: debounce(this.addParts, 1000),
             partsAdded: false,
+            loading: false,
             target: this.browseTarget || this.$store.state.target,
             data: [
                 {
@@ -115,7 +117,9 @@ export default {
                 resolve(content.children || []);
             }
         },
-        addParts() {
+        async addParts() {
+            this.loading = true;
+            await new Promise((resolve) => setTimeout(resolve, 100));
             this.partsAdded = false;
             let selectedNodes = this.$refs.tree.getCheckedNodes();
             selectedNodes = selectedNodes.filter((n) => n.path !== this.target);
@@ -130,11 +134,11 @@ export default {
             nodes = flattenDeep(nodes);
             nodes = uniqBy(nodes, "uuid");
             this.$emit("selected-nodes", nodes);
+            this.loading = false;
             this.partsAdded = true;
             setTimeout(() => {
                 this.partsAdded = false;
             }, 3000);
-
             function getNodeAndParent({ tree, node }) {
                 node = tree.getNode(node).data;
                 nodes.push(node);
