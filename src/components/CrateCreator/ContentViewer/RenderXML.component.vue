@@ -6,7 +6,7 @@
 
 <script>
 import { readFile } from "fs-extra";
-import hljs from "highlight.js/lib/highlight";
+import hljs from "highlight.js";
 import xml from "highlight.js/lib/languages/xml";
 hljs.registerLanguage("xml", xml);
 import "highlight.js/styles/vs2015.css";
