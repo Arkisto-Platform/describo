@@ -71,7 +71,13 @@
                 {
                     "property": "orthographicNotes",
                     "@type": "TextArea",
-                    "multiple": false
+                    "multiple": false,
+                    "definition": {
+                        "@id": "_:orthographicNotes",
+                        "@type": "Property",
+                        "name": "orthographicNotes",
+                        "description": "something or other about data"
+                    }
                 },
                 {
                     "property": "private",
@@ -80,6 +86,11 @@
                 },
                 {
                     "property": "contentLanguages",
+                    "@type": "Language",
+                    "group": "important"
+                },
+                {
+                    "property": "subjectLanguages",
                     "@type": "Language",
                     "group": "important"
                 }
