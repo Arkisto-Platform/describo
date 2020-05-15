@@ -164,6 +164,33 @@ test("it should be able to create an ro-crate", () => {
     });
     walkObject({ obj: rootDataset, tests: [ensureNoUUID, ensureATID] });
 });
+test("it should relink items when there's @id and uuid properties", () => {
+    let graph = [
+        {
+            "@type": "RootDataset",
+            uuid: "#1",
+            name: "dataset",
+            author: [{ uuid: "#2", "@type": "Person" }],
+        },
+        {
+            "@type": "Person",
+            uuid: "#2",
+            "@id": "#person",
+            "@reverse": {
+                author: [
+                    {
+                        uuid: "#1",
+                    },
+                ],
+            },
+        },
+    ];
+    const crateTool = new CrateTool();
+    crateTool.assembleCrate({ data: graph });
+    let data = crateTool.crate;
+    // console.log(JSON.stringify(data, null, 2));
+    expect(data["@graph"][1].author[0]["@id"]).toBe("#person");
+});
 
 test("it should be able to load a complex but good crate", () => {
     let crate = {

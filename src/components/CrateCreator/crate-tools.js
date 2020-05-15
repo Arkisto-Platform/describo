@@ -1,4 +1,11 @@
-import { cloneDeep, groupBy, isPlainObject, isArray, isEmpty } from "lodash";
+import {
+    cloneDeep,
+    groupBy,
+    isPlainObject,
+    isArray,
+    isEmpty,
+    has,
+} from "lodash";
 import { writeFile, readJSON, pathExists } from "fs-extra";
 import { generateId } from "components/CrateCreator/tools";
 import path from "path";
@@ -253,6 +260,7 @@ export default class CrateTool {
     assembleCrate({ data }) {
         data = cloneDeep(data);
         let rootDataset = this.getRootDataset({ data, fromGraph: true });
+        data = updateIdentifierReferences({ data });
         data = mapIdentifiers({ data, rootDatasetUUID: rootDataset.uuid });
         data = removeType({ data });
         // console.log(JSON.stringify(data, null, 2));
@@ -268,6 +276,24 @@ export default class CrateTool {
             "@context": "https://w3id.org/ro/crate/1.0/context",
             "@graph": graph,
         };
+
+        function updateIdentifierReferences({ data }) {
+            data = data.map((element) => {
+                return walkObject({
+                    obj: element,
+                    func: checkAndUpdateReference,
+                });
+            });
+            return data;
+
+            function checkAndUpdateReference({ obj, level }) {
+                const target = data.filter((d) => d.uuid === obj.uuid)[0];
+                if (!has(obj, "@id") && has(target, "@id")) {
+                    obj["@id"] = target["@id"];
+                }
+                return obj;
+            }
+        }
 
         function mapIdentifiers({ data, rootDatasetUUID }) {
             return data.map((element) => {
