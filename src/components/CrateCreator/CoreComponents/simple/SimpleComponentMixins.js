@@ -1,4 +1,5 @@
 import { cloneDeep, debounce, isArray, isString, uniq } from "lodash";
+import { validateIdentifier } from "components/CrateCreator/tools";
 
 export default {
     props: {
@@ -34,23 +35,29 @@ export default {
             const property = this.template.property;
             if (isArray(item[property])) {
                 item[property] = item[property].map((v) => {
-                    if (v === this.template.data) return this.value;
+                    if (v === this.template.data)
+                        return this.setValidIdentifier(property, this.value);
                     return v;
                 });
-                item[property].push(this.value);
+                item[property].push(
+                    this.setValidIdentifier(property, this.value)
+                );
                 item[property] = uniq(item[property]);
             } else if (isString(item[property])) {
-                item[property] = this.value;
+                item[property] = this.setValidIdentifier(property, this.value);
             } else if (!item[property]) {
                 item[property] = this.template.multiple
-                    ? [this.value]
-                    : this.value;
+                    ? [this.setValidIdentifier(property, this.value)]
+                    : this.setValidIdentifier(property, this.value);
             }
             this.$store.commit("saveToGraph", item);
             this.$emit("done");
         },
         focus() {
             this.saved = false;
+        },
+        setValidIdentifier(property, value) {
+            return property === "@id" ? validateIdentifier(value) : value;
         },
     },
 };
