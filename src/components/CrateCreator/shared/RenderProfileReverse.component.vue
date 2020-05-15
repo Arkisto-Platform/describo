@@ -18,6 +18,7 @@
                         :property="property"
                         :itemId="uuid"
                         :parentId="reference.uuid"
+                        @close="$emit('close')"
                     />
                 </div>
             </div>

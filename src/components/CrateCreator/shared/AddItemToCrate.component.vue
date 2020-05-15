@@ -78,6 +78,7 @@
                     <render-profile-reverse-component
                         :uuid="item.uuid"
                         class="mt-8"
+                        @close="close"
                     />
                 </div>
             </div>
@@ -125,8 +126,7 @@ export default {
             const item = this.$store.getters.getItemById(
                 this.addNewItem.itemId
             );
-            return !item["@reverse"] ||
-                Object.keys(item["@reverse"]).length === 1
+            return this.addNewItem.itemId && this.addNewItem.parentId
                 ? true
                 : false;
         },
@@ -176,9 +176,7 @@ export default {
                 this.$store.commit("removeFromGraph", {
                     uuid: this.addNewItem.itemId,
                 });
-                this.item = {};
-                this.$store.commit("addNewItem", undefined);
-                this.$refs.drawer.closeDrawer();
+                this.close();
             } catch (error) {
                 this.$message({
                     type: "error",
@@ -200,6 +198,9 @@ export default {
         },
         done(drawerDoneHandler) {
             this.linkItem();
+            this.close();
+        },
+        close() {
             this.item = {};
             this.type = undefined;
             this.$store.commit("addNewItem", undefined);
