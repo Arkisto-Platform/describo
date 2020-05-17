@@ -1,6 +1,17 @@
 <template>
-    <div class="flex flex-col space-y-1">
-        <div class="flex flex-row text-sm font-light text-gray-600 pt-1">
+    <div
+        class="flex"
+        :class="{
+            'flex-row space-x-2': compact,
+            'flex-col space-y-1': !compact,
+        }"
+    >
+        <div
+            class="flex flex-row text-sm font-light text-gray-600"
+            :class="{
+                'pt-1': !compact,
+            }"
+        >
             <type-icon-component :type="item['@type']" class="mr-1" />
             {{ item["@type"] }}
         </div>
@@ -21,6 +32,10 @@ export default {
         uuid: {
             type: String,
             required: true,
+        },
+        compact: {
+            type: Boolean,
+            default: false,
         },
     },
     computed: {

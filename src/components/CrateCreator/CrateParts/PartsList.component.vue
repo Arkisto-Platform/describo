@@ -44,6 +44,7 @@
                         <div class="flex flex-col space-y-1">
                             <render-item-information-component
                                 :uuid="scope.row.uuid"
+                                :compact="true"
                             />
                         </div>
                     </div>
