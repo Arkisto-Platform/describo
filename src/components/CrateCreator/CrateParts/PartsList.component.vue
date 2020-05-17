@@ -22,28 +22,6 @@
         </div>
 
         <el-table :data="parts" class="cursor-pointer" @row-click="editPart">
-            <el-table-column prop="" label="Actions" width="80">
-                <template slot-scope="scope">
-                    <el-button
-                        type="success"
-                        @click="editPart(scope.row)"
-                        size="small"
-                    >
-                        <i class="fas fa-edit"></i>
-                    </el-button>
-                </template>
-            </el-table-column>
-            <el-table-column prop="uuid" label="Identifier" width="600">
-                <template slot-scope="scope">
-                    <div class="bg-green-200 p-2 rounded-lg">
-                        <div class="flex flex-col space-y-1">
-                            <render-item-information-component
-                                :uuid="scope.row.uuid"
-                            />
-                        </div>
-                    </div>
-                </template>
-            </el-table-column>
             <el-table-column prop="" label="Type" width="80" align="center">
                 <template slot-scope="scope" class="text-center">
                     <div
@@ -57,6 +35,17 @@
                         class="text-center"
                     >
                         <i class="fas fa-file fa-2x text-green-400"></i>
+                    </div>
+                </template>
+            </el-table-column>
+            <el-table-column prop="uuid" label="">
+                <template slot-scope="scope">
+                    <div class="bg-green-200 p-2 rounded-lg">
+                        <div class="flex flex-col space-y-1">
+                            <render-item-information-component
+                                :uuid="scope.row.uuid"
+                            />
+                        </div>
                     </div>
                 </template>
             </el-table-column>

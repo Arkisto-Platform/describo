@@ -14,18 +14,7 @@
             @row-click="throttledEditItem"
             row-class-name="cursor-pointer"
         >
-            <el-table-column prop="name" label="Actions" width="80">
-                <template slot-scope="scope">
-                    <el-button
-                        type="success"
-                        @click="throttledEditItem(scope.row)"
-                        size="small"
-                    >
-                        <i class="fas fa-edit"></i>
-                    </el-button>
-                </template>
-            </el-table-column>
-            <el-table-column prop="uuid" label="Identifier" width="600">
+            <el-table-column prop="uuid" label="">
                 <template slot-scope="scope">
                     <div class="bg-green-200 p-2 rounded-lg">
                         <div class="flex flex-col space-y-1">
