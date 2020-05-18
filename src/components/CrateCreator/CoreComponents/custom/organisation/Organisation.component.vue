@@ -67,16 +67,11 @@ export default {
                 // select an org from ROR
                 //  create new org with ROR info
                 const newItem = {
-                    uuid: selection.uuid,
-                    "@type": "Organization",
+                    ...this.item,
+                    "@id": selection.uuid,
                     name: selection.name,
                 };
                 this.$store.commit("saveToGraph", newItem);
-
-                this.$store.commit("addNewItem", {
-                    ...this.$store.state.addNewItem,
-                    itemId: selection.uuid,
-                });
             }
             this.$emit("save");
         },
