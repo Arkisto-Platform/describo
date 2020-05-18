@@ -4,7 +4,7 @@
             <div class="text-3xl lg:text-6xl mr-2">
                 Describo
             </div>
-            <div class="text-lg lg:text-3xl md: pt-4 lg:pt-10">
+            <div class="text-lg lg:text-3xl md:mt-6 lg:mt-12">
                 The tool to describe and package data.
             </div>
         </div>
