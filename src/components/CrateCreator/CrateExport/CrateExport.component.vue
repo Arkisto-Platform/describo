@@ -187,9 +187,12 @@ export default {
             this.aborted = true;
         },
         reportProgress(progress) {
-            this.progressPercentage = round(
+            progress = round(
                 (progress.fs.processedBytes / progress.fs.totalBytes) * 100
             );
+            if (progress) {
+                this.progressPercentage = progress;
+            }
         },
     },
 };

@@ -97,7 +97,9 @@ export default class CrateExporter {
 
     async bagIt() {
         const crate = new ROCrate(
-            await readJSON(path.join(this.source, Defaults.roCrateMetadataID))
+            await readJSON(
+                path.join(this.source, `${roCrateMetadataFile}.json`)
+            )
         );
         const bag = new Bag({ source: this.source, crate });
         return await bag.bagIt();
