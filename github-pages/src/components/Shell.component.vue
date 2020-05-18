@@ -1,40 +1,29 @@
 <template>
-    <div>
-        <div class="flex flex-col justify-center md:flex-row mt-10">
-            <div class="text-3xl lg:text-6xl mr-2">
-                Describo
-            </div>
-            <div class="text-lg lg:text-3xl md:mt-6 lg:mt-12">
-                The tool to describe and package data.
-            </div>
-        </div>
-
-        <div class="my-8 text-base md:text-2xl text-center text-orange-600">
-            Describo is a tool to create and update
-            <a href="https://researchobject.github.io/ro-crate/"
-                >Research Object Crates (RO-CRATE)</a
-            >.
-        </div>
-
-        <div class="flex flex-col lg:flex-row">
-            <div class="flex-col">
-                <div><img src="images/select-folder.png" /></div>
-                <div class="text-center">Select a folder to describe.</div>
-            </div>
-            <div class="flex-col">
-                <div><img src="images/select-profile.png" /></div>
-                <div class="text-center">Select a profile.</div>
-            </div>
-            <div class="flex-col">
-                <div><img src="images/describe-item.png" /></div>
-                <div class="text-center">Describe your data.</div>
-            </div>
-        </div>
+    <div class="mb-10">
+        <navigation-component class="mt-6" />
+        <header-component class="mt-4" />
+        <about-component class="mt-6" />
+        <releases-component class="mt-6 md:mt-10 hidden lg:block" />
+        <footer-component class="mt-6" />
     </div>
 </template>
 
 <script>
+import NavigationComponent from "./Navigation.component.vue";
+import HeaderComponent from "./Header.component.vue";
+import AboutComponent from "./About.component.vue";
+import ReleasesComponent from "./Releases.component.vue";
+import FooterComponent from "./Footer.component.vue";
 export default {
-    components: {},
+    components: {
+        NavigationComponent,
+        HeaderComponent,
+        AboutComponent,
+        ReleasesComponent,
+        FooterComponent,
+    },
+    data() {
+        return {};
+    },
 };
 </script>
