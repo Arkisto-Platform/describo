@@ -13,7 +13,8 @@
         "build:mac": "electron-webpack && electron-builder --mac --publish always",
         "build:linux": "electron-webpack && electron-builder --linux --publish always",
         "build:win": "./bin/build-windows.sh",
-        "postinstall": "./node_modules/.bin/electron-rebuild"
+        "postinstall": "./node_modules/.bin/electron-rebuild",
+        "ghpages": "./node_modules/.bin/webpack --watch  --config  github-pages/webpack.config.js"
     },
     "build": {
         "afterSign": "bin/notarize.js",
@@ -114,6 +115,7 @@
         "electron-webpack": "^2.8.2",
         "electron-webpack-vue": "^2.4.0",
         "file-loader": "^6.0.0",
+        "html-loader": "^1.1.0",
         "html-webpack-plugin": "^4.3.0",
         "jest": "^26.0.1",
         "jquery": "^3.5.1",
