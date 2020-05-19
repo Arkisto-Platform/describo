@@ -6,36 +6,18 @@
                 >(click on an image to expand)</span
             >
         </div>
-        <div
-            v-for="(item, idx) of items"
-            :key="idx"
-            class="flex flex-col md:flex-row p-8 bg-blue-100 border-2 border-gray-400"
-        >
-            <div
-                class=""
-                :class="{
-                    'w-full': expandImage,
-                    'w-full md:w-1/2': !expandImage,
-                }"
-                @click="expandImage = !expandImage"
-            >
-                <img :src="item.image" />
-            </div>
-            <div
-                v-if="!expandImage"
-                class="text-sm md:text-xl w-full md:w-1/2 p-4"
-                v-html="item.text"
-            ></div>
+        <div v-for="(item, idx) of items" :key="idx">
+            <render-feature-component :item="item" />
         </div>
     </div>
 </template>
 
 <script>
-import NavigationComponent from "../Navigation.component.vue";
+import RenderFeatureComponent from "./RenderFeature.component.vue";
 
 export default {
     components: {
-        NavigationComponent,
+        RenderFeatureComponent,
     },
     data() {
         return {
@@ -44,12 +26,11 @@ export default {
                 {
                     image: "images/create-person.png",
                     text:
-                        "Built in core entity types like Person, Organization and many others.",
+                        "Built in entity type definitions like Person, Organization and many others.",
                 },
                 {
                     image: "images/create-organization.png",
-                    text:
-                        "Enable users to create entities attached to defined properties.",
+                    text: "Create and attach entities to properties.",
                 },
                 {
                     image: "images/lookup-organization-in-ror.png",
@@ -59,11 +40,11 @@ export default {
                 {
                     image: "images/add-content1.png",
                     text:
-                        "Manage the data in your crate with the easy to use file selector.",
+                        "Manage crate data with the easy to use file selector.",
                 },
                 {
                     image: "images/add-content2.png",
-                    text: "Browse an overview of the content of your crate.",
+                    text: "Browse the content of your crate.",
                 },
                 {
                     image: "images/add-content3.png",
@@ -104,13 +85,13 @@ export default {
                         `,
                 },
                 {
-                    image: "images/types-text.png",
-                    text: "Built in types - collect text input from a user.",
-                },
-                {
                     image: "images/types-value.png",
                     text:
                         "Built in types - define a specific value for a property.",
+                },
+                {
+                    image: "images/types-text.png",
+                    text: "Built in types - collect text input from a user.",
                 },
                 {
                     image: "images/types-textarea.png",
