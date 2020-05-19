@@ -13,8 +13,8 @@
             <a
                 href="https://researchobject.github.io/ro-crate/"
                 class="text-orange-600"
-                >Research Object Crates (RO-CRATE)</a
-           >
+                >Research Object Crates (RO-Crate)</a
+            >
         </div>
     </div>
 </template>
