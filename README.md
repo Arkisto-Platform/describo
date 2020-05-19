@@ -6,18 +6,15 @@ We do not have tutorial documentation yet but would be interested to hear what p
 
 If you follow the instructions below to run in a dev environment an application will start on your computer.
 
+But if you're not a developer you should probably get a pre-built bundle from: [https://uts-eresearch.github.io/describo/](https://uts-eresearch.github.io/describo/)
+
 - [describo](#describo)
   - [Technology](#technology)
   - [Running the development environment](#running-the-development-environment)
   - [Tests](#tests)
   - [Repository Structure](#repository-structure)
   - [Building a release](#building-a-release)
-    - [Code signing](#code-signing)
-    - [Building a Linux release](#building-a-linux-release)
-    - [Building MacOS releases](#building-macos-releases)
-      - [DO THIS FIRST](#do-this-first)
-    - [Building Windows releases](#building-windows-releases)
-  - [Publishing a release](#publishing-a-release)
+  - [Updating the github pages site](#updating-the-github-pages-site)
 
 
 ## Technology
@@ -63,73 +60,9 @@ you likely won't need to create any / many custom css classes.
 
 ## Building a release
 
-You can build a release for testing by simply running one of the following commands (obviously choose the one for your platform)
+See the [wiki](https://github.com/UTS-eResearch/describo/wiki/build-a-release)
 
--   Build for linux: `npm run build:linux`
--   Build for mac: `npm run build:mac`
--   Build for windows: `npm run build:win`
+## Updating the github pages site
 
-The built executable will be in the `dist` folder in the top level.
+See the [wiki](https://github.com/UTS-eResearch/describo/wiki/updating-github-pages)
 
-### Code signing
-
-See https://www.electron.build/code-signing for information about code signing.
-
-### Building a Linux release
-
-### Building MacOS releases
-
-#### DO THIS FIRST
-
-There is a bug in electron-builder where a zip file is required for autoupdate to work but the code to generate
-it results in a bundle that doesn't work on Catalina! So, you need to apply the following patch to 
-`node_modules/app-builder-lib/out/targets/ArchiveTarget.js`.
-
-```
-diff --git a/ArchiveTarget.js.orig b/ArchiveTarget.js
-index 72a59df..f872592 100644
---- a/ArchiveTarget.js.orig
-+++ b/ArchiveTarget.js
-@@ -119,9 +119,9 @@ class ArchiveTarget extends _core().Target {
-       };
-       await (0, _archive().archive)(format, artifactPath, dirToArchive, archiveOptions);
-
--      if (this.isWriteUpdateInfo && format === "zip") {
--        updateInfo = await (0, _differentialUpdateInfoBuilder().appendBlockmap)(artifactPath);
--      }
-+        //if (this.isWriteUpdateInfo && format === "zip") {
-+        //updateInfo = await (0, _differentialUpdateInfoBuilder().appendBlockmap)(artifactPath);
-+        //}
-     }
-
-     await packager.info.callArtifactBuildCompleted({
-
-```
-
-MacOS releases can only be built on MacOS.
-
-You will need an Apple developer certificate to sign the release as well as an app specific password. To set up the
-app specfic password follow the instructions at [https://support.apple.com/en-au/HT204397](https://support.apple.com/en-au/HT204397)
-
-Ensure you have xcode installed as the notarization stage uses a tool called `altool` that comes
-with xcode full not xcode command line tools.
-
-export APPLEID= < your apple developer id - you must have an apple developer cert >
-export APPLEIDPASS= < app specific password >
-
-### Building Windows releases
-
-Like the MacOS release a developer certificate is required to sign the app but (I think) Windows doesn't stop anyone running an unsigned application.
-
-Also, you'll need docker installed as the Windows build happens inside a docker container.
-
-## Publishing a release
-
-In order to publish a release you will first need a `Github Personal Access Token` in order to push the release to the repo so create one if you don't already have one.
-
-Then you can do `./publish.sh`. This will:
-
--   ask if you want to bump the major, minor, patch numbers
--   build the 3 distributables and publish each release to the `releases` page of the repository
-
-Once the release is published you then need to verify the draft and release it from the releases page.
