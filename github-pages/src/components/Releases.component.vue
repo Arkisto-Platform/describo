@@ -2,8 +2,8 @@
     <div class="flex flex-col">
         <div class="flex flex-col" v-if="release">
             <div class="md:text-3xl text-center">
-                Download Describo for your platform and start describing your
-                data.
+                Download the latest Describo release for your platform and start
+                describing your data.
                 <div class="text-sm">
                     Describo is an application designed for your desktop so it
                     won't work on your phone or tablet.
@@ -26,9 +26,8 @@
                     </a>
                 </div>
             </div>
-            <div>Latest release: {{ release.name }}</div>
         </div>
-        <div class="mt-6 text-base text-center">
+        <div class="mt-8 text-base text-center">
             <div>
                 Check out available releases @
                 <a
