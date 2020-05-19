@@ -8,28 +8,13 @@
                 The tool to describe and package data.
             </div>
         </div>
-
         <div class="my-8 text-base lg:text-2xl text-center">
             Describo is a tool to create and update
             <a
                 href="https://researchobject.github.io/ro-crate/"
                 class="text-orange-600"
                 >Research Object Crates (RO-CRATE)</a
-            >.
-        </div>
-        <div class="flex flex-col lg:flex-row">
-            <div class="flex-col">
-                <div><img src="images/select-folder.png" /></div>
-                <div class="text-center">Select a folder to describe.</div>
-            </div>
-            <div class="flex-col">
-                <div><img src="images/select-profile.png" /></div>
-                <div class="text-center">Select a profile.</div>
-            </div>
-            <div class="flex-col">
-                <div><img src="images/describe-item.png" /></div>
-                <div class="text-center">Describe your data.</div>
-            </div>
+            >. -
         </div>
     </div>
 </template>
