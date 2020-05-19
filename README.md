@@ -6,9 +6,10 @@ We do not have tutorial documentation yet but would be interested to hear what p
 
 If you follow the instructions below to run in a dev environment an application will start on your computer.
 
-But if you're not a developer you should probably get a pre-built bundle from: [https://uts-eresearch.github.io/describo/](https://uts-eresearch.github.io/describo/)
+# **If you're not a developer you should probably get a pre-built bundle from: [https://uts-eresearch.github.io/describo/](https://uts-eresearch.github.io/describo/)**
 
 - [describo](#describo)
+- [**If you're not a developer you should probably get a pre-built bundle from: https://uts-eresearch.github.io/describo/**](#if-youre-not-a-developer-you-should-probably-get-a-pre-built-bundle-from-httpsuts-eresearchgithubiodescribo)
   - [Technology](#technology)
   - [Running the development environment](#running-the-development-environment)
   - [Tests](#tests)
