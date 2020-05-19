@@ -14,7 +14,7 @@
                 href="https://researchobject.github.io/ro-crate/"
                 class="text-orange-600"
                 >Research Object Crates (RO-CRATE)</a
-            >. -
+           >
         </div>
     </div>
 </template>
