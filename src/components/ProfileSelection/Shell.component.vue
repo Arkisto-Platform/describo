@@ -97,7 +97,6 @@ export default {
                 });
 
                 // load type definitions
-                console.log(profile);
                 let types = {};
                 if (
                     profile.enabledCoreTypes &&
