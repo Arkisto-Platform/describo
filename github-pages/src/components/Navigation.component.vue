@@ -1,9 +1,14 @@
 <template>
-    <div class="flex flex-row space-x-4 md:space-x-8">
-        <a href="https://uts.edu.au" target="_blank">
-            <img src="images/logo.svg" />
-        </a>
+    <div class="flex flex-row space-x-4 md:space-x-8 border-b-2 pb-2">
+        <div>
+            <a href="https://uts.edu.au" target="_blank">
+                <img src="images/logo.svg" />
+            </a>
+        </div>
         <div class="flex-grow"></div>
+        <div class="hover:text-orange-600">
+            <router-link to="/"><i class="fas fa-home"></i></router-link>
+        </div>
         <div class="hover:text-orange-600">
             <router-link to="features">features</router-link>
         </div>

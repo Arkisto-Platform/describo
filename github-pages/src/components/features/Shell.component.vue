@@ -1,6 +1,11 @@
 <template>
     <div class="flex flex-col space-y-4 md:space-y-10 my-10">
-        <div class="text-xl">Features (click on an image to expand)</div>
+        <div class="text-xl lg:text-4xl text-center">
+            Features
+            <span class="inline-block text-lg"
+                >(click on an image to expand)</span
+            >
+        </div>
         <div
             v-for="(item, idx) of items"
             :key="idx"
