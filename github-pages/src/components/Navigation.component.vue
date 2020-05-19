@@ -6,15 +6,22 @@
             </a>
         </div>
         <div class="flex-grow"></div>
-        <div class="hover:text-orange-600">
+        <div
+            class="hover:text-orange-600"
+            :class="{ 'text-orange-600': activeRoute === 'home' }"
+        >
             <router-link to="/"><i class="fas fa-home"></i></router-link>
         </div>
-        <div class="hover:text-orange-600">
+        <div
+            class="hover:text-orange-600"
+            :class="{ 'text-orange-600': activeRoute === 'features' }"
+        >
             <router-link to="features">features</router-link>
         </div>
         <div class="hidden md:block">
             <a
                 href="https://github.com/UTS-eResearch/describo/wiki"
+                target="_blank"
                 class="hover:text-orange-600"
                 >docs</a
             >
@@ -22,6 +29,7 @@
         <div class="hidden md:block">
             <a
                 href="https://github.com/UTS-eResearch/describo/wiki/About"
+                target="_blank"
                 class="hover:text-orange-600"
                 >about</a
             >
@@ -29,6 +37,7 @@
         <div>
             <a
                 href="https://github.com/UTS-eResearch/describo"
+                target="_blank"
                 class="hover:text-orange-600"
                 ><i class="fab fa-github"></i> github</a
             >
@@ -36,6 +45,7 @@
         <div class="hidden md:block">
             <a
                 href="https://github.com/UTS-eResearch/describo/issues"
+                target="_blank"
                 class="hover:text-orange-600"
                 >issues</a
             >
@@ -47,6 +57,11 @@
 export default {
     data() {
         return {};
+    },
+    computed: {
+        activeRoute: function() {
+            return this.$route.name;
+        },
     },
 };
 </script>
