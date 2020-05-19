@@ -59,7 +59,7 @@ import SelectDefaultProfileComponent from "./SelectDefaultProfile.component.vue"
 import LoadExternalProfileComponent from "./LoadExternalProfile.component.vue";
 import ProfileLoader from "./profile-loader";
 import internalTypeDefinitions from "components/profiles/types";
-import { cloneDeep } from "lodash";
+import { cloneDeep, uniq } from "lodash";
 
 export default {
     components: {
@@ -97,11 +97,17 @@ export default {
                 });
 
                 // load type definitions
+                console.log(profile);
                 let types = {};
                 if (
                     profile.enabledCoreTypes &&
                     profile.enabledCoreTypes.length
                 ) {
+                    profile.enabledCoreTypes = uniq([
+                        ...profile.enabledCoreTypes,
+                        "File",
+                        "Dataset",
+                    ]);
                     for (let type of profile.enabledCoreTypes) {
                         types[type] = internalTypeDefinitions[type];
                     }
