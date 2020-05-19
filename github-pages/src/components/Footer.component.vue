@@ -8,6 +8,9 @@
         <div class="hidden md:block flex-grow"></div>
         <div class="flex flex-row space-x-8">
             <div class="flex flex-col md:flex-row md:space-x-8">
+                <div class="hover:text-orange-600">
+                    <router-link to="features">features</router-link>
+                </div>
                 <div>
                     <a
                         href="https://github.com/UTS-eResearch/describo/wiki"

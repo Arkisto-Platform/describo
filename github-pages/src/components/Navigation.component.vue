@@ -1,9 +1,12 @@
 <template>
-    <div class="flex flex-row space-x-8">
+    <div class="flex flex-row space-x-4 md:space-x-8">
         <a href="https://uts.edu.au" target="_blank">
             <img src="images/logo.svg" />
         </a>
         <div class="flex-grow"></div>
+        <div class="hover:text-orange-600">
+            <router-link to="features">features</router-link>
+        </div>
         <div class="hidden md:block">
             <a
                 href="https://github.com/UTS-eResearch/describo/wiki"
@@ -11,7 +14,7 @@
                 >docs</a
             >
         </div>
-        <div>
+        <div class="hidden md:block">
             <a
                 href="https://github.com/UTS-eResearch/describo/wiki/About"
                 class="hover:text-orange-600"
