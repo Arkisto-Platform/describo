@@ -10,7 +10,6 @@ export default {
             metadata: {
                 about:
                     "Some pithy text about what this is and why the user should select it",
-                version: 1,
                 allowAdditionalProperties: true,
             },
             inputs: [
