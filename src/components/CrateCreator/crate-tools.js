@@ -341,6 +341,8 @@ export default class CrateTool {
             license: {
                 "@id": "https://creativecommons.org/licenses/by-sa/3.0",
             },
+            description:
+                "Made with Describo: https://uts-eresearch.github.io/describo/",
         };
     }
 
