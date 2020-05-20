@@ -16,7 +16,8 @@
             {{ item["@type"] }}
         </div>
         <div class="text-gray-800 text-xl">
-            {{ item.name }}
+            <span v-if="['File', 'Dataset'].includes(item['@type'])">{{item.uuid}}</span>
+            <span v-else>{{item.name}}</span>
         </div>
     </div>
 </template>
