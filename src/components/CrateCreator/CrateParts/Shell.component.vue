@@ -12,9 +12,8 @@
             <el-tab-pane label="Describe Content" name="describe">
                 <div class="flex flex-col">
                     <parts-list-component
-                        class="my-2 border-2 p-4"
+                        :class="{ 'invisible h-0': selectedPart, 'h-full my-2 border-2 p-4': !selectedPart }"
                         @edit-part="editPart"
-                        v-if="!selectedPart"
                     />
                     <dataset-component
                         :uuid="selectedPart.uuid"
