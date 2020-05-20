@@ -4,6 +4,11 @@ export default {
     },
     inputs: [
         {
+            property: "@id",
+            "@type": "Text",
+            multiple: false,
+        },
+        {
             property: "name",
             "@type": "Text",
             required: true,
