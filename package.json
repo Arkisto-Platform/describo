@@ -1,6 +1,6 @@
 {
     "name": "describo",
-    "version": "0.11.1",
+    "version": "0.11.2",
     "description": "The tool to describe and package data.",
     "main": "index.js",
     "scripts": {
