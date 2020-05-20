@@ -49,11 +49,23 @@
                         ></component>
                     </div>
                     <div v-else class="flex flex-col">
+                        <div class="flex flex-row mt-1 border-b-2 pb-2 ">
+                            <div class="flex flex-grow"></div>
+                            <el-button
+                                @click="done()"
+                                type="success"
+                                size="small"
+                                class="focus:outline-none focus:border-2 focus:border-green-600"
+                                :disabled="item && !item.name"
+                            >
+                                <i class="fas fa-check"></i>&nbsp;done
+                            </el-button>
+                        </div>
                         <render-profile-component
                             :uuid="item.uuid"
                             @link-item="linkItem"
                         />
-                        <div class="flex flex-row mt-1">
+                        <div class="flex flex-row mt-1 border-t-2 pt-2">
                             <el-button
                                 @click="remove()"
                                 type="danger"
@@ -71,7 +83,7 @@
                                 class="focus:outline-none focus:border-2 focus:border-green-600"
                                 :disabled="item && !item.name"
                             >
-                                <i class="fas fa-check"></i>&nbsp;save
+                                <i class="fas fa-check"></i>&nbsp;done
                             </el-button>
                         </div>
                     </div>
