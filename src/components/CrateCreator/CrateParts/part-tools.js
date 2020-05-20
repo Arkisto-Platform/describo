@@ -48,6 +48,11 @@ export function writeParts({ store, nodes }) {
                 });
             }
         }
+        if (
+            !existingDatasetIds.includes(dataset.uuid) && !dataset['@reverse']
+        ) {
+            store.commit('removeFromGraph', dataset)
+        }
     });
 
     // create and link datasets
