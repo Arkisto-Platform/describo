@@ -40,7 +40,7 @@ export default class CrateTool {
         }
         async function writeToLocalFolder({ folder, crate }) {
             const file = path.join(folder, `${roCrateMetadataFile}.json`);
-            await writeFile(file, JSON.stringify(crate));
+            await writeFile(file, JSON.stringify(crate, null, 2));
         }
     }
 
