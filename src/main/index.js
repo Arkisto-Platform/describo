@@ -37,15 +37,18 @@ function createMainWindow() {
         );
     }
 
-    window.on("closed", () => {
-        mainWindow = null;
-    });
-
-    window.webContents.on("devtools-opened", () => {
-        window.focus();
-        setImmediate(() => {
-            window.focus();
+    window.on("close", (e) => {
+        const answer = dialog.showMessageBoxSync({
+            type: "question",
+            buttons: ["cancel", "OK"],
+            message: "Are you sure you want to close the application?",
         });
+        if (!answer) {
+            return e.preventDefault();
+        }
+    });
+    window.on("closed", () => {
+        app.exit();
     });
 
     autoUpdater.on("update-downloaded", onUpdateDownloaded);
