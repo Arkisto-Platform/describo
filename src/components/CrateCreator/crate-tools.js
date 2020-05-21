@@ -10,6 +10,7 @@ import { writeFile, readJSON, pathExists } from "fs-extra";
 import { generateId } from "components/CrateCreator/tools";
 import path from "path";
 const roCrateMetadataFile = "ro-crate-metadata";
+const excludeFromDataStore = ["File", "Dataset"];
 
 export default class CrateTool {
     constructor() {
@@ -29,18 +30,39 @@ export default class CrateTool {
         return valid.includes(false) ? false : true;
     }
 
-    async writeCrate({ target }) {
+    async writeCrate({ target, database }) {
+        const items = this.crate["@graph"]
+            .filter((i) => i["@id"] !== "/ro-crate-metadata.json")
+            .filter((i) => !excludeFromDataStore.includes(i["@type"]));
+        this.saveEntitiesToDataStore({ items, database });
+
         switch (target.type) {
             case "local":
                 await writeToLocalFolder({
                     folder: target.folder,
                     crate: this.crate,
+                    saveEntitiesToDataStore: this.saveEntitiesToDataStore,
+                    database,
                 });
                 break;
         }
         async function writeToLocalFolder({ folder, crate }) {
             const file = path.join(folder, `${roCrateMetadataFile}.json`);
             await writeFile(file, JSON.stringify(crate, null, 2));
+        }
+    }
+
+    async saveEntitiesToDataStore({ items, database }) {
+        for (let item of items) {
+            item = cloneDeep(item);
+            delete item["@reverse"];
+            try {
+                await database.put({ data: [item] });
+            } catch (error) {
+                console.log(
+                    `Couldn't write item.@id ${item["@id"]} to the store.`
+                );
+            }
         }
     }
 
@@ -331,12 +353,12 @@ export default class CrateTool {
 
     getCrateMetadataFileDescriptor() {
         return {
-            "@id": "/ro-crate-metadata.jsonld",
+            "@id": "/ro-crate-metadata.json",
             "@type": "CreativeWork",
             about: {
                 "@id": "./",
             },
-            identifier: "ro-crate-metadata.jsonld",
+            identifier: "ro-crate-metadata.json",
             conformsTo: { "@id": "https://w3id.org/ro/crate/1.0" },
             license: {
                 "@id": "https://creativecommons.org/licenses/by-sa/3.0",

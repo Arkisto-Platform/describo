@@ -4,6 +4,11 @@ import Vue from "vue";
 import Vuex from "vuex";
 Vue.use(Vuex);
 
+import electron from "electron";
+import path from "path";
+const appConfigDir = (electron.app || electron.remote.app).getPath("userData");
+const databaseFile = path.join(appConfigDir, "describo-database.sqlite");
+
 import {
     groupBy,
     cloneDeep,
@@ -159,6 +164,7 @@ function reset() {
         profile: undefined,
         activeProfileType: undefined,
         database: undefined,
+        databaseFile,
         typeDefinitions: {},
         graph: [],
         itemsByType: {},

@@ -54,7 +54,7 @@
             </div>
             <div class="flex flex-row text-xl pt-1">
                 <div v-show="saving" class="text-orange-600">
-                    <i class="fas fa-save"></i> saving the crate
+                    saving the crate
                 </div>
                 <div v-show="saved" class="text-green-600">
                     <i class="fas fa-check"></i> saved
@@ -184,6 +184,7 @@ export default {
                 crateTool.assembleCrate({ data: this.$store.state.graph });
                 await crateTool.writeCrate({
                     target: this.$store.state.target,
+                    database: this.$store.state.database,
                 });
                 await new Promise((resolve) => setTimeout(resolve, 1500));
                 this.saving = false;

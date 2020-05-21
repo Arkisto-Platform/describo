@@ -1,20 +1,9 @@
-import path from "path";
-import electron from "electron";
-import defaultProfile from "components/profiles/default";
-import typeDefinitions from "components/profiles/types";
-import { Database } from "describo-data-service";
-import { cloneDeep, isString, has, isArray, isPlainObject } from "lodash";
+import { cloneDeep, has, isArray } from "lodash";
 
 export default class ProfileLoader {
     constructor() {}
 
-    async loadDataPacks({ $message, dataPacks }) {
-        const configDir = (electron.app || electron.remote.app).getPath(
-            "userData"
-        );
-        const databaseFile = path.join(configDir, "describo-database.sqlite");
-        const database = new Database({ databaseFile });
-        await database.connect();
+    async loadDataPacks({ database, $message, dataPacks }) {
         for (let pack of dataPacks) {
             try {
                 await database.load({ url: pack });
@@ -26,7 +15,6 @@ export default class ProfileLoader {
                 });
             }
         }
-        return database;
     }
 
     verify({ profile }) {

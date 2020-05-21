@@ -91,7 +91,8 @@ export default {
                 });
             } else {
                 // load any data packs defined in the profile
-                const database = await profileLoader.loadDataPacks({
+                await profileLoader.loadDataPacks({
+                    database: this.$store.state.database,
                     $message: this.$message,
                     dataPacks: profile.dataPacks,
                 });
@@ -118,9 +119,6 @@ export default {
 
                 // commit the profile
                 this.$store.commit("saveProfile", { profile });
-
-                // save the database handle for later use
-                this.$store.commit("saveDatabaseHandle", { database });
 
                 // reset the internal data state
                 this.$store.commit("reset");

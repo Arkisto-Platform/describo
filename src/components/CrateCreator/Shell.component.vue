@@ -154,6 +154,7 @@ export default {
         },
         async loadSelection(selection) {
             if (!selection) return;
+            this.$store.commit("reset");
             this.$store.commit("setActiveProfileType", selection);
 
             let rootDatasetName = {};

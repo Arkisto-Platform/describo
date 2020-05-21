@@ -9,6 +9,7 @@
 
 <script>
 import HeaderComponent from "./Header.component.vue";
+import { Database } from "describo-data-service";
 
 export default {
     components: {
@@ -18,7 +19,15 @@ export default {
         return {};
     },
     mounted() {
-        this.$router.push({ path: "/introduction" }).catch(() => {});
+        this.$router.push({ path: "/describe" }).catch(() => {});
+
+        (async () => {
+            const database = new Database({
+                databaseFile: this.$store.state.databaseFile,
+            });
+            await database.connect();
+            this.$store.commit("saveDatabaseHandle", { database });
+        })();
     },
 };
 </script>

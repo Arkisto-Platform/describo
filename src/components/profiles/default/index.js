@@ -119,7 +119,7 @@ export default {
         },
     },
     dataPacks: [
-        "https://raw.githubusercontent.com/UTS-eResearch/describo-data-packs/master/ISO-639-6-language-data/iso-639-6-language-data-pack.json",
-        "https://raw.githubusercontent.com/UTS-eResearch/describo-data-packs/master/ISO-639-6-country-data/iso-639-6-country-data-pack.json",
+        // "https://raw.githubusercontent.com/UTS-eResearch/describo-data-packs/master/ISO-639-6-language-data/iso-639-6-language-data-pack.json",
+        // "https://raw.githubusercontent.com/UTS-eResearch/describo-data-packs/master/ISO-639-6-country-data/iso-639-6-country-data-pack.json",
     ],
 };

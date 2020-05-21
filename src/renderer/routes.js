@@ -7,6 +7,7 @@ Vue.use(VueRouter);
 import ShellComponent from "components/Shell.component.vue";
 import BadRequestComponent from "components/BadRequest.component.vue";
 import DescribeShellComponent from "components/DescribeShell.component.vue";
+import SettingsShellComponent from "components/Settings/Shell.component.vue";
 
 export const router = new VueRouter({
     routes: [
@@ -16,8 +17,12 @@ export const router = new VueRouter({
             component: ShellComponent,
             children: [
                 {
-                    path: "introduction",
+                    path: "describe",
                     component: DescribeShellComponent,
+                },
+                {
+                    path: "settings",
+                    component: SettingsShellComponent,
                 },
             ],
         },
