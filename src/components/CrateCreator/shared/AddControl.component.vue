@@ -25,13 +25,17 @@ export default {
     data() {
         return {
             types: [],
+            typeExclusions: ["File", "Dataset"],
         };
     },
     mounted() {
-        this.types = this.template["@type"];
+        let types = this.template["@type"];
         if (typeof this.template["@type"] === "string") {
-            this.types = [this.template["@type"]];
+            types = [this.template["@type"]];
         }
+        this.types = types.filter(
+            (type) => !this.typeExclusions.includes(type)
+        );
     },
     methods: {
         add(type) {
