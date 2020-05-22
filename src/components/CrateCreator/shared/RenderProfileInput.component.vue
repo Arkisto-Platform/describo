@@ -17,41 +17,41 @@
             <div class="text-lg">
                 {{ renderLabel(input) }}
             </div>
-            <div class="flex-grow"></div>
-            <div class="text-xs text-gray-600 mx-2" v-if="showAlert(input)">
+            <div
+                class="text-xs text-gray-600 mx-4 pt-1"
+                v-if="showAlert(input)"
+            >
                 This property is required.
             </div>
-            <div>
-                <el-button
-                    @click="loadPropertyDefinition(input)"
-                    size="mini"
-                    type="primary"
-                    round
-                    class="focus:outline-none focus:border-2 focus:border-blue-600"
-                >
-                    <i class="fas fa-question fa-fw"></i>
-                </el-button>
+            <div class="flex-grow"></div>
+            <div class="flex flex-row space-x-2">
+                <render-profile-item-linker-component
+                    v-if="showLinker(input) && input.showAddControl"
+                    :types="input['@type']"
+                    :parentId="container.uuid"
+                    :property="input.property"
+                    @done="$emit('done')"
+                />
+                <add-control
+                    :template="input"
+                    @add="add"
+                    v-if="input.showAddControl"
+                />
+                <div>
+                    <el-button
+                        @click="loadPropertyDefinition(input)"
+                        size="mini"
+                        type="primary"
+                        round
+                        class="focus:outline-none focus:border-2 focus:border-blue-600"
+                    >
+                        <i class="fas fa-question fa-fw"></i>
+                    </el-button>
+                </div>
             </div>
         </div>
         <div class="text-sm text-gray-600">{{ input.help }}</div>
         <!-- end: input label -->
-
-        <!-- add control -->
-        <div class="flex flex-row">
-            <render-profile-item-linker-component
-                v-if="showLinker(input) && input.showAddControl"
-                :types="input['@type']"
-                :parentId="container.uuid"
-                :property="input.property"
-                @done="$emit('done')"
-            />
-            <add-control
-                :template="input"
-                @add="add"
-                v-if="input.showAddControl"
-            />
-        </div>
-        <!-- end: add control -->
 
         <div v-if="!input.multiple">
             <!-- render simple types in place -->
