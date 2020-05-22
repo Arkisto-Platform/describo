@@ -21,7 +21,7 @@
                     >
                         <i class="fas fa-eye"></i> inspect graph
                     </el-button>
-                                        <el-button
+                    <el-button
                         ref="datasetSelectionBtn"
                         @click="inspect('dataset')"
                         type="primary"
@@ -101,6 +101,9 @@ export default {
                 case "crate":
                     crateTool.assembleCrate({
                         data: this.$store.state.graph,
+                        profileInputs: this.$store.getters.getActiveProfileDefinition()
+                            .inputs,
+                        typeDefinitions: this.$store.state.typeDefinitions,
                     });
                     this.content = crateTool.crate;
                     this.title = "Crate";

@@ -4,9 +4,14 @@ import Vue from "vue";
 import Vuex from "vuex";
 Vue.use(Vuex);
 
-import electron from "electron";
 import path from "path";
-const appConfigDir = (electron.app || electron.remote.app).getPath("userData");
+import electron from "electron";
+let appConfigDir;
+try {
+    appConfigDir = (electron.app || electron.remote.app).getPath("userData");
+} catch (error) {
+    appConfigDir = __dirname;
+}
 const databaseFile = path.join(appConfigDir, "describo-database.sqlite");
 
 import {

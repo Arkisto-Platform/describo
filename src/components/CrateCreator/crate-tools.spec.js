@@ -164,6 +164,7 @@ test("it should be able to create an ro-crate", () => {
     });
     walkObject({ obj: rootDataset, tests: [ensureNoUUID, ensureATID] });
 });
+
 test("it should relink items when there's @id and uuid properties", () => {
     let graph = [
         {
@@ -514,6 +515,232 @@ test("it should be able to verify a crate has all the required data", () => {
     data[0].participant = { "@id": "somewhere" };
     valid = crateTool.verifyCrate({ data, inputs });
     expect(valid).toBeTruthy;
+});
+
+test("it should write external properties to the context", async () => {
+    const graph = [
+        {
+            "@type": "RootDataset",
+            uuid: "#1",
+            "https://www.site/author": [{ uuid: "#2", "@type": "Person" }],
+        },
+        {
+            "@type": "Person",
+            uuid: "#2",
+            "@reverse": {
+                author: [
+                    {
+                        uuid: "#1",
+                    },
+                ],
+            },
+        },
+    ];
+    const crateTool = new CrateTool();
+    crateTool.assembleCrate({ data: graph });
+    let data = crateTool.crate;
+    const context = data["@context"];
+    // console.log(JSON.stringify(context, null, 2));
+    expect(isArray(context)).toBe(true);
+    expect(context[0]).toBe("https://w3id.org/ro/crate/1.0/context");
+    expect(context[1]).toEqual({
+        "@vocab": "https://schema.org/",
+        author: "https://www.site/author",
+    });
+});
+
+test("it should extract profile definitions and write them to the crate", async () => {
+    const profileInputs = [
+        {
+            property: "orthographicNotes",
+            "@type": "TextArea",
+            multiple: false,
+            group: "important",
+            definition: {
+                "@id": "_:orthographicNotes",
+                "@type": "Property",
+                name: "orthographicNotes",
+                description: "something or other about data",
+            },
+        },
+    ];
+    const typeDefinitions = {
+        Person: {
+            inputs: [
+                {
+                    property: "orthographicNotes",
+                    "@type": "TextArea",
+                    multiple: false,
+                    group: "important",
+                    definition: {
+                        "@id": "_:orthographicNotes",
+                        "@type": "Property",
+                        name: "orthographicNotes",
+                        description: "something or other about data",
+                    },
+                },
+            ],
+        },
+    };
+    const graph = [
+        {
+            "@type": "RootDataset",
+            uuid: "#1",
+            orthographicNotes: "some text notes",
+        },
+    ];
+    const crateTool = new CrateTool();
+    crateTool.assembleCrate({ data: graph, profileInputs, typeDefinitions });
+    let data = crateTool.crate;
+    // console.log(JSON.stringify(data, null, 2));
+    const context = data["@context"];
+    expect(context[1]).toHaveProperty("orthographicNotes");
+    expect(context[1].orthographicNotes).toBe("_:orthographicNotes");
+
+    data = data["@graph"];
+    expect(data[1]).toHaveProperty("orthographicNotes");
+    expect(data[2]).toEqual({
+        "@id": "_:orthographicNotes",
+        "@type": "Property",
+        name: "orthographicNotes",
+        description: "something or other about data",
+    });
+});
+
+test("it should extract type definitions and write them to the crate", async () => {
+    const profileInputs = [
+        {
+            property: "orthographicNotes",
+            "@type": "TextArea",
+            multiple: false,
+            group: "important",
+            definition: {
+                "@id": "_:orthographicNotes",
+                "@type": "Property",
+                name: "orthographicNotes",
+                description: "something or other about data",
+            },
+        },
+    ];
+    const typeDefinitions = {
+        Person: {
+            inputs: [
+                {
+                    property: "orthographicNotes",
+                    "@type": "TextArea",
+                    multiple: false,
+                    group: "important",
+                    definition: {
+                        "@id": "_:orthographicNotes",
+                        "@type": "Property",
+                        name: "orthographicNotes",
+                        description: "something or other about data",
+                    },
+                },
+            ],
+        },
+    };
+    const graph = [
+        {
+            "@type": "RootDataset",
+            uuid: "#1",
+            author: [{ "@id": "#1" }],
+        },
+        {
+            "@id": "#1",
+            "@type": "Person",
+            orthographicNotes: "some text notes",
+        },
+    ];
+    const crateTool = new CrateTool();
+    crateTool.assembleCrate({ data: graph, profileInputs, typeDefinitions });
+    let data = crateTool.crate;
+    // console.log(JSON.stringify(data, null, 2));
+    const context = data["@context"];
+    expect(context[1]).toHaveProperty("orthographicNotes");
+    expect(context[1].orthographicNotes).toBe("_:orthographicNotes");
+
+    data = data["@graph"];
+    expect(data[2]).toHaveProperty("orthographicNotes");
+    expect(data[3]).toEqual({
+        "@id": "_:orthographicNotes",
+        "@type": "Property",
+        name: "orthographicNotes",
+        description: "something or other about data",
+    });
+});
+
+test("it should extract type and profile definitions and write them to the crate", async () => {
+    const profileInputs = [
+        {
+            property: "media",
+            "@type": "TextArea",
+            multiple: false,
+            group: "important",
+            definition: {
+                "@id": "_:media",
+                "@type": "Property",
+                name: "media",
+                description: "something or other about data",
+            },
+        },
+    ];
+    const typeDefinitions = {
+        Person: {
+            inputs: [
+                {
+                    property: "orthographicNotes",
+                    "@type": "TextArea",
+                    multiple: false,
+                    group: "important",
+                    definition: {
+                        "@id": "_:orthographicNotes",
+                        "@type": "Property",
+                        name: "orthographicNotes",
+                        description: "something or other about data",
+                    },
+                },
+            ],
+        },
+    };
+    const graph = [
+        {
+            "@type": "RootDataset",
+            uuid: "#1",
+            author: [{ "@id": "#1" }],
+            media: "some value",
+        },
+        {
+            "@id": "#1",
+            "@type": "Person",
+            orthographicNotes: "some text notes",
+        },
+    ];
+    const crateTool = new CrateTool();
+    crateTool.assembleCrate({ data: graph, profileInputs, typeDefinitions });
+    let data = crateTool.crate;
+    // console.log(JSON.stringify(data, null, 2));
+    const context = data["@context"];
+    expect(context[1]).toHaveProperty("orthographicNotes");
+    expect(context[1].orthographicNotes).toBe("_:orthographicNotes");
+    expect(context[1]).toHaveProperty("media");
+    expect(context[1].media).toBe("_:media");
+
+    data = data["@graph"];
+    expect(data[1]).toHaveProperty("media");
+    expect(data[3]).toEqual({
+        "@id": "_:media",
+        "@type": "Property",
+        name: "media",
+        description: "something or other about data",
+    });
+    expect(data[2]).toHaveProperty("orthographicNotes");
+    expect(data[4]).toEqual({
+        "@id": "_:orthographicNotes",
+        "@type": "Property",
+        name: "orthographicNotes",
+        description: "something or other about data",
+    });
 });
 
 function ensureNot(property) {

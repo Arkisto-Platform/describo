@@ -72,6 +72,7 @@
                     "property": "orthographicNotes",
                     "@type": "TextArea",
                     "multiple": false,
+                    "group": "important",
                     "definition": {
                         "@id": "_:orthographicNotes",
                         "@type": "Property",
@@ -85,7 +86,7 @@
                     "multiple": false
                 },
                 {
-                    "property": "contentLanguages",
+                    "property": "https://paradisec.org.au/contentLanguages",
                     "@type": "Language",
                     "group": "important"
                 },

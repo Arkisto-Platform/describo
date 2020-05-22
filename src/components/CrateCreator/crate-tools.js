@@ -5,10 +5,13 @@ import {
     isArray,
     isEmpty,
     has,
+    uniqBy,
 } from "lodash";
 import { writeFile, readJSON, pathExists } from "fs-extra";
 import { generateId } from "components/CrateCreator/tools";
 import path from "path";
+import isUrl from "validator/lib/isUrl";
+
 const roCrateMetadataFile = "ro-crate-metadata";
 const excludeFromDataStore = ["File", "Dataset"];
 
@@ -281,12 +284,19 @@ export default class CrateTool {
         return { data, errors };
     }
 
-    assembleCrate({ data }) {
+    assembleCrate({ data, profileInputs = [], typeDefinitions = {} }) {
+        let context = {};
+        let definitions = [];
         data = cloneDeep(data);
         let rootDataset = this.getRootDataset({ data, fromGraph: true });
+        data = mapPropertiesToContext({ data });
+        data = writeLocalProfileDefinitions({ data });
+        data = uniqBy(data, "@id");
         data = updateIdentifierReferences({ data });
         data = mapIdentifiers({ data, rootDatasetUUID: rootDataset.uuid });
         data = removeType({ data });
+        data = [...data, ...definitions];
+        // console.log(context);
         // console.log(JSON.stringify(data, null, 2));
 
         let elements = data.filter(
@@ -297,7 +307,13 @@ export default class CrateTool {
         let graph = [this.getCrateMetadataFileDescriptor()];
         graph = [...graph, rootDataset, ...elements];
         this.crate = {
-            "@context": "https://w3id.org/ro/crate/1.0/context",
+            "@context": [
+                "https://w3id.org/ro/crate/1.0/context",
+                {
+                    "@vocab": "https://schema.org/",
+                    ...context,
+                },
+            ],
             "@graph": graph,
         };
 
@@ -348,6 +364,60 @@ export default class CrateTool {
             });
             function removeTypeFromElement({ obj, level }) {
                 if (level !== 0 && obj["@type"]) delete obj["@type"];
+                return obj;
+            }
+        }
+
+        function mapPropertiesToContext({ data }) {
+            data = data.map((element) => {
+                return walkObject({
+                    obj: element,
+                    func: extractQualifiedProperties,
+                });
+            });
+            return data;
+
+            function extractQualifiedProperties({ obj, level }) {
+                for (let property of Object.keys(obj)) {
+                    if (isUrl(property)) {
+                        const propertyName = property.split("/").pop();
+                        context[propertyName] = property;
+                        obj[propertyName] = cloneDeep(obj[property]);
+                        delete obj[property];
+                    }
+                    // console.log(obj);
+                }
+                return obj;
+            }
+        }
+
+        function writeLocalProfileDefinitions({ data }) {
+            data = data.map((element) => {
+                return walkObject({
+                    obj: element,
+                    func: extractDefinitions,
+                });
+            });
+            return data;
+
+            function extractDefinitions({ obj, level }) {
+                let inputs = [];
+                if (has(typeDefinitions, obj["@type"])) {
+                    inputs = typeDefinitions[obj["@type"]].inputs;
+                } else {
+                    inputs = profileInputs;
+                }
+                if (inputs && inputs.length) {
+                    for (let property of Object.keys(obj)) {
+                        const input = inputs.filter(
+                            (i) => i.property === property
+                        )[0];
+                        if (input && input.definition) {
+                            context[property] = input.definition["@id"];
+                            definitions.push(input.definition);
+                        }
+                    }
+                }
                 return obj;
             }
         }

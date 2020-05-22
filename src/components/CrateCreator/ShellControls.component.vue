@@ -181,7 +181,12 @@ export default {
                     inputs: this.$store.getters.getActiveProfileDefinition()
                         .inputs,
                 });
-                crateTool.assembleCrate({ data: this.$store.state.graph });
+                crateTool.assembleCrate({
+                    data: this.$store.state.graph,
+                    profileInputs: this.$store.getters.getActiveProfileDefinition()
+                        .inputs,
+                    typeDefinitions: this.$store.state.typeDefinitions,
+                });
                 await crateTool.writeCrate({
                     target: this.$store.state.target,
                     database: this.$store.state.database,

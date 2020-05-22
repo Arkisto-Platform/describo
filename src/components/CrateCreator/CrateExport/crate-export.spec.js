@@ -66,11 +66,11 @@ test("it should be able to create a bagged export", async () => {
     const source = __dirname;
     const target = path.join(__dirname, "..");
     const zipFileName = "example.zip";
-    await fs.writeJSON(path.join(source, "ro-crate-metadata.jsonld"), crate);
+    await fs.writeJSON(path.join(source, "ro-crate-metadata.json"), crate);
 
     const exporter = new CrateExporter({ source, target });
     await exporter.export({ zipFileName, bagIt: true });
     await fs.remove(path.join(target, zipFileName));
-    await fs.remove(path.join(source, "ro-crate-metadata.jsonld"));
+    await fs.remove(path.join(source, "ro-crate-metadata.json"));
     await fs.remove(path.join(source, "ro-crate-preview.html"));
 });
