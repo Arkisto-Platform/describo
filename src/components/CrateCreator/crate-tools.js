@@ -57,7 +57,9 @@ export default class CrateTool {
             item = cloneDeep(item);
             delete item["@reverse"];
             try {
-                await database.put({ data: [item] });
+                if ("@id" in item && "@type" in item && "name" in item) {
+                    await database.put({ data: [item] });
+                }
             } catch (error) {
                 console.log(
                     `Couldn't write item.@id ${item["@id"]} to the store.`

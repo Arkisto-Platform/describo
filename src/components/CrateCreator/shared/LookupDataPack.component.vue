@@ -1,5 +1,8 @@
 <template>
-    <div class="flex flex-col" v-if="availableTypes.includes(type)">
+    <div
+        class="flex flex-col m-6 p-6 bg-yellow-200"
+        v-if="availableTypes.includes(type)"
+    >
         <el-alert
             title="oops - this isn't working right now!"
             type="error"
@@ -8,16 +11,20 @@
         >
         </el-alert>
 
-        <div v-if="!item.name">
-            <div class="text-sm text-gray-500">
+        <div v-if="!item.name" class="flex flex-col">
+            <div class="text-lg text-gray-700">
                 Lookup data of type {{ type }}
+            </div>
+            <div class="text-base text-gray-600">
+                This is a lookup of the data stored internally to Describo; not
+                the data within this crate.
             </div>
             <el-autocomplete
                 class="w-full"
                 v-model="value"
                 :trigger-on-focus="false"
                 :clearable="true"
-                :debounce="1000"
+                :debounce="500"
                 :fetch-suggestions="lookup"
                 placeholder=""
                 @select="handleSelect"
@@ -58,7 +65,7 @@ export default {
         },
     },
     async mounted() {
-        this.availableTypes = await this.$store.state.database.getTypes();
+        this.availableTypes = await this.$store.state.database.getTypes({});
     },
     methods: {
         async lookup(query, cb) {
