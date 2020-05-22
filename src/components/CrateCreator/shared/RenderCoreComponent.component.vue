@@ -8,9 +8,6 @@
                 :reference="reference"
                 @done="done"
             ></component>
-            <div v-if="saved" class="ml-2 text-green-600 pt-1">
-                <i class="far fa-check-circle fa-2x"></i>
-            </div>
             <remove-control
                 v-if="enableRemoveControl()"
                 :template="template"
@@ -43,7 +40,6 @@ export default {
     data() {
         return {
             component: undefined,
-            saved: false,
         };
     },
     mounted() {
@@ -82,11 +78,11 @@ export default {
             this.$emit("remove", payload);
         },
         done() {
-            this.saved = true;
+            this.$emit("saved");
             setTimeout(() => {
                 this.saved = false;
                 this.$emit("done");
-            }, 1000);
+            }, 500);
         },
     },
 };
