@@ -32,10 +32,13 @@
                 </div>
             </div>
 
-            <div v-if="addNewItem">
+            <div v-if="addNewItem" class="flex flex-col">
                 <div class="text-xl my-4">
                     Edit: {{ item["@type"] }} - {{ item.name }}
                 </div>
+
+                <!-- lookup data packs -->
+                <lookup-data-pack-component :uuid="item.uuid" @done="done" />
 
                 <div class="overflow-scroll style-content-area flex flex-col">
                     <div v-if="customComponent">
@@ -119,6 +122,7 @@ export default {
     components: {
         RenderProfileReverseComponent,
         RenderProfileComponent: () => import("./RenderProfile.component"),
+        LookupDataPackComponent: () => import("./LookupDataPack.component.vue"),
     },
     props: {
         drawer: {

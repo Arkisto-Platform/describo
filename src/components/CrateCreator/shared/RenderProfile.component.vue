@@ -1,8 +1,5 @@
 <template>
     <div class="flex flex-col">
-        <!-- lookup data packs -->
-        <lookup-data-pack-component :uuid="uuid" />
-
         <div v-if="template.length">
             <render-profile-report-component
                 :report="report"
@@ -163,7 +160,6 @@ import RenderProfileReportComponent from "./RenderProfileReport.component.vue";
 import RenderProfileItemComponent from "./RenderProfileItem.component.vue";
 import RenderProfileItemLinkerComponent from "./RenderProfileItemLinker.component.vue";
 import DefinitionDrawerComponent from "./DefinitionDrawer.component.vue";
-import LookupDataPackComponent from "./LookupDataPack.component.vue";
 import {
     SimpleTypes,
     isSimpleType,
@@ -183,7 +179,6 @@ export default {
         RenderProfileItemComponent,
         RenderProfileItemLinkerComponent,
         DefinitionDrawerComponent,
-        LookupDataPackComponent,
     },
     props: {
         uuid: {

@@ -1,7 +1,7 @@
 <template>
     <div
         class="flex flex-col m-6 p-6 bg-yellow-200"
-        v-if="availableTypes.includes(type)"
+        v-if="availableTypes.includes(type) && !item.name"
     >
         <el-alert
             title="oops - this isn't working right now!"
@@ -11,7 +11,7 @@
         >
         </el-alert>
 
-        <div v-if="!item.name" class="flex flex-col">
+        <div class="flex flex-col">
             <div class="text-lg text-gray-700">
                 Lookup data of type {{ type }}
             </div>
@@ -90,6 +90,7 @@ export default {
                 ...item,
                 ...itemData,
             });
+            this.$emit("done");
         },
     },
 };
