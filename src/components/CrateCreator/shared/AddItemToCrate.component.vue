@@ -8,7 +8,7 @@
         size="80%"
         @close="done"
     >
-        <div class="flex flex-col bg-gray-200 p-4 h-full">
+        <div class="flex flex-col p-4 bg-gray-100 h-full">
             <div v-if="!addNewItem">
                 <div class="text-xl">Add an item to the crate.</div>
                 <div class="my-2">
