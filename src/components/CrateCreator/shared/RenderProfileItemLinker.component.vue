@@ -1,5 +1,8 @@
 <template>
-    <div class="flex flex-col" :class="{ 'p-4 bg-teal-200': showLinker }">
+    <div
+        class="flex flex-col"
+        :class="{ 'p-4 bg-yellow-200 mr-2': showLinker }"
+    >
         <div class="flex flex-row">
             <el-button
                 round

@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col my-4">
-        <div class="text-sm text-gray-500">
-            Select an existing {{ type.toLowerCase() }}
+        <div class="text-sm text-gray-600">
+            Select a {{ type.toLowerCase() }} that is a part of this crate.
         </div>
         <el-select
             v-model="selection"
@@ -23,7 +23,10 @@
                 </div>
             </el-option>
         </el-select>
-        <div v-if="!entries || !entries.length">
+        <div
+            v-if="!entries || !entries.length"
+            class="text-gray-800 font-light"
+        >
             No entries of type '{{ type }}' available yet.
         </div>
     </div>
