@@ -4,7 +4,7 @@
             class="flex flex-col style-introduction text-xl text-center py-8"
             v-if="!target"
         >
-            <p class="my-4 text-3xl">Welcome to Describo!</p>
+            <p class="my-4 text-3xl">Welcome to describo!</p>
             <p class="my-2 text-gray-600">
                 Describo is a tool to create and update Research Object Crates
                 (RO-Crate).

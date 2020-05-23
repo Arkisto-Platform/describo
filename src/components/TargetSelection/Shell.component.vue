@@ -54,7 +54,7 @@
                 <div class="flex flex-col p-4 mt-4 border" v-if="browseTarget">
                     <div class="flex flex-row">
                         <div class="text-2xl font-light text-gray-800 pt-2">
-                            Describo Target
+                            describo Target
                         </div>
                         <div class="flex-grow"></div>
                         <div>

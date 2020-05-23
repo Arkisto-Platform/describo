@@ -41,7 +41,7 @@ function createMainWindow() {
         const answer = dialog.showMessageBoxSync({
             type: "question",
             buttons: ["cancel", "OK"],
-            message: "Are you sure you want to close the application?",
+            message: "Are you sure you want to close describo?",
         });
         if (!answer) {
             return e.preventDefault();
