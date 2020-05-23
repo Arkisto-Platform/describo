@@ -6,6 +6,7 @@ import {
     isEmpty,
     has,
     uniqBy,
+    invert,
 } from "lodash";
 import { writeFile, readJSON, pathExists } from "fs-extra";
 import { generateId } from "components/CrateCreator/tools";
@@ -18,19 +19,6 @@ const excludeFromDataStore = ["File", "Dataset"];
 export default class CrateTool {
     constructor() {
         this.crate = undefined;
-    }
-
-    verifyCrate({ data, inputs }) {
-        const rootDataset = this.getRootDataset({ data, fromGraph: true });
-        let valid = [];
-        for (let input of inputs) {
-            const { property, required } = input;
-            if (!required in input || !required) continue;
-            if (!rootDataset[property] || isEmpty(rootDataset[property]))
-                valid.push(false);
-            valid.push(true);
-        }
-        return valid.includes(false) ? false : true;
     }
 
     async writeCrate({ target, database }) {
@@ -105,6 +93,14 @@ export default class CrateTool {
 
     loadCrate({ crate }) {
         let errors = [];
+        let context = {};
+        if (!isArray(crate["@context"]))
+            crate["@context"] = [crate["@context"]];
+        crate["@context"].forEach((entry) => {
+            if (isPlainObject(entry)) context = { ...context, ...entry };
+        });
+
+        // console.log(context);
         let data = crate["@graph"];
         data = data.filter((e) => {
             return ![
@@ -115,12 +111,18 @@ export default class CrateTool {
             ].includes(e["@id"]);
         });
 
+        data = mapQualifiedPropertiesFromContext({ data });
+        data = removeLocalDefinitionObjects({ data });
+
         const rootDatasetUUID = generateId();
         data = mapIdentifiers({ data, rootDatasetUUID });
         // console.log(JSON.stringify(data, null, 2));
         data = mapReverse({
             data,
-            rootDataset: this.getRootDataset({ data, fromGraph: true }),
+            rootDataset: this.getRootDataset({
+                data,
+                fromGraph: true,
+            }),
         });
         // console.log(JSON.stringify(data, null, 2));
         ({ data, errors } = this.verify({ data }));
@@ -222,78 +224,54 @@ export default class CrateTool {
                 }
             }
         }
-    }
 
-    verify({ data }) {
-        const skipChecks = ["CreativeWork", "CreateAction"];
-        const elementsById = groupBy(data, "uuid");
-        // console.log(JSON.stringify(elementsById, null, 2));
-        let errors = [];
-        for (let item of data) {
-            // console.log(JSON.stringify(item, null, 2));
-            // ensure each item has an @id property
-            if (!item.uuid) {
-                errors.push(
-                    `Missing property '@id' from item: '${JSON.stringify(item)}`
-                );
-            }
-            // ensure each item has an @type property
-            if (!item["@type"]) {
-                errors.push(
-                    `Missing property '@type' from item with @id=${item.uuid}`
-                );
-            }
+        function mapQualifiedPropertiesFromContext({ data }) {
+            data = data.map((element) => {
+                return walkObject({
+                    obj: element,
+                    func: replaceQualifiedProperties,
+                });
+            });
+            return data;
 
-            // stop here if item in skipChecks
-            if (skipChecks.includes(item["@type"])) continue;
-
-            // ensure each item except for the root dataset has a reverse property
-            if (item["@type"] !== "RootDataset" && !item["@reverse"]) {
-                errors.push(
-                    `Orphaned item found @id=${item.uuid}, @type=${item["@type"]}`
-                );
-            }
-
-            // walk all items and make sure all references are resolvable
-            walkObject({ obj: item });
-
-            function walkObject({ obj }) {
+            function replaceQualifiedProperties({ obj, level }) {
                 for (let property of Object.keys(obj)) {
-                    if (isArray(obj[property])) {
-                        obj[property].forEach((element) => {
-                            if (isPlainObject(element)) {
-                                if (!elementsById[element.uuid]) {
-                                    errors.push(
-                                        `Unable to resolve item reference for property: ${property} in item @id=${obj[property].uuid}, @type=${obj[property]["@type"]}`
-                                    );
-                                }
-                            }
-                        });
-                    } else if (isPlainObject(obj[property])) {
-                        if ("uuid" in obj[property]) {
-                            if (!elementsById[obj[property].uuid]) {
-                                errors.push(
-                                    `Unable to resolve item reference for property: ${property} in item @id=${obj[property].uuid}, @type=${obj[property]["@type"]}`
-                                );
-                            }
-                        }
+                    if (has(context, property) && isUrl(context[property])) {
+                        obj[context[property]] = cloneDeep(obj[property]);
+                        delete obj[property];
                     }
                 }
+                return obj;
             }
         }
-        return { data, errors };
+
+        function removeLocalDefinitionObjects({ data }) {
+            const invertedContext = invert(context);
+            data = data.filter((element) => {
+                if (!invertedContext[element["@id"]]) {
+                    return element;
+                }
+            });
+            return data;
+        }
     }
 
     assembleCrate({ data, profileInputs = [], typeDefinitions = {} }) {
         let context = {};
         let definitions = [];
         data = cloneDeep(data);
-        let rootDataset = this.getRootDataset({ data, fromGraph: true });
-        data = mapPropertiesToContext({ data });
+        let rootDataset = this.getRootDataset({
+            data,
+            fromGraph: true,
+        });
+        data = mapQualifiedPropertiesToContext({ data });
         data = writeLocalProfileDefinitions({ data });
-        data = uniqBy(data, "@id");
+        data = uniqBy(data, "uuid");
         data = updateIdentifierReferences({ data });
-        data = mapIdentifiers({ data, rootDatasetUUID: rootDataset.uuid });
+        data = mapIdentifiers({
+            data,
+            rootDatasetUUID: rootDataset.uuid,
+        });
         data = removeType({ data });
         data = [...data, ...definitions];
         // console.log(context);
@@ -302,7 +280,10 @@ export default class CrateTool {
         let elements = data.filter(
             (d) => `${d["@type"]}${d["@id"]}` !== "Dataset./"
         );
-        rootDataset = this.getRootDataset({ data, fromGraph: false });
+        rootDataset = this.getRootDataset({
+            data,
+            fromGraph: false,
+        });
 
         let graph = [this.getCrateMetadataFileDescriptor()];
         graph = [...graph, rootDataset, ...elements];
@@ -337,7 +318,10 @@ export default class CrateTool {
 
         function mapIdentifiers({ data, rootDatasetUUID }) {
             return data.map((element) => {
-                return walkObject({ obj: element, func: mapUuidToId });
+                return walkObject({
+                    obj: element,
+                    func: mapUuidToId,
+                });
             });
 
             function mapUuidToId({ obj, level }) {
@@ -368,7 +352,7 @@ export default class CrateTool {
             }
         }
 
-        function mapPropertiesToContext({ data }) {
+        function mapQualifiedPropertiesToContext({ data }) {
             data = data.map((element) => {
                 return walkObject({
                     obj: element,
@@ -431,7 +415,9 @@ export default class CrateTool {
                 "@id": "./",
             },
             identifier: "ro-crate-metadata.json",
-            conformsTo: { "@id": "https://w3id.org/ro/crate/1.0" },
+            conformsTo: {
+                "@id": "https://w3id.org/ro/crate/1.0",
+            },
             license: {
                 "@id": "https://creativecommons.org/licenses/by-sa/3.0",
             },
@@ -466,6 +452,66 @@ export default class CrateTool {
             throw new Error(`There must be one root Dataset. None located.`);
 
         return rootDataset[0];
+    }
+
+    verify({ data }) {
+        const skipChecks = ["CreativeWork", "CreateAction"];
+        const elementsById = groupBy(data, "uuid");
+        // console.log(JSON.stringify(elementsById, null, 2));
+        let errors = [];
+        for (let item of data) {
+            // console.log(JSON.stringify(item, null, 2));
+            // ensure each item has an @id property
+            if (!item.uuid) {
+                errors.push(
+                    `Missing property '@id' from item: '${JSON.stringify(item)}`
+                );
+            }
+            // ensure each item has an @type property
+            if (!item["@type"]) {
+                errors.push(
+                    `Missing property '@type' from item with @id=${item.uuid}`
+                );
+            }
+
+            // stop here if item in skipChecks
+            if (skipChecks.includes(item["@type"])) continue;
+
+            // ensure each item except for the root dataset has a reverse property
+            if (item["@type"] !== "RootDataset" && !item["@reverse"]) {
+                errors.push(
+                    `Orphaned item found @id=${item.uuid}, @type=${item["@type"]}`
+                );
+            }
+
+            // walk all items and make sure all references resolve
+            walkObject({ obj: item });
+
+            function walkObject({ obj }) {
+                for (let property of Object.keys(obj)) {
+                    if (isArray(obj[property])) {
+                        obj[property].forEach((element) => {
+                            if (isPlainObject(element)) {
+                                if (!elementsById[element.uuid]) {
+                                    errors.push(
+                                        `Unable to resolve item reference for property: ${property} in item @id=${obj[property].uuid}, @type=${obj[property]["@type"]}`
+                                    );
+                                }
+                            }
+                        });
+                    } else if (isPlainObject(obj[property])) {
+                        if ("uuid" in obj[property]) {
+                            if (!elementsById[obj[property].uuid]) {
+                                errors.push(
+                                    `Unable to resolve item reference for property: ${property} in item @id=${obj[property].uuid}, @type=${obj[property]["@type"]}`
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return { data, errors };
     }
 }
 

@@ -176,11 +176,6 @@ export default {
             this.saved = false;
             this.saving = true;
             try {
-                this.valid = crateTool.verifyCrate({
-                    data: this.$store.state.graph,
-                    inputs: this.$store.getters.getActiveProfileDefinition()
-                        .inputs,
-                });
                 crateTool.assembleCrate({
                     data: this.$store.state.graph,
                     profileInputs: this.$store.getters.getActiveProfileDefinition()

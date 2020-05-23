@@ -483,40 +483,6 @@ test("it should report errors when unable to resolve item references", () => {
     expect(errors[0]).toMatch(/Unable to resolve item reference/);
 });
 
-test("it should be able to verify a crate has all the required data", () => {
-    const crateTool = new CrateTool();
-    let data, inputs, valid;
-
-    inputs = [
-        { property: "name", required: true },
-        { property: "elephants" },
-        { property: "author", required: true },
-    ];
-    valid = crateTool.verifyCrate({ data: graph, inputs });
-    expect(valid).toBeTruthy;
-
-    inputs = [{ property: "jumbo", required: true }];
-    valid = crateTool.verifyCrate({ data: graph, inputs });
-    expect(valid).toBeFalsy;
-
-    inputs = [{ property: "participant", required: true }];
-    data = cloneDeep(graph);
-    delete data[0].participant;
-    valid = crateTool.verifyCrate({ data, inputs });
-    expect(valid).toBeFalsy;
-
-    inputs = [{ property: "participant", required: true }];
-    data = cloneDeep(graph);
-    data[0].participant = {};
-    valid = crateTool.verifyCrate({ data, inputs });
-    expect(valid).toBeFalsy;
-
-    data = cloneDeep(graph);
-    data[0].participant = { "@id": "somewhere" };
-    valid = crateTool.verifyCrate({ data, inputs });
-    expect(valid).toBeTruthy;
-});
-
 test("it should write external properties to the context", async () => {
     const graph = [
         {
@@ -528,7 +494,7 @@ test("it should write external properties to the context", async () => {
             "@type": "Person",
             uuid: "#2",
             "@reverse": {
-                author: [
+                "https://www.site/author": [
                     {
                         uuid: "#1",
                     },
@@ -539,6 +505,7 @@ test("it should write external properties to the context", async () => {
     const crateTool = new CrateTool();
     crateTool.assembleCrate({ data: graph });
     let data = crateTool.crate;
+    // console.log(JSON.stringify(data, null, 2));
     const context = data["@context"];
     // console.log(JSON.stringify(context, null, 2));
     expect(isArray(context)).toBe(true);
@@ -547,6 +514,36 @@ test("it should write external properties to the context", async () => {
         "@vocab": "https://schema.org/",
         author: "https://www.site/author",
     });
+});
+
+test("it should reverse external properties from the context when loading a crate", async () => {
+    const graph = [
+        {
+            "@type": "RootDataset",
+            uuid: "#1",
+            "https://www.site/author": [{ uuid: "#2", "@type": "Person" }],
+        },
+        {
+            "@type": "Person",
+            uuid: "#2",
+            "@reverse": {
+                "https://www.site/author": [
+                    {
+                        uuid: "#1",
+                    },
+                ],
+            },
+        },
+    ];
+    const crateTool = new CrateTool();
+    crateTool.assembleCrate({ data: graph });
+    let crate = crateTool.crate;
+    // console.log(JSON.stringify(crate, null, 2));
+
+    let { data, errors } = crateTool.loadCrate({ crate });
+    // console.log(JSON.stringify(data, null, 2));
+    expect(data[0]).toHaveProperty(["https://www.site/author"]);
+    expect(data[1]["@reverse"]).toHaveProperty(["https://www.site/author"]);
 });
 
 test("it should extract profile definitions and write them to the crate", async () => {
@@ -605,6 +602,56 @@ test("it should extract profile definitions and write them to the crate", async 
         name: "orthographicNotes",
         description: "something or other about data",
     });
+});
+
+test("it should reverse and remove local definitions when loading a crate", async () => {
+    const profileInputs = [
+        {
+            property: "orthographicNotes",
+            "@type": "TextArea",
+            multiple: false,
+            group: "important",
+            definition: {
+                "@id": "_:orthographicNotes",
+                "@type": "Property",
+                name: "orthographicNotes",
+                description: "something or other about data",
+            },
+        },
+    ];
+    const typeDefinitions = {
+        Person: {
+            inputs: [
+                {
+                    property: "orthographicNotes",
+                    "@type": "TextArea",
+                    multiple: false,
+                    group: "important",
+                    definition: {
+                        "@id": "_:orthographicNotes",
+                        "@type": "Property",
+                        name: "orthographicNotes",
+                        description: "something or other about data",
+                    },
+                },
+            ],
+        },
+    };
+    const graph = [
+        {
+            "@type": "RootDataset",
+            uuid: "#1",
+            orthographicNotes: "some text notes",
+        },
+    ];
+    const crateTool = new CrateTool();
+    crateTool.assembleCrate({ data: graph, profileInputs, typeDefinitions });
+    let crate = crateTool.crate;
+    // console.log(JSON.stringify(crate, null, 2));
+
+    let { data, errors } = crateTool.loadCrate({ crate });
+    // console.log(JSON.stringify(data, null, 2));
+    expect(data.length).toBe(1);
 });
 
 test("it should extract type definitions and write them to the crate", async () => {
