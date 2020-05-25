@@ -1,6 +1,6 @@
 <template>
     <div>
-        <i class="fas fa-fw" :class="types[type]"></i>
+        <i class="fas fa-fw" :class="types[type]" v-if="types[type]"></i>
     </div>
 </template>
 
