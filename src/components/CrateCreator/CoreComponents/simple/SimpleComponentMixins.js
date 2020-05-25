@@ -15,7 +15,7 @@ export default {
     data() {
         return {
             value: cloneDeep(this.template.data),
-            debouncedSave: debounce(this.save, 500),
+            debouncedSave: debounce(this.save, 1500),
             saved: false,
         };
     },
