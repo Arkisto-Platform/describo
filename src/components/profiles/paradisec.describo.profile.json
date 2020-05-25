@@ -35,6 +35,13 @@
                     "group": "important"
                 },
                 {
+                    "property": "contributor",
+                    "label": "Contributor",
+                    "@type": "Person",
+                    "required": true,
+                    "group": "important"
+                },
+                {
                     "property": "comments",
                     "label": "Comments",
                     "@type": "Text"
@@ -72,7 +79,6 @@
                     "property": "orthographicNotes",
                     "@type": "TextArea",
                     "multiple": false,
-                    "group": "important",
                     "definition": {
                         "@id": "_:orthographicNotes",
                         "@type": "Property",
@@ -87,13 +93,11 @@
                 },
                 {
                     "property": "https://paradisec.org.au/contentLanguages",
-                    "@type": "Language",
-                    "group": "important"
+                    "@type": "Language"
                 },
                 {
                     "property": "subjectLanguages",
-                    "@type": "Language",
-                    "group": "important"
+                    "@type": "Language"
                 }
             ]
         },
@@ -232,6 +236,50 @@
         }
     },
     "typeDefinitions": {
+        "Person": {
+            "metadata": {
+                "allowAdditionalProperties": true
+            },
+            "inputs": [
+                {
+                    "property": "@id",
+                    "@type": "Text",
+                    "multiple": false,
+                    "group": "important"
+                },
+                {
+                    "property": "name",
+                    "@type": "Text",
+                    "required": true,
+                    "multiple": false,
+                    "group": "important"
+                },
+                {
+                    "property": "familyName",
+                    "@type": "Text",
+                    "multiple": false
+                },
+                { "property": "givenName", "@type": "Text", "multiple": false },
+                {
+                    "property": "contactPoint",
+                    "@type": "Text",
+                    "multiple": false
+                },
+                { "property": "email", "@type": "Text", "multiple": false },
+                {
+                    "property": "affiliation",
+                    "@type": "Organization",
+                    "multiple": false
+                },
+                {
+                    "property": "http://purl.org/spar/pro/withRole",
+                    "label": "Role",
+                    "@type": "Role",
+                    "multiple": true,
+                    "group": "important"
+                }
+            ]
+        },
         "License": {
             "metadata": {
                 "allowAdditionalProperties": true
@@ -261,13 +309,44 @@
             "metadata": {
                 "allowAdditionalProperties": true
             }
+        },
+        "Role": {
+            "metadata": {
+                "allowAdditionalProperties": true
+            },
+            "inputs": [
+                {
+                    "property": "name",
+                    "@type": "Select",
+                    "options": [
+                        "author",
+                        "compiler",
+                        "consultant",
+                        "data_inputter",
+                        "depositor",
+                        "editor",
+                        "interviewer",
+                        "participant",
+                        "performer",
+                        "photographer",
+                        "recorder",
+                        "researcher",
+                        "speaker",
+                        "translator",
+                        "singer"
+                    ],
+                    "required": true,
+                    "multiple": false,
+                    "group": "important"
+                }
+            ]
         }
     },
     "enabledCoreTypes": [
+        "ContactPoint",
+        "GeoCoordinates",
         "Person",
         "Organization",
-        "GeoCoordinates",
-        "ContactPoint",
         "PropertyValue"
     ],
     "dataPacks": [
