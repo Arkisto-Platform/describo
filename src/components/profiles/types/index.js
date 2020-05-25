@@ -12,6 +12,7 @@ import PropertyValue from "./PropertyValue";
 import Publication from "./Publication";
 import RepositoryCollection from "./RepositoryCollection";
 import RepositoryObject from "./RepositoryObject";
+import Role from "./Role";
 import ScholarlyArticle from "./ScholarlyArticle";
 import Script from "./Script";
 import SoftwareApplication from "./SoftwareApplication";
@@ -33,6 +34,7 @@ export default {
     Publication,
     RepositoryCollection,
     RepositoryObject,
+    Role,
     ScholarlyArticle,
     Script,
     SoftwareApplication,
