@@ -1,4 +1,5 @@
 import {
+    compact,
     cloneDeep,
     groupBy,
     isPlainObject,
@@ -47,6 +48,17 @@ export default class CrateTool {
         for (let item of items) {
             item = cloneDeep(item);
             delete item["@reverse"];
+            for (let key of Object.keys(item)) {
+                if (isArray(item[key])) {
+                    item[key] = item[key].map((entry) => {
+                        if (!has(entry, "@id")) return entry;
+                    });
+                    item[key] = compact(item[key]);
+                } else if (isPlainObject(item[key])) {
+                    if (!has(item[key], "@id")) delete item[key];
+                }
+                if (isEmpty(item[key])) delete item[key];
+            }
             try {
                 if ("@id" in item && "@type" in item && "name" in item) {
                     await database.put({ data: [item] });
