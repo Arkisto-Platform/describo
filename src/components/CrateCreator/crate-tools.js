@@ -163,7 +163,7 @@ export default class CrateTool {
                             obj["@type"] = elementsById[obj["@id"]][0]["@type"];
                         }
                     } catch (error) {}
-                    delete obj["@id"];
+                    if (obj["@id"] === "./") delete obj["@id"];
                 }
                 return obj;
             }
@@ -285,6 +285,7 @@ export default class CrateTool {
             rootDatasetUUID: rootDataset.uuid,
         });
         data = removeType({ data });
+        definitions = uniqBy(definitions, "@id");
         data = [...data, ...definitions];
         // console.log(context);
         // console.log(JSON.stringify(data, null, 2));
