@@ -79,10 +79,6 @@ export default {
         },
         done() {
             this.$emit("saved");
-            setTimeout(() => {
-                this.saved = false;
-                this.$emit("done");
-            }, 500);
         },
     },
 };
