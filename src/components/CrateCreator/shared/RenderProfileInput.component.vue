@@ -60,8 +60,7 @@
                     class="flex-grow my-1"
                     :template="input"
                     :reference="container.uuid"
-                    @saved="saved = true"
-                    @done="saved = false"
+                    @saved="notifySaved"
                 />
             </div>
             <!-- show tag for complex type entries -->
@@ -88,8 +87,7 @@
                         class="m-1"
                         :template="{ ...input, data: instance }"
                         :reference="container.uuid"
-                        @saved="saved = true"
-                        @done="saved = false"
+                        @saved="notifySaved"
                     />
                 </div>
 
@@ -208,6 +206,12 @@ export default {
                 definitionDrawer: false,
                 property: undefined,
             };
+        },
+        notifySaved() {
+            this.saved = true;
+            setTimeout(() => {
+                this.saved = false;
+            }, 500);
         },
     },
 };
