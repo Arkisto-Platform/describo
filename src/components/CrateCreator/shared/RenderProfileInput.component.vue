@@ -107,7 +107,8 @@
         <!-- data inspector drawer-->
         <definition-drawer-component
             :drawer="view.definitionDrawer"
-            :property="view.property"
+            :url="view.url"
+            :definition="view.definition"
             :type="view.type"
             @close="closeDefinitionDrawer"
         />
@@ -158,7 +159,8 @@ export default {
             showHelp: false,
             view: {
                 definitionDrawer: false,
-                property: undefined,
+                url: undefined,
+                definition: undefined,
             },
         };
     },
@@ -191,9 +193,13 @@ export default {
         },
         loadPropertyDefinition(input) {
             if (isURL(input.property)) {
-                this.view.property = input.property;
+                this.view.url = input.property;
             } else {
-                this.view.property = `https://schema.org/${input.property}`;
+                if ("definition" in this.input) {
+                    this.view.definition = this.input.definition;
+                } else {
+                    this.view.url = `https://schema.org/${input.property}`;
+                }
             }
             this.view.definitionDrawer = true;
         },

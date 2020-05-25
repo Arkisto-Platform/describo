@@ -7,10 +7,27 @@
         :modal="false"
         @close="$emit('close')"
     >
-        <iframe
-            :src="property"
-            class="w-full h-full style-frame overflow-scroll"
-        ></iframe>
+        <div class="style-frame">
+            <iframe
+                :src="url"
+                class="w-full h-full overflow-scroll"
+                v-if="url"
+            ></iframe>
+            <div
+                class="flex flex-col bg-gray-200 p-4 w-full h-full text-gray-700 "
+                v-if="definition"
+            >
+                <div class="text-xl font-light">
+                    {{ definition.name }}
+                </div>
+                <div class="text-lg" v-if="definition.description">
+                    {{ definition.description }}
+                </div>
+                <div v-else>
+                    A definition has not been provided for this property.
+                </div>
+            </div>
+        </div>
     </el-drawer>
 </template>
 
@@ -21,11 +38,11 @@ export default {
             type: Boolean,
             required: true,
         },
-        property: {
+        url: {
             type: String,
         },
-        type: {
-            type: String,
+        definition: {
+            type: Object,
         },
     },
     data() {
