@@ -43,7 +43,7 @@
                         'text-2xl text-orange-600': activeTab === 'crate',
                     }"
                 >
-                    <div class="mr-2">
+                    <div class="mr-2 w-6 text-center">
                         <i class="fas fa-home"></i>
                     </div>
                     <div>
@@ -63,7 +63,7 @@
                         'text-2xl text-orange-600': activeTab === 'parts',
                     }"
                 >
-                    <div class="mr-2">
+                    <div class="mr-2 w-6 text-center">
                         <i class="fas fa-archive"></i>
                     </div>
                     <div>
