@@ -16,8 +16,16 @@
             {{ item["@type"] }}
         </div>
         <div class="text-gray-800 text-xl">
-            <span v-if="['File', 'Dataset'].includes(item['@type'])">{{item.uuid}}</span>
-            <span v-else>{{item.name}}</span>
+            <span v-if="['File', 'Dataset'].includes(item['@type'])">{{
+                item.uuid
+            }}</span>
+            <span v-else-if="item['@type'] === 'PropertyValue'">
+                {{ item.name }}: {{ item.value }}
+            </span>
+            <span v-else>
+                <span v-if="item.name">{{ item.name }}</span>
+                <span v-else>{{ item["@id"] }}</span>
+            </span>
         </div>
     </div>
 </template>
