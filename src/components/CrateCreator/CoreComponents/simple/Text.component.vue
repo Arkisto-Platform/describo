@@ -2,7 +2,7 @@
     <div class="flex flex-col">
         <div class="flex flex-row">
             <el-input
-                class="w-full"
+                class="w-full style-element"
                 @focus="focus"
                 @input="debouncedSave"
                 v-model="value"
@@ -19,4 +19,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.style-element {
+    min-width: 400px;
+}
+</style>
