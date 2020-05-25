@@ -84,7 +84,6 @@
                                 type="success"
                                 size="small"
                                 class="focus:outline-none focus:border-2 focus:border-green-600"
-                                :disabled="item && !item.name"
                             >
                                 <i class="fas fa-check"></i>&nbsp;done
                             </el-button>
