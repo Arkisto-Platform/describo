@@ -163,7 +163,8 @@ export default class CrateTool {
                             obj["@type"] = elementsById[obj["@id"]][0]["@type"];
                         }
                     } catch (error) {}
-                    if (obj["@id"] === "./") delete obj["@id"];
+                    // if (obj["@id"] === "./") delete obj["@id"];
+                    delete obj["@id"];
                 }
                 return obj;
             }
