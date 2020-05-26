@@ -59,11 +59,13 @@
                 {
                     "property": "depositFormReceived",
                     "@type": "Date",
-                    "multiple": false
-                },
-                {
-                    "property": "hasMember",
-                    "@type": "Text"
+                    "multiple": false,
+                    "definition": {
+                        "@id": "_:depositFormReceived",
+                        "@type": "Property",
+                        "name": "depositFormReceived",
+                        "description": "Whether or not the deposit form for this item has been received."
+                    }
                 },
                 {
                     "property": "license",
@@ -73,7 +75,13 @@
                 {
                     "property": "media",
                     "@type": "Text",
-                    "multiple": false
+                    "multiple": false,
+                    "definition": {
+                        "@id": "_:media",
+                        "@type": "Property",
+                        "name": "media",
+                        "description": "."
+                    }
                 },
                 {
                     "property": "orthographicNotes",
@@ -83,13 +91,18 @@
                         "@id": "_:orthographicNotes",
                         "@type": "Property",
                         "name": "orthographicNotes",
-                        "description": "something or other about data"
+                        "description": ""
                     }
                 },
                 {
                     "property": "private",
                     "@type": "Text",
-                    "multiple": false
+                    "multiple": false,
+                    "definition": {
+                        "@id": "_:private",
+                        "@type": "Property",
+                        "name": "private"
+                    }
                 },
                 {
                     "property": "https://paradisec.org.au/contentLanguages",
@@ -98,6 +111,11 @@
                 {
                     "property": "subjectLanguages",
                     "@type": "Language"
+                },
+                {
+                    "property": "contentLocation",
+                    "@type": "Place",
+                    "multiple": false
                 }
             ]
         },
@@ -132,6 +150,13 @@
                     "group": "important"
                 },
                 {
+                    "property": "contributor",
+                    "label": "Contributor",
+                    "@type": "Person",
+                    "required": true,
+                    "group": "important"
+                },
+                {
                     "property": "dateCreated",
                     "@type": "Date",
                     "multiple": false
@@ -144,48 +169,102 @@
                 {
                     "property": "adminComment",
                     "@type": "Text",
-                    "multiple": false
+                    "multiple": false,
+                    "definition": {
+                        "@id": "_:adminComment",
+                        "@type": "Property",
+                        "name": "adminComment",
+                        "description": ""
+                    }
                 },
                 {
                     "property": "dialect",
                     "@type": "Text",
-                    "multiple": false
+                    "multiple": false,
+                    "definition": {
+                        "@id": "_:dialect",
+                        "@type": "Property",
+                        "name": "dialect",
+                        "description": ""
+                    }
                 },
                 {
                     "property": "digitisedOn",
                     "@type": "Date",
-                    "multiple": false
+                    "multiple": false,
+                    "definition": {
+                        "@id": "_:digitisedOn",
+                        "@type": "Property",
+                        "name": "digitisedOn",
+                        "description": ""
+                    }
                 },
                 {
                     "property": "discourseType",
                     "@type": "Text",
-                    "multiple": false
+                    "multiple": false,
+                    "definition": {
+                        "@id": "_:discourseType",
+                        "@type": "Property",
+                        "name": "discourseType",
+                        "description": ""
+                    }
                 },
                 {
                     "property": "external",
                     "@type": "Text",
-                    "multiple": false
+                    "multiple": false,
+                    "definition": {
+                        "@id": "_:external",
+                        "@type": "Property",
+                        "name": "external",
+                        "description": ""
+                    }
                 },
 
                 {
                     "property": "bornDigital",
                     "@type": "Text",
-                    "multiple": false
+                    "multiple": false,
+                    "definition": {
+                        "@id": "_:bornDigital",
+                        "@type": "Property",
+                        "name": "bornDigital",
+                        "description": ""
+                    }
                 },
                 {
                     "property": "citeAs",
                     "@type": "Text",
-                    "multiple": false
+                    "multiple": false,
+                    "definition": {
+                        "@id": "_:citeAs",
+                        "@type": "Property",
+                        "name": "citeAs",
+                        "description": ""
+                    }
                 },
                 {
                     "property": "ingestNotes",
                     "@type": "Text",
-                    "multiple": false
+                    "multiple": false,
+                    "definition": {
+                        "@id": "_:ingestNotes",
+                        "@type": "Property",
+                        "name": "ingestNotes",
+                        "description": ""
+                    }
                 },
                 {
                     "property": "languageAsGiven",
                     "@type": "Text",
-                    "multiple": false
+                    "multiple": false,
+                    "definition": {
+                        "@id": "_:languageAsGiven",
+                        "@type": "Property",
+                        "name": "languageAsGiven",
+                        "description": ""
+                    }
                 },
                 {
                     "property": "license",
@@ -212,74 +291,49 @@
                 {
                     "property": "originatedOn",
                     "@type": "Date",
-                    "multiple": false
+                    "multiple": false,
+                    "definition": {
+                        "@id": "_:originatedOn",
+                        "@type": "Property",
+                        "name": "originatedOn",
+                        "description": ""
+                    }
                 },
                 {
                     "property": "originatedOnNarrative",
                     "@type": "Text",
-                    "multiple": false
+                    "multiple": false,
+                    "definition": {
+                        "@id": "_:originatedOnNarrative",
+                        "@type": "Property",
+                        "name": "originatedOnNarrative",
+                        "description": ""
+                    }
                 },
                 {
                     "property": "receivedOn",
                     "@type": "Text",
-                    "multiple": false
+                    "multiple": false,
+                    "definition": {
+                        "@id": "_:receivedOn",
+                        "@type": "Property",
+                        "name": "receivedOn",
+                        "description": ""
+                    }
                 },
                 {
                     "property": "publisher",
                     "@type": "Organization"
                 },
                 {
-                    "property": "memberOf",
-                    "@type": "Text"
+                    "property": "contentLocation",
+                    "@type": "Place",
+                    "multiple": false
                 }
             ]
         }
     },
     "typeDefinitions": {
-        "Person": {
-            "metadata": {
-                "allowAdditionalProperties": true
-            },
-            "inputs": [
-                {
-                    "property": "@id",
-                    "@type": "Text",
-                    "multiple": false,
-                    "group": "important"
-                },
-                {
-                    "property": "name",
-                    "@type": "Text",
-                    "required": true,
-                    "multiple": false,
-                    "group": "important"
-                },
-                {
-                    "property": "familyName",
-                    "@type": "Text",
-                    "multiple": false
-                },
-                { "property": "givenName", "@type": "Text", "multiple": false },
-                {
-                    "property": "contactPoint",
-                    "@type": "Text",
-                    "multiple": false
-                },
-                { "property": "email", "@type": "Text", "multiple": false },
-                {
-                    "property": "affiliation",
-                    "@type": "Organization",
-                    "multiple": false
-                },
-                {
-                    "property": "http://purl.org/spar/pro/withRole",
-                    "label": "Role",
-                    "@type": "Role",
-                    "multiple": true,
-                    "group": "important"
-                }
-            ]
-        },
         "License": {
             "metadata": {
                 "allowAdditionalProperties": true
@@ -309,37 +363,6 @@
             "metadata": {
                 "allowAdditionalProperties": true
             }
-        },
-        "Role": {
-            "metadata": {
-                "allowAdditionalProperties": true
-            },
-            "inputs": [
-                {
-                    "property": "name",
-                    "@type": "Select",
-                    "options": [
-                        "author",
-                        "compiler",
-                        "consultant",
-                        "data_inputter",
-                        "depositor",
-                        "editor",
-                        "interviewer",
-                        "participant",
-                        "performer",
-                        "photographer",
-                        "recorder",
-                        "researcher",
-                        "speaker",
-                        "translator",
-                        "singer"
-                    ],
-                    "required": true,
-                    "multiple": false,
-                    "group": "important"
-                }
-            ]
         }
     },
     "enabledCoreTypes": [
