@@ -1,6 +1,6 @@
 <template>
     <div
-        class="flex flex-col m-6 p-6 bg-yellow-200"
+        class="flex flex-col my-2 mx-6 p-6 bg-yellow-200"
         v-if="availableTypes.includes(type) && !item.name"
     >
         <el-alert

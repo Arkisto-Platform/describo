@@ -1,8 +1,6 @@
 <template>
-    <div class="flex flex-col my-4">
-        <div class="text-sm text-gray-500">
-            Lookup an organisation by name or acronym
-        </div>
+    <div class="flex flex-col my-2 mx-6 p-6 bg-teal-200">
+        <div class="text-lg text-gray-700">Lookup organisation in ROR.org</div>
         <el-alert
             title="oops - this isn't working right now!"
             type="error"
