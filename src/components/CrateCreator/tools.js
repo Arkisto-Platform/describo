@@ -48,9 +48,11 @@ export function linkItemToParent({ store, parentId, itemId, property }) {
     } else {
         typeDefinition = store.getters.getTypeDefinition(parent["@type"]);
         if (typeDefinition) {
-            typeDefinition.inputs.filter((i) => i.property === property);
-            if (typeDefinition.length && "multiple" in typeDefinition[0]) {
-                multiple = typeDefinition[0].multiple;
+            const input = typeDefinition.inputs.filter(
+                (i) => i.property === property
+            );
+            if (input.length && "multiple" in input[0]) {
+                multiple = input[0].multiple;
             }
         }
     }
