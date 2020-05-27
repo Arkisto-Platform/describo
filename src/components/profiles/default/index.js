@@ -115,6 +115,11 @@ export default {
                     ],
                     group: "important",
                 },
+                {
+                    property: "distribution",
+                    "@type": "DataDownload",
+                    multiple: false,
+                },
             ],
         },
     },

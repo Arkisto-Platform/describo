@@ -1,6 +1,7 @@
 import ContactPoint from "./ContactPoint";
 import CreateAction from "./CreateAction";
 import CreativeWork from "./CreativeWork";
+import DataDownload from "./DataDownload";
 import Dataset from "./Dataset";
 import File from "./File";
 import GeoCoordinates from "./GeoCoordinates";
@@ -23,6 +24,7 @@ export default {
     ContactPoint,
     CreateAction,
     CreativeWork,
+    DataDownload,
     Dataset,
     File,
     GeoCoordinates,
