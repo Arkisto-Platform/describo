@@ -8,12 +8,15 @@
                 "
             />
 
+            <render-id-input-component :uuid="uuid" />
+
             <div v-for="input in template" :key="input.property">
                 <render-profile-input-component
                     :input="input"
                     :container="container"
                     :show="showAllProperties"
                     @add="add"
+                    v-if="input.property !== '@id'"
                 />
             </div>
 
@@ -48,6 +51,7 @@ import { generateId } from "components/CrateCreator/tools";
 
 export default {
     components: {
+        RenderIdInputComponent: () => import("./RenderIdInput.component.vue"),
         RenderProfileInputComponent: () =>
             import("./RenderProfileInput.component.vue"),
         RenderProfileReportComponent,
