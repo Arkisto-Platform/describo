@@ -1,6 +1,10 @@
 <template>
     <div class="flex flex-row bg-yellow-200 rounded-lg p-2">
-        <div class="flex flex-col" v-if="item.uuid">
+        <div
+            class="flex flex-col cursor-pointer"
+            v-if="item.uuid"
+            @click="loadTarget"
+        >
             <div class="flex flex-row text-gray-600 font-light">
                 <div>@type: {{ item["@type"] }}</div>
                 <div class="ml-2">
@@ -60,6 +64,18 @@ export default {
                     property: this.property,
                 });
             });
+        },
+        loadTarget() {
+            this.$emit("close");
+            if (this.item["@type"] === "RootDataset") {
+                this.$store.commit("addNewItem", undefined);
+            } else {
+                this.$store.commit("addNewItem", {
+                    itemId: this.item.uuid,
+                    parentId: undefined,
+                    property: undefined,
+                });
+            }
         },
     },
 };
