@@ -423,7 +423,7 @@ export default class CrateTool {
 
     getCrateMetadataFileDescriptor() {
         return {
-            "@id": "/ro-crate-metadata.json",
+            "@id": "ro-crate-metadata.json",
             "@type": "CreativeWork",
             about: {
                 "@id": "./",
