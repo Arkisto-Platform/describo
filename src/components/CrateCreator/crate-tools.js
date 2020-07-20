@@ -9,7 +9,7 @@ import {
     uniqBy,
     invert,
 } from "lodash";
-import { writeFile, readJSON, pathExists } from "fs-extra";
+import { writeFile, readJSON, pathExists, remove } from "fs-extra";
 import { generateId } from "components/CrateCreator/tools";
 import path from "path";
 import isUrl from "validator/lib/isUrl";
@@ -33,11 +33,17 @@ export default class CrateTool {
                 await writeToLocalFolder({
                     folder: target.folder,
                     crate: this.crate,
-                    saveEntitiesToDataStore: this.saveEntitiesToDataStore,
-                    database,
                 });
                 break;
         }
+        if (
+            await pathExists(
+                path.join(target.folder, "ro-crate-metadata.jsonld")
+            )
+        ) {
+            await remove(path.join(target.folder, "ro-crate-metadata.jsonld"));
+        }
+
         async function writeToLocalFolder({ folder, crate }) {
             const file = path.join(folder, `${roCrateMetadataFile}.json`);
             await writeFile(file, JSON.stringify(crate, null, 2));
