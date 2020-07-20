@@ -5,6 +5,7 @@
             'bg-green-200': saved,
             'hover:bg-gray-200': !saved,
         }"
+        v-if="!hidden"
     >
         <div class="text-lg">@id</div>
         <div>
@@ -36,16 +37,19 @@ export default {
     data() {
         return {
             disabledTypes: ["File", "Dataset"],
+            hiddenTypes: ["RootDataset"],
             value: undefined,
             debouncedSave: debounce(this.save, 1500),
             saved: false,
             disabled: false,
+            hidden: false,
         };
     },
     beforeMount() {
         let item = this.$store.getters.getItemById(this.uuid);
         this.value = item["@id"] ? item["@id"] : this.uuid;
         this.disabled = this.disabledTypes.includes(item["@type"]);
+        this.hidden = this.hiddenTypes.includes(item["@type"]);
     },
     methods: {
         save() {
