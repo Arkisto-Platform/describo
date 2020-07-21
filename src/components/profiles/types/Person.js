@@ -18,7 +18,7 @@ export default {
             multiple: false,
         },
         { property: "email", "@type": "Text", multiple: false },
-        { property: "affiliation", "@type": "Organization", multiple: false },
+        { property: "affiliation", "@type": "Organization", multiple: true },
         {
             property: "http://purl.org/spar/pro/withRole",
             label: "Role",
