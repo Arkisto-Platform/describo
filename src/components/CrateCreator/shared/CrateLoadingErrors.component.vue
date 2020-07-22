@@ -8,8 +8,8 @@
     >
         <div class="flex flex-col bg-gray-200 h-full overflow-scroll">
             <div class="m-4">
-                <div class="text-xl my-2">Crate Loading Errors</div>
-                <div class="p-4 rounded style-content-area overflow-scroll">
+                <div class="text-xl my-2">Crate Errors</div>
+                <div class="rounded style-content-area overflow-scroll">
                     <ol>
                         <li
                             :value="idx"

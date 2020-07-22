@@ -18,6 +18,7 @@ function createMainWindow() {
             nodeIntegration: true,
             nodeIntegrationInWorker: true,
             webSecurity: process.env.NODE_ENV !== "development",
+            enableRemoteModule: true,
         },
     });
     window.webContents.session.clearCache(() => {});

@@ -100,6 +100,40 @@ test("it should not create two of the same item in the store", () => {
     expect(Object.keys(state.itemsById).length).toBe(1);
     expect(state.itemsByType.Person.length).toBe(1);
 });
+test("should merge the content of duplicate items", () => {
+    let item = {
+        uuid: "#1",
+        "@type": "Person",
+        name: "one",
+    };
+    store.commit("saveToGraph", item);
+    expect(state.graph.length).toBe(1);
+    expect(state.graph[0].name).toBe("one");
+
+    item = {
+        uuid: "#1",
+        "@type": "Person",
+        name: "one",
+        description: "something",
+    };
+    store.commit("saveToGraph", { item, operation: "merge" });
+    expect(state.graph.length).toBe(1);
+    expect(state.graph[0].description).toBe("something");
+
+    item = {
+        uuid: "#1",
+        "@type": "Person",
+        name: "a different name",
+        description: "something",
+    };
+    store.commit("saveToGraph", { item, operation: "merge" });
+    expect(state.graph.length).toBe(1);
+    expect(state.graph[0].description).toBe("something");
+    expect(state.graph[0].name).toBe("a different name");
+
+    expect(Object.keys(state.itemsById).length).toBe(1);
+    expect(state.itemsByType.Person.length).toBe(1);
+});
 test("it should remove an item without an @reverse property", () => {
     let ref1 = {
         uuid: "#1",

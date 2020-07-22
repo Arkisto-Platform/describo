@@ -8,6 +8,7 @@ import "assets/tailwind.scss";
 import "element-ui/lib/theme-chalk/index.css";
 import "assets/global-styles.scss";
 import "iv-viewer/dist/iv-viewer.css";
+import "default-passive-events";
 
 // import "leaflet/dist/leaflet.css";
 // import { Icon } from "leaflet";
@@ -29,7 +30,7 @@ Vue.use(ElementUI, { locale });
 
 import * as filters from "./filters";
 const filterNames = Object.keys(filters);
-filterNames.forEach(filter => Vue.filter(filter, filters[filter]));
+filterNames.forEach((filter) => Vue.filter(filter, filters[filter]));
 
 import App from "components/app.vue";
 import { router } from "./routes";

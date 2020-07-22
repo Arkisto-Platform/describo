@@ -72,6 +72,7 @@
         "archiver": "^4.0.2",
         "core-js": "^3.6.5",
         "date-fns": "^2.15.0",
+        "default-passive-events": "^2.0.0",
         "describo-data-service": "github:UTS-eResearch/describo-data-service",
         "electron-store": "^6.0.0",
         "electron-updater": "^4.3.1",

@@ -104,7 +104,7 @@ import {
     round,
 } from "lodash";
 import { generateId } from "components/CrateCreator/tools";
-import RootDatasetComponent from "./RootDataset/Shell.component.vue";
+import RootDatasetComponent from "./RootDatasetShell.component.vue";
 import CratePartsComponent from "./CrateParts/Shell.component.vue";
 import TypeManagementComponent from "./TypeManagement/Shell.component.vue";
 import RootDatasetSelectorComponent from "./shared/RootDatasetSelector.component.vue";
@@ -192,7 +192,10 @@ export default {
                 }
                 await new Promise((resolve) => setTimeout(resolve, 5));
                 try {
-                    this.$store.commit("saveToGraph", element);
+                    this.$store.commit("saveToGraph", {
+                        item: element,
+                        operation: "merge",
+                    });
                 } catch (error) {
                     errors.push(`${error.message}: ${JSON.stringify(element)}`);
                 }

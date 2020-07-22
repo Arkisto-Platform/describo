@@ -64,10 +64,12 @@
                                 <i class="fas fa-check"></i>&nbsp;done
                             </el-button>
                         </div>
+
                         <render-profile-component
                             :uuid="item.uuid"
                             @link-item="linkItem"
                         />
+
                         <div class="flex flex-row mt-1 border-t-2 pt-2">
                             <el-button
                                 @click="remove()"
@@ -92,6 +94,7 @@
                     <render-profile-reverse-component
                         :uuid="item.uuid"
                         class="mt-8"
+                        @refresh-parent="refresh"
                         @close="close"
                     />
                 </div>
@@ -138,13 +141,11 @@ export default {
     },
     computed: {
         enableRemove: function() {
-            const item = this.$store.getters.getItemById(
-                this.addNewItem.itemId
+            return !(
+                this.item &&
+                this.item["@reverse"] &&
+                Object.keys(this.item["@reverse"]).length
             );
-            return (this.addNewItem.itemId && this.addNewItem.parentId) ||
-                !item["@reverse"]
-                ? true
-                : false;
         },
         typeDefinitions: function() {
             const typeDefinitions = Object.keys(
@@ -215,6 +216,12 @@ export default {
         done(drawerDoneHandler) {
             this.linkItem();
             this.close();
+        },
+        refresh() {
+            this.item = this.$store.getters.getItemById(this.item.uuid);
+            if (!this.item || !Object.keys(this.item["@reverse"]).length) {
+                this.close();
+            }
         },
         close() {
             this.item = {};

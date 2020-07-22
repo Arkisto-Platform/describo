@@ -18,6 +18,7 @@
                         :property="property"
                         :itemId="uuid"
                         :parentId="reference.uuid"
+                        @refresh-parent="$emit('refresh-parent')"
                         @close="$emit('close')"
                     />
                 </div>

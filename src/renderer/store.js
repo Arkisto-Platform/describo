@@ -51,14 +51,32 @@ export const mutations = {
         //     '@type': ['Dataset' | 'Person' | ... ],
         //     ...:...
         // }
-        if (!payload.uuid || !payload["@type"]) {
+
+        const item =
+            has(payload, "item") && has(payload, "operation")
+                ? cloneDeep(payload.item)
+                : cloneDeep(payload);
+
+        if (!item.uuid || !item["@type"]) {
             throw new Error(
                 "Each item saved to the store must have 'uuid' and '@type' properties"
             );
             return;
         }
-        payload = cloneDeep(payload);
-        state.itemsById[payload.uuid] = payload;
+        // payload = cloneDeep(payload);
+
+        if (
+            has(payload, "item") &&
+            has(payload, "operation") &&
+            payload.operation === "merge"
+        ) {
+            state.itemsById[item.uuid] = {
+                ...state.itemsById[item.uuid],
+                ...item,
+            };
+        } else {
+            state.itemsById[item.uuid] = item;
+        }
         state.itemsById = { ...state.itemsById };
         state.graph = Object.keys(state.itemsById).map(
             (key) => state.itemsById[key]

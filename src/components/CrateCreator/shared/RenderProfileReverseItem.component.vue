@@ -55,25 +55,23 @@ export default {
     },
     methods: {
         remove() {
-            this.$emit("close");
-            this.$nextTick(() => {
-                unlinkItemFromParentAndChildren({
-                    store: this.$store,
-                    parentId: this.parentId,
-                    itemId: this.itemId,
-                    property: this.property,
-                });
+            unlinkItemFromParentAndChildren({
+                store: this.$store,
+                parentId: this.parentId,
+                itemId: this.itemId,
+                property: this.property,
             });
+            this.$emit("refresh-parent");
         },
         loadTarget() {
-            this.$emit("close");
             if (this.item["@type"] === "RootDataset") {
                 this.$store.commit("addNewItem", undefined);
+                this.$emit("close");
             } else {
                 this.$store.commit("addNewItem", {
-                    itemId: this.item.uuid,
-                    parentId: undefined,
-                    property: undefined,
+                    itemId: this.itemId,
+                    parentId: this.parentId,
+                    property: this.property,
                 });
             }
         },

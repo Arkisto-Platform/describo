@@ -8,8 +8,10 @@
                 "
             />
 
+            <!-- The special @id component -->
             <render-id-input-component :uuid="uuid" />
 
+            <!-- render the items in the template -->
             <div v-for="input in template" :key="input.property">
                 <render-profile-input-component
                     :input="input"
@@ -141,14 +143,14 @@ export default {
                         item.enabled = true;
                     } else {
                         this.$emit("link-item");
-                        let newItem = {
+                        let item = {
                             "@type": type,
                             uuid: generateId(),
                         };
-                        this.$store.commit("saveToGraph", newItem);
+                        this.$store.commit("saveToGraph", item);
                         this.$store.commit("addNewItem", {
-                            itemId: newItem.uuid,
-                            parentId: this.container.uuid,
+                            itemId: item.uuid,
+                            parentId: this.uuid,
                             property,
                         });
                     }

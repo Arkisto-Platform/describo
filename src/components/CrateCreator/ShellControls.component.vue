@@ -26,13 +26,13 @@
             <div>
                 <el-button
                     @click="view.crateLoadingErrors = true"
-                    type="warning"
+                    type="danger"
                     size="small"
-                    class="focus:outline-none focus:border-2 focus:border-orange-600"
+                    class="focus:outline-none focus:border-2 focus:border-red-600"
                     v-if="crateLoadingErrors.length"
                 >
                     <i class="fas fa-eye"></i>
-                    crate loading errors
+                    crate errors
                 </el-button>
             </div>
             <div class="border-l pl-2 border-black cursor-pointer">

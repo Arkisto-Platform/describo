@@ -13,7 +13,7 @@ export function updateTemplate({ typeDefinition, item }) {
     const inputs = typeDefinition.inputs;
 
     let template = [];
-    const ignoreProperties = ["uuid", "@type", "@reverse"];
+    const ignoreProperties = ["uuid", "@type", "@reverse", "@id"];
     let inputProperties = inputs.map((i) => i.property);
 
     let report = {

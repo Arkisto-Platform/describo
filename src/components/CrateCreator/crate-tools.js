@@ -131,6 +131,7 @@ export default class CrateTool {
 
         data = mapQualifiedPropertiesFromContext({ data });
         data = removeLocalDefinitionObjects({ data });
+        data = ensureNoDuplicatedReferences({ data });
 
         const rootDatasetUUID = generateId();
         data = mapIdentifiers({ data, rootDatasetUUID });
@@ -174,6 +175,16 @@ export default class CrateTool {
                 }
                 return obj;
             }
+        }
+
+        function ensureNoDuplicatedReferences({ data }) {
+            data.forEach((item) => {
+                Object.keys(item).forEach((property) => {
+                    if (isArray(item[property]))
+                        item[property] = uniqBy(item[property], "@id");
+                });
+            });
+            return data;
         }
 
         function mapReverse({ data, rootDataset }) {
@@ -480,7 +491,6 @@ export default class CrateTool {
         // console.log(JSON.stringify(elementsById, null, 2));
         let errors = [];
         for (let item of data) {
-            // console.log(JSON.stringify(item, null, 2));
             // ensure each item has an @id property
             if (!item.uuid) {
                 errors.push(
@@ -531,6 +541,20 @@ export default class CrateTool {
                 }
             }
         }
+
+        // verify no two items have the same name and type
+        let itemsGroupedByNameAndType = groupBy(
+            data,
+            (item) => `${item["@type"]}${item.name}`
+        );
+        Object.keys(itemsGroupedByNameAndType).forEach((key) => {
+            if (itemsGroupedByNameAndType[key].length > 1) {
+                let item = itemsGroupedByNameAndType[key][0];
+                errors.push(
+                    `There are two items in this crate with type '${item["@type"]}' and name '${item.name}.'`
+                );
+            }
+        });
         return { data, errors };
     }
 }

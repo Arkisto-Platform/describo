@@ -6,7 +6,7 @@ const root = {
     "@context": "https://w3id.org/ro/crate/1.0/context",
     "@graph": [
         {
-            "@id": "/ro-crate-metadata.jsonld",
+            "@id": "ro-crate-metadata.jsonld",
             "@type": "CreativeWork",
             about: {
                 "@id": "./",
@@ -21,58 +21,15 @@ const root = {
         },
     ],
 };
-const graph = [
-    {
-        "@type": "RootDataset",
-        uuid: "#1",
-        name: "dataset",
-        author: [
-            { uuid: "#2", "@type": "Person" },
-            { uuid: "#3", "@type": "Person" },
-        ],
-        elephants: [{ uuid: "/large" }],
-        languages: ["english", "french"],
-        participant: [{ uuid: "#3" }, { uuid: "#4" }],
-    },
-    {
-        "@type": "Person",
-        uuid: "#2",
-        "@reverse": {
-            author: [
-                {
-                    uuid: "#1",
-                    something: {
-                        uuid: "#4",
-                    },
-                },
-            ],
-        },
-    },
-    {
-        "@type": "Person",
-        uuid: "#3",
-        "@reverse": {
-            author: [{ uuid: "#1" }],
-            participant: [{ uuid: "#1" }],
-        },
-    },
-    {
-        "@type": "Person",
-        uuid: "#4",
-        "@reverse": {
-            participant: [{ uuid: "#1" }],
-        },
-    },
-    {
-        "@type": "Elephant",
-        uuid: "/large",
-        "@reverse": {
-            elephants: [{ uuid: "#1" }],
-        },
-    },
-];
 
 test("it should be able to find the root dataset", () => {
+    const graph = [
+        {
+            "@type": "RootDataset",
+            uuid: "#1",
+            name: "dataset",
+        },
+    ];
     const crateTool = new CrateTool();
     expect(() => {
         let rootDataset = crateTool.getRootDataset({
@@ -151,10 +108,17 @@ test("it should complain about more than one root dataset in the crate being loa
 
 test("it should be able to create an ro-crate", () => {
     const crateTool = new CrateTool();
+    const graph = [
+        {
+            "@type": "RootDataset",
+            uuid: "#1",
+            name: "dataset",
+        },
+    ];
     crateTool.assembleCrate({ data: graph });
     let data = crateTool.crate;
     // console.log(JSON.stringify(data, null, 2));
-    expect(data["@graph"].length).toBe(6);
+    expect(data["@graph"].length).toBe(2);
     // console.log(JSON.stringify(data["@graph"], null, 2));
 
     let ensureNoUUID = ensureNot("uuid");
@@ -465,6 +429,26 @@ test("it should not report an error - no dangling elements", () => {
     });
     ({ data, errors } = crateTool.loadCrate({ crate }));
     expect(errors.length).toBe(0);
+});
+
+test("no property should have duplicate references to another item - that's just crazy!", () => {
+    let crate, data, errors;
+    const crateTool = new CrateTool();
+
+    crate = cloneDeep(root);
+    crate["@graph"].push({
+        "@type": "Dataset",
+        "@id": "./",
+        name: "dataset",
+        hasPart: [{ "@id": "#5" }, { "@id": "#5" }],
+    });
+    crate["@graph"].push({
+        "@id": "#5",
+        "@type": "Dataset",
+        author: "name",
+    });
+    ({ data, errors } = crateTool.loadCrate({ crate }));
+    expect(data[0].hasPart.length).toBe(1);
 });
 
 test("it should report errors when unable to resolve item references", () => {
@@ -788,6 +772,158 @@ test("it should extract type and profile definitions and write them to the crate
         name: "orthographicNotes",
         description: "something or other about data",
     });
+});
+
+test("test crate verifies", () => {
+    let crate, data, errors;
+    const crateTool = new CrateTool();
+
+    // verifies
+    let graph = [
+        {
+            "@type": "RootDataset",
+            uuid: "x",
+            name: "dataset",
+        },
+    ];
+    let result = crateTool.verify({ data: graph });
+    expect(result.errors.length).toBe(0);
+
+    // verifies
+    graph = [
+        {
+            "@type": "RootDataset",
+            uuid: "x",
+            name: "dataset",
+            author: [{ uuid: "y" }],
+        },
+        {
+            uuid: "y",
+            "@type": "Person",
+            name: "x",
+            "@reverse": {
+                author: [{ uuid: "x" }],
+            },
+        },
+    ];
+    result = crateTool.verify({ data: graph });
+    expect(result.errors.length).toBe(0);
+});
+
+test("test crate doesn't verify", () => {
+    let crate, data, errors;
+    const crateTool = new CrateTool();
+
+    // doesn't verify - item with missing id
+    let graph = [
+        {
+            "@type": "RootDataset",
+            uuid: "x",
+            name: "dataset",
+        },
+        {
+            "@type": "Person",
+            name: "x",
+            "@reverse": {
+                author: [{ uuid: "x" }],
+            },
+        },
+    ];
+    let result = crateTool.verify({
+        data: graph,
+    });
+    expect(result.errors.length).toBe(1);
+
+    // doesn't verify - item with missing id and link target can't be found
+    graph = [
+        {
+            "@type": "RootDataset",
+            uuid: "x",
+            name: "dataset",
+            author: [{ uuid: "y" }],
+        },
+        {
+            "@type": "Person",
+            name: "x",
+            "@reverse": {
+                author: [{ uuid: "x" }],
+            },
+        },
+    ];
+    result = crateTool.verify({
+        data: graph,
+    });
+    expect(result.errors.length).toBe(2);
+
+    // doesn't verify - item with missing type
+    graph = [
+        {
+            "@type": "RootDataset",
+            uuid: "x",
+            name: "dataset",
+        },
+        {
+            uuid: "y",
+            name: "x",
+            "@reverse": {
+                author: [{ uuid: "x" }],
+            },
+        },
+    ];
+    result = crateTool.verify({
+        data: graph,
+    });
+    expect(result.errors.length).toBe(1);
+
+    // doesn't verify - orphaned item
+    graph = [
+        {
+            "@type": "RootDataset",
+            uuid: "x",
+            name: "dataset",
+            author: [{ uuid: "y" }],
+        },
+        {
+            uuid: "y",
+            "@type": "Person",
+            name: "x",
+        },
+    ];
+    result = crateTool.verify({
+        data: graph,
+    });
+    expect(result.errors.length).toBe(1);
+
+    // doesn't verify - two items with same name and type
+    graph = [
+        {
+            "@type": "RootDataset",
+            uuid: "x",
+            name: "dataset",
+            author: [{ uuid: "y" }, { uuid: "z" }],
+        },
+        {
+            uuid: "y",
+            "@type": "Person",
+            name: "x",
+            "@reverse": {
+                author: [{ uuid: "x" }],
+            },
+        },
+        {
+            uuid: "z",
+            "@type": "Person",
+            name: "x",
+            "@reverse": {
+                author: [{ uuid: "x" }],
+            },
+        },
+    ];
+    result = crateTool.verify({
+        data: graph,
+    });
+    expect(result.errors.length).toBe(1);
+    // console.log(result.errors);
 });
 
 function ensureNot(property) {
