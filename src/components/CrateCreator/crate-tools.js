@@ -52,6 +52,9 @@ export default class CrateTool {
     }
 
     async saveEntitiesToDataStore({ items, database }) {
+        // cleanup data store
+        await database.cleanup({});
+
         for (let item of items) {
             item = cloneDeep(item);
             delete item["@reverse"];
