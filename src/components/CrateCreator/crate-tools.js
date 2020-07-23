@@ -67,7 +67,12 @@ export default class CrateTool {
                 if (isEmpty(item[key])) delete item[key];
             }
             try {
-                if ("@id" in item && "@type" in item && "name" in item) {
+                if (
+                    "@id" in item &&
+                    "@type" in item &&
+                    "name" in item &&
+                    !item["@id"].match(/^_:/)
+                ) {
                     await database.put({ data: [item] });
                 }
             } catch (error) {
