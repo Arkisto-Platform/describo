@@ -13,6 +13,7 @@ import { writeFile, readJSON, pathExists, remove } from "fs-extra";
 import { generateId } from "components/CrateCreator/tools";
 import path from "path";
 import isUrl from "validator/lib/isUrl";
+import { reverse } from "dns";
 
 const roCrateMetadataFile = "ro-crate-metadata";
 const excludeFromDataStore = ["File", "Dataset"];
@@ -129,6 +130,7 @@ export default class CrateTool {
             ].includes(e["@id"]);
         });
 
+        data = reverseDescriboTypeMappings({ data });
         data = mapQualifiedPropertiesFromContext({ data });
         data = removeLocalDefinitionObjects({ data });
         data = ensureNoDuplicatedReferences({ data });
@@ -147,6 +149,9 @@ export default class CrateTool {
         ({ data, errors } = this.verify({ data }));
         return { data, errors };
 
+        /*
+         * Map @id to uuid
+         */
         function mapIdentifiers({ data, rootDatasetUUID }) {
             const elementsById = groupBy(data, "@id");
             return data.map((element) => {
@@ -177,16 +182,26 @@ export default class CrateTool {
             }
         }
 
+        /*
+         * deduplicate references:
+         * { author: [ { uuid: 'x' }, { uuid: 'x' }]}
+         *   becomes:
+         * { author: [ { uuid: 'x' }] }
+         */
         function ensureNoDuplicatedReferences({ data }) {
             data.forEach((item) => {
                 Object.keys(item).forEach((property) => {
-                    if (isArray(item[property]))
+                    if (property !== "@type" && isArray(item[property])) {
                         item[property] = uniqBy(item[property], "@id");
+                    }
                 });
             });
             return data;
         }
 
+        /*
+         * Ensure every item has @reverse links as required.
+         */
         function mapReverse({ data, rootDataset }) {
             const reverseMappings = [];
             data.forEach((element) => {
@@ -255,6 +270,12 @@ export default class CrateTool {
             }
         }
 
+        /*
+         * Map context definitions back in to property names
+         *
+         * This is essential in order to be able to join the data back in
+         *  to the profile definition which is where the fully qualified name is defined.
+         */
         function mapQualifiedPropertiesFromContext({ data }) {
             data = data.map((element) => {
                 return walkObject({
@@ -275,12 +296,37 @@ export default class CrateTool {
             }
         }
 
+        /*
+         * Remove definitions objects from the crate - these will get written
+         *   back in from the profile when the crate is written out.
+         */
+
         function removeLocalDefinitionObjects({ data }) {
             const invertedContext = invert(context);
             data = data.filter((element) => {
                 if (!invertedContext[element["@id"]]) {
                     return element;
                 }
+            });
+            return data;
+        }
+
+        /*
+         * Reverse type mappings
+         *
+         * Map @type: ['GeoShape', 'Describo:GeoBox'] -> GeoBox
+         */
+        function reverseDescriboTypeMappings({ data }) {
+            data = data.map((item) => {
+                if (isArray(item["@type"])) {
+                    const describoType = item["@type"].filter((i) =>
+                        i.match(/^Describo:/)
+                    );
+                    if (describoType.length) {
+                        item["@type"] = describoType[0].split(":")[1];
+                    }
+                }
+                return item;
             });
             return data;
         }
@@ -303,6 +349,7 @@ export default class CrateTool {
             rootDatasetUUID: rootDataset.uuid,
         });
         data = removeType({ data });
+        data = mapTypeDefinitions({ data });
         definitions = uniqBy(definitions, "@id");
         data = [...data, ...definitions];
         // console.log(context);
@@ -318,6 +365,7 @@ export default class CrateTool {
 
         let graph = [this.getCrateMetadataFileDescriptor()];
         graph = [...graph, rootDataset, ...elements];
+        // console.log(JSON.stringify(graph, null, 2));
         this.crate = {
             "@context": [
                 "https://w3id.org/ro/crate/1.0/context",
@@ -329,6 +377,13 @@ export default class CrateTool {
             "@graph": graph,
         };
 
+        /*
+         * Ensure references have @id links between each other
+         *
+         * { author: [{ @id: 'x'}]}},
+         * { @id: 'x' }
+         *
+         */
         function updateIdentifierReferences({ data }) {
             data = data.map((element) => {
                 return walkObject({
@@ -347,6 +402,11 @@ export default class CrateTool {
             }
         }
 
+        /*
+         * Map uuid back to @id for export
+         * Remove uuid property
+         *
+         */
         function mapIdentifiers({ data, rootDatasetUUID }) {
             return data.map((element) => {
                 return walkObject({
@@ -369,6 +429,12 @@ export default class CrateTool {
             }
         }
 
+        /*
+         * Remove the @type property from links
+         *
+         * Remove @type from { ... author: [{ @id: 'x', @type: 'Person }]}
+         *
+         */
         function removeType({ data }) {
             return data.map((element) => {
                 return walkObject({
@@ -383,6 +449,12 @@ export default class CrateTool {
             }
         }
 
+        /*
+         * Walk the data and extract the property name from fully qualified properties.
+         * Map the property and definition into the context
+         *
+         * Take: https://fqdn/name and construct @context:  { name: fqdn }
+         */
         function mapQualifiedPropertiesToContext({ data }) {
             data = data.map((element) => {
                 return walkObject({
@@ -406,6 +478,9 @@ export default class CrateTool {
             }
         }
 
+        /*
+         * Extract and write any local property definitions to the crate
+         */
         function writeLocalProfileDefinitions({ data }) {
             data = data.map((element) => {
                 return walkObject({
@@ -435,6 +510,25 @@ export default class CrateTool {
                 }
                 return obj;
             }
+        }
+
+        /*
+         * Map types defined in the type definitions
+         *
+         * Map @type: GeoBox -> @type: ['GeoShape', 'Describo:GeoBox']
+         */
+        function mapTypeDefinitions({ data }) {
+            data = data.map((item) => {
+                const def = typeDefinitions[item["@type"]];
+                if (def?.metadata?.mapToType) {
+                    item["@type"] = [
+                        def.metadata.mapToType,
+                        `Describo:${item["@type"]}`,
+                    ];
+                }
+                return item;
+            });
+            return data;
         }
     }
 

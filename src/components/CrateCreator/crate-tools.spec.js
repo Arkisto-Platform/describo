@@ -774,6 +774,85 @@ test("it should extract type and profile definitions and write them to the crate
     });
 });
 
+test("it should map between an internal type definition and an external array set", async () => {
+    // map @type: GeoBox -> [ 'GeoShape', 'Describo:GeoBox' ]
+    const typeDefinitions = {
+        GeoBox: {
+            metadata: {
+                allowAdditionalProperties: false,
+                mapToType: "GeoShape",
+            },
+            inputs: [
+                {
+                    property: "name",
+                    "@type": "GeoBox",
+                    multiple: false,
+                    group: "important",
+                },
+            ],
+        },
+    };
+    const graph = [
+        {
+            "@type": "RootDataset",
+            uuid: "#1",
+            coordinates: [{ "@id": "#1" }],
+        },
+        {
+            "@id": "#1",
+            "@type": "GeoBox",
+            name: "box",
+        },
+    ];
+    const crateTool = new CrateTool();
+    crateTool.assembleCrate({
+        data: graph,
+        profileInputs: [],
+        typeDefinitions,
+    });
+    let crate = crateTool.crate;
+    // console.log(JSON.stringify(crate, null, 2));
+    expect(crate["@graph"][2]["@type"]).toEqual([
+        "GeoShape",
+        "Describo:GeoBox",
+    ]);
+
+    // map @type: [ 'GeoShape', 'Describo:GeoBox' ] -> GeoBox
+
+    let { data, errors } = crateTool.loadCrate({ crate });
+    expect(data[1]["@type"]).toBe("GeoBox");
+});
+
+test("it should do nothing with type arrays", async () => {
+    // map @type: [ 'File', 'Workflow' ] -> [ 'File', 'Workflow' ]
+    const graph = [
+        {
+            "@type": "RootDataset",
+            uuid: "#1",
+            file: [{ "@id": "#1" }],
+        },
+        {
+            "@id": "#1",
+            "@type": ["File", "Workflow"],
+            name: "box",
+        },
+    ];
+    const crateTool = new CrateTool();
+    crateTool.assembleCrate({
+        data: graph,
+        profileInputs: [],
+        typeDefinitions: [],
+    });
+    let crate = crateTool.crate;
+    // console.log(JSON.stringify(crate, null, 2));
+    expect(crate["@graph"][2]["@type"]).toEqual(["File", "Workflow"]);
+
+    // map @type: [ 'File', 'Workflow' ] -> [ 'File', 'Workflow' ]
+    let { data, errors } = crateTool.loadCrate({ crate });
+    // console.log(JSON.stringify(data, null, 2));
+    expect(data[1]["@type"]).toEqual(["File", "Workflow"]);
+});
+
 test("test crate verifies", () => {
     let crate, data, errors;
     const crateTool = new CrateTool();

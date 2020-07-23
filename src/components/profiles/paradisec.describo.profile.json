@@ -334,9 +334,31 @@
         }
     },
     "typeDefinitions": {
+        "GeoBox": {
+            "metadata": {
+                "allowAdditionalProperties": false,
+                "mapToType": "GeoShape"
+            },
+            "inputs": [
+                {
+                    "property": "name",
+                    "@type": "Text",
+                    "required": true,
+                    "multiple": false,
+                    "group": "important"
+                },
+                {
+                    "property": "box",
+                    "@type": "Text",
+                    "required": true,
+                    "multiple": false,
+                    "group": "important"
+                }
+            ]
+        },
         "License": {
             "metadata": {
-                "allowAdditionalProperties": true
+                "allowAdditionalProperties": false
             },
             "inputs": [
                 {
@@ -361,13 +383,13 @@
         },
         "Language": {
             "metadata": {
-                "allowAdditionalProperties": true
+                "allowAdditionalProperties": false
             }
         }
     },
     "enabledCoreTypes": [
         "ContactPoint",
-        "GeoCoordinates",
+        "GeoBox",
         "Person",
         "Organization",
         "PropertyValue"
