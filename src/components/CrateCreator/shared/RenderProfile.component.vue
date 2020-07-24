@@ -38,7 +38,6 @@
 
 <script>
 import { updateTemplate } from "./describe-entry";
-import { mappings } from "components/profiles/type-mappings";
 import {
     cloneDeep,
     isArray,
@@ -105,7 +104,7 @@ export default {
             const container = this.$store.getters.getItemById(this.uuid);
             let type = container["@type"];
             if (isArray(type)) {
-                type = mappings[type.sort().join(", ")];
+                type = this.$store.state.mappings[type.sort().join(", ")];
             }
             if (type === "RootDataset") {
                 this.typeDefinition = this.$store.getters.getActiveProfileDefinition();
