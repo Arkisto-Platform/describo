@@ -58,6 +58,7 @@ export default class ProfileLoader {
             validKeys: [
                 "metadata",
                 "items",
+                "mappings",
                 "typeDefinitions",
                 "enabledCoreTypes",
                 "dataPacks",

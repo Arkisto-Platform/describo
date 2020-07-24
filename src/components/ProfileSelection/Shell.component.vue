@@ -60,6 +60,7 @@ import LoadExternalProfileComponent from "./LoadExternalProfile.component.vue";
 import ProfileLoader from "./profile-loader";
 import internalTypeDefinitions from "components/profiles/types";
 import { cloneDeep, uniq } from "lodash";
+import { mappings } from "components/profiles/type-mappings";
 
 export default {
     components: {
@@ -90,6 +91,14 @@ export default {
                     duration: 10000,
                 });
             } else {
+                // save default type array mappings
+                this.$store.commit("saveMappings", mappings);
+
+                // override with type array mappings from profile if defined
+                if (profile.mappings) {
+                    this.$store.commit("saveMappings", profile.mappings);
+                }
+
                 // load any data packs defined in the profile
                 await profileLoader.loadDataPacks({
                     database: this.$store.state.database,
@@ -115,6 +124,8 @@ export default {
                     types = cloneDeep(internalTypeDefinitions);
                 }
                 types = { ...types, ...profile.typeDefinitions };
+
+                // save type definitions
                 this.$store.commit("saveTypeDefinitions", types);
 
                 // commit the profile
