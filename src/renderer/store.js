@@ -45,6 +45,9 @@ export const mutations = {
     saveTypeDefinitions(state, payload) {
         state.typeDefinitions = cloneDeep(payload);
     },
+    saveMappings(state, payload) {
+        state.mappings = cloneDeep(payload);
+    },
     saveToGraph(state, payload) {
         // payload = {
         //     'uuid': 'xxx',
@@ -189,6 +192,7 @@ function reset() {
         database: undefined,
         databaseFile,
         typeDefinitions: {},
+        mappings: {},
         graph: [],
         itemsByType: {},
         itemsById: {},
