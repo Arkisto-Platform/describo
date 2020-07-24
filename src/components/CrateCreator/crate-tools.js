@@ -121,6 +121,8 @@ export default class CrateTool {
     loadCrate({ crate }) {
         let errors = [];
         let context = {};
+        if (!crate) return { data: undefined, errors: [] };
+
         if (!isArray(crate["@context"]))
             crate["@context"] = [crate["@context"]];
         crate["@context"].forEach((entry) => {
