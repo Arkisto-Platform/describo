@@ -1,10 +1,8 @@
 <template>
     <div class="p-4 flex flex-col">
         <div>
-            <el-button type="primary">
-                <router-link to="onboarding" class="mx-2">
-                    View Help
-                </router-link>
+            <el-button type="primary" @click="showOnboarding">
+                View Help
             </el-button>
         </div>
         <el-tabs class="">
@@ -26,6 +24,11 @@ export default {
     },
     data() {
         return {};
+    },
+    methods: {
+        showOnboarding() {
+            this.$router.push({ path: "/onboarding" });
+        },
     },
 };
 </script>
