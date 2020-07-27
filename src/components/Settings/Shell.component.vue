@@ -1,5 +1,12 @@
 <template>
-    <div class="p-4">
+    <div class="p-4 flex flex-col">
+        <div>
+            <el-button type="primary">
+                <router-link to="onboarding" class="mx-2">
+                    View Help
+                </router-link>
+            </el-button>
+        </div>
         <el-tabs class="">
             <el-tab-pane label="">
                 <span slot="label" class="text-xl text-gray-700 font-light">

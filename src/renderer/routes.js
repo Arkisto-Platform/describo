@@ -8,6 +8,7 @@ import ShellComponent from "components/Shell.component.vue";
 import BadRequestComponent from "components/BadRequest.component.vue";
 import DescribeShellComponent from "components/DescribeShell.component.vue";
 import SettingsShellComponent from "components/Settings/Shell.component.vue";
+import OnboardingShellComponent from "components/Onboarding/Shell.component.vue";
 
 export const router = new VueRouter({
     routes: [
@@ -23,6 +24,10 @@ export const router = new VueRouter({
                 {
                     path: "settings",
                     component: SettingsShellComponent,
+                },
+                {
+                    path: "onboarding",
+                    component: OnboardingShellComponent,
                 },
             ],
         },

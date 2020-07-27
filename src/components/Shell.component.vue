@@ -11,6 +11,9 @@
 import HeaderComponent from "./Header.component.vue";
 import { Database } from "describo-data-service";
 
+import Store from "electron-store";
+const store = new Store({ name: "describo-state" });
+
 export default {
     components: {
         HeaderComponent,
@@ -27,6 +30,10 @@ export default {
             });
             await database.connect();
             this.$store.commit("saveDatabaseHandle", { database });
+            const disableOnboarding = store.get("disableOnboarding");
+            if (!disableOnboarding) {
+                this.$router.push({ path: "/onboarding" });
+            }
         })();
     },
 };
