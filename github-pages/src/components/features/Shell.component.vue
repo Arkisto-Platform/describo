@@ -24,9 +24,13 @@ export default {
             expandImage: false,
             items: [
                 {
+                    image: "images/onboarding.png",
+                    text: "Built in help to get you going quickly.",
+                },
+                {
                     image: "images/create-person.png",
                     text:
-                        "Built in entity type definitions like Person, Organization and many others.",
+                        "Entity type definitions like Person, Organization and many others.",
                 },
                 {
                     image: "images/create-organization.png",
