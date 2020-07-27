@@ -10,14 +10,14 @@
                     <i class="fas fa-long-arrow-alt-left"></i>
                 </el-button>
                 <div class="flex-grow">
-                    <div class="justify-center flex flex-row pt-1">
+                    <div class="justify-center flex flex-row pt-2 space-x-1">
                         <div v-for="(entry, idx) of content" :key="idx">
                             <div
                                 :class="{ 'text-orange-500': page === idx }"
                                 class="text-gray-400 cursor-pointer"
                                 @click="page = idx"
                             >
-                                <i class="fas fa-circle fa-2x"></i>
+                                <i class="fas fa-circle"></i>
                             </div>
                         </div>
                     </div>
@@ -32,8 +32,11 @@
             </div>
             <div class="mt-10">
                 <div class="flex flex-row items-center">
-                    <div class="w-1/2 px-8 border-r">
-                        <img :src="content[page].image" class="object-cover" />
+                    <div class="w-1/2 border-r px-1">
+                        <img
+                            :src="content[page].image"
+                            class="object-contain"
+                        />
                     </div>
                     <div
                         class="w-1/2 flex flex-col justify-center text-2xl px-4 space-y-8"
@@ -90,6 +93,11 @@ import page14 from "src/assets/onboarding/page14.png";
 import page15 from "src/assets/onboarding/page15.png";
 import page16 from "src/assets/onboarding/page16.png";
 import page17 from "src/assets/onboarding/page17.png";
+import page18 from "src/assets/onboarding/page18.png";
+import page19 from "src/assets/onboarding/page19.png";
+import page28 from "src/assets/onboarding/page28.png";
+import page29 from "src/assets/onboarding/page29.png";
+import page30 from "src/assets/onboarding/page30.png";
 export default {
     data() {
         return {
@@ -118,7 +126,7 @@ export default {
                 },
                 {
                     text: [
-                        "After selecting a folder to describe, you then select a profile to use. A profile is simply a set of instructions defining what you can describe",
+                        "After selecting a folder to describe, you then select a profile to use. A profile is simply a set of instructions defining what you can describe.",
                         "Describo comes with a default profile. Use this if you're just getting started.",
                         "Alternately, you may have been pointed at a domain specific - or custom - profile. If so, load that in to get started.",
                         "Finally, you can also select any existing profiles you've loaded in. Or refresh them to get any updates that might exist!",
@@ -151,6 +159,7 @@ export default {
                     text: [
                         "When a profile defines a property as required you will see an asterisk next to the property name and the background will be red when there is no data attached.",
                         "To describe an item and it to a property, select which type you wish to add.",
+                        "In this example the property accepts a Person or Organization instance but other properties might accept Text or Date data.",
                     ],
                     image: page7,
                 },
@@ -199,22 +208,56 @@ export default {
                 },
                 {
                     text: [
-                        "Describo gives you tools to inspect the data you're creating.",
-                        "The 'inspect crate' button will show you exactly what will be written out.",
+                        "We can see that this Person is only defined in the crate once even though they are linked to two properties.",
                     ],
                     image: page15,
                 },
                 {
                     text: [
-                        "And when you're done you can export the crate as a zip file or even a BagIT Bag!",
+                        "A key feature of RO-Crate is the ability to describe the content within your crate.",
                     ],
                     image: page16,
                 },
                 {
                     text: [
-                        "Finally, the settings page of Describo. This is where you can see the items that have been saved to your datastore and also access this help again.",
+                        "In this example we've specifically added an mp3, an mp4 and an XML file to the description.",
+                        "Don't be confused: if you package up your crate the whole folder subtree will be included. This is about explicitly describing some items.",
                     ],
                     image: page17,
+                },
+                {
+                    text: [
+                        "The items we want to describe. A folder is described as a 'Dataset' and a file is described as a 'File'.",
+                        "File and folder identifiers are paths relative to the root of the crate.",
+                    ],
+                    image: page18,
+                },
+                {
+                    text: [
+                        "RO-Crate allows you to define metadata for the crate and individual items within the crate.",
+                        "In this example we can see a preview of the file and the properties we can define which provide the user more information about this piece of data.",
+                    ],
+                    image: page19,
+                },
+
+                {
+                    text: [
+                        "Describo gives you tools to inspect the data you're creating.",
+                        "The 'inspect crate' button will show you exactly what will be written out.",
+                    ],
+                    image: page28,
+                },
+                {
+                    text: [
+                        "And when you're done you can export the crate as a zip file or even a BagIT Bag!",
+                    ],
+                    image: page29,
+                },
+                {
+                    text: [
+                        "Finally, the settings page of Describo. This is where you can see the items that have been saved to your datastore and also access this help again.",
+                    ],
+                    image: page30,
                 },
             ],
         };
