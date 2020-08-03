@@ -45,6 +45,7 @@ import {
     isString,
     isEmpty,
     difference,
+    has,
 } from "lodash";
 import RenderProfileReportComponent from "./RenderProfileReport.component.vue";
 import { isSimpleType } from "components/CrateCreator/CoreComponents/simple/component.mixins";
@@ -104,7 +105,19 @@ export default {
             const container = this.$store.getters.getItemById(this.uuid);
             let type = container["@type"];
             if (isArray(type)) {
-                type = this.$store.state.mappings[type.sort().join(", ")];
+                const mappings = this.$store.state.mappings;
+                const stringifiedType = type.sort().join(", ");
+                if (has(mappings, stringifiedType)) {
+                    type = mappings[stringifiedType];
+                } else {
+                    if (type.includes("Dataset")) {
+                        type = "Dataset";
+                    } else if (type.includes("File")) {
+                        type = "File";
+                    } else {
+                        type = stringifiedType;
+                    }
+                }
             }
             if (type === "RootDataset") {
                 this.typeDefinition = this.$store.getters.getActiveProfileDefinition();
