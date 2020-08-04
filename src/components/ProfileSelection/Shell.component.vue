@@ -7,11 +7,11 @@
             <div>
                 <el-button
                     @click="selectNewProfile"
-                    type="danger"
+                    type="primary"
                     size="small"
                     class="focus:outline-none focus:border-2 focus:border-red-600"
                 >
-                    <i class="fas fa-trash-alt"></i>
+                    <i class="fas fa-times"></i>
                 </el-button>
             </div>
             <div class="ml-2 text-xl text-gray-700 font-light">

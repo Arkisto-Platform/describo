@@ -4,11 +4,11 @@
             <div>
                 <el-button
                     @click="describeNewFolder"
-                    type="danger"
+                    type="primary"
                     size="small"
                     class="focus:outline-none focus:border-2 focus:border-red-600"
                 >
-                    <i class="fas fa-trash-alt"></i>
+                    <i class="fas fa-times"></i>
                 </el-button>
             </div>
             <render-selected-target-component

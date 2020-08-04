@@ -72,6 +72,16 @@
                     export
                 </el-button>
             </div>
+            <div>
+                <el-button
+                    @click="describeNewFolder"
+                    type="primary"
+                    size="small"
+                    class="focus:outline-none focus:border-2 focus:border-blue-600"
+                >
+                    close this crate
+                </el-button>
+            </div>
         </div>
         <!-- end: controls-->
 
@@ -200,6 +210,11 @@ export default {
                 this.saved = false;
                 this.$emit("error", error);
             }
+        },
+        describeNewFolder() {
+            this.$store.commit("setTarget", null);
+            this.$store.commit("saveProfile", {});
+            this.$store.commit("setActiveProfileType", undefined);
         },
     },
 };
