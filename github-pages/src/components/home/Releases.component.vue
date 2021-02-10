@@ -34,7 +34,7 @@
                     href="https://github.com/Arkisto-Platform/describo/releases"
                     target="_blank"
                     class="text-orange-600"
-                    >https://github.com/UTS-eResearch/describo/releases</a
+                    >https://github.com/Arkisto-Platform/describo/releases</a
                 >
             </div>
         </div>

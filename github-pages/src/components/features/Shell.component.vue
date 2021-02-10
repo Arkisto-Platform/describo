@@ -2,9 +2,7 @@
     <div class="flex flex-col space-y-4 md:space-y-10 my-10">
         <div class="text-xl lg:text-4xl text-center">
             Features
-            <span class="inline-block text-lg"
-                >(click on an image to expand)</span
-            >
+            <span class="inline-block text-lg">(click on an image to expand)</span>
         </div>
         <div v-for="(item, idx) of items" :key="idx">
             <render-feature-component :item="item" />
@@ -29,8 +27,7 @@ export default {
                 },
                 {
                     image: "images/create-person.png",
-                    text:
-                        "Entity type definitions like Person, Organization and many others.",
+                    text: "Entity type definitions like Person, Organization and many others.",
                 },
                 {
                     image: "images/create-organization.png",
@@ -38,13 +35,11 @@ export default {
                 },
                 {
                     image: "images/lookup-organization-in-ror.png",
-                    text:
-                        "Lookup organizations in the Research Organization Registry (ROR).",
+                    text: "Lookup organizations in the Research Organization Registry (ROR).",
                 },
                 {
                     image: "images/add-content1.png",
-                    text:
-                        "Manage crate data with the easy to use file selector.",
+                    text: "Manage crate data with the easy to use file selector.",
                 },
                 {
                     image: "images/add-content2.png",
@@ -64,13 +59,11 @@ export default {
                 },
                 {
                     image: "images/add-content6.png",
-                    text:
-                        "Built in previews of image, audio, video and xml formats.",
+                    text: "Built in previews of image, audio, video and xml formats.",
                 },
                 {
                     image: "images/errors.png",
-                    text:
-                        "Get notified when you haven't populated a required property.",
+                    text: "Get notified when you haven't populated a required property.",
                 },
                 {
                     image: "images/inspect-data.png",
@@ -83,15 +76,14 @@ export default {
                 },
                 {
                     image: "images/custom-profile.png",
-                    text: `<a href="https://github.com/UTS-eResearch/describo/wiki/dsp-index" target="_blank" class="text-orange-600">Define your own profile.</a>
+                    text: `<a href="https://github.com/Arkisto-Platform/describo/wiki/dsp-index" target="_blank" class="text-orange-600">Define your own profile.</a>
                         Describo is extensible in every way including
                         overriding inbuilt types and defining which types are available to the user.
                         `,
                 },
                 {
                     image: "images/types-value.png",
-                    text:
-                        "Built in types - define a specific value for a property.",
+                    text: "Built in types - define a specific value for a property.",
                 },
                 {
                     image: "images/types-text.png",
@@ -108,8 +100,7 @@ export default {
                 },
                 {
                     image: "images/types-select.png",
-                    text:
-                        "Built in types - collect a value from a set of options from the user.",
+                    text: "Built in types - collect a value from a set of options from the user.",
                 },
                 {
                     image: "images/data-pack-lookup.png",
