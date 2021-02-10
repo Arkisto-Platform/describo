@@ -1,5 +1,4 @@
-> ## **If you're not a developer you should probably get a pre-built bundle from: [https://uts-eresearch.github.io/describo/](https://uts-eresearch.github.io/describo/)**
-
+> ## **If you're not a developer you should probably get a pre-built bundle from: [https://arkisto-platform.github.io/describo/](https://arkisto-platform.github.io/describo/)**
 
 # describo
 
@@ -9,7 +8,6 @@ We do not have tutorial documentation yet but would be interested to hear what p
 
 If you follow the instructions below to run in a dev environment an application will start on your computer.
 
-
 - [describo](#describo)
   - [Technology](#technology)
   - [Running the development environment](#running-the-development-environment)
@@ -17,7 +15,6 @@ If you follow the instructions below to run in a dev environment an application 
   - [Repository Structure](#repository-structure)
   - [Building a release](#building-a-release)
   - [Updating the github pages site](#updating-the-github-pages-site)
-
 
 ## Technology
 
@@ -67,4 +64,3 @@ See the [wiki](https://github.com/UTS-eResearch/describo/wiki/build-a-release)
 ## Updating the github pages site
 
 See the [wiki](https://github.com/UTS-eResearch/describo/wiki/updating-github-pages)
-
