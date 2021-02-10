@@ -13,14 +13,14 @@
                 </div>
                 <div>
                     <a
-                        href="https://github.com/UTS-eResearch/describo/wiki"
+                        href="https://github.com/Arkisto-Platform/describo/wiki"
                         class="hover:text-orange-600"
                         >docs</a
                     >
                 </div>
                 <div>
                     <a
-                        href="https://github.com/UTS-eResearch/describo/wiki/About"
+                        href="https://github.com/Arkisto-Platform/describo/wiki/About"
                         class="hover:text-orange-600"
                         >about</a
                     >
@@ -29,14 +29,14 @@
             <div class="flex flex-col md:flex-row md:space-x-8">
                 <div>
                     <a
-                        href="https://github.com/UTS-eResearch/describo"
+                        href="https://github.com/Arkisto-Platform/describo"
                         class="hover:text-orange-600"
                         ><i class="fab fa-github"></i> github</a
                     >
                 </div>
                 <div>
                     <a
-                        href="https://github.com/UTS-eResearch/describo/issues"
+                        href="https://github.com/Arkisto-Platform/describo/issues"
                         class="hover:text-orange-600"
                         >issues</a
                     >

@@ -6,10 +6,7 @@
             </a>
         </div>
         <div class="flex-grow"></div>
-        <div
-            class="hover:text-orange-600"
-            :class="{ 'text-orange-600': activeRoute === 'home' }"
-        >
+        <div class="hover:text-orange-600" :class="{ 'text-orange-600': activeRoute === 'home' }">
             <router-link to="/"><i class="fas fa-home"></i></router-link>
         </div>
         <div
@@ -20,7 +17,7 @@
         </div>
         <div class="hidden md:block">
             <a
-                href="https://github.com/UTS-eResearch/describo/wiki"
+                href="https://github.com/Arkisto-Platform/describo/wiki"
                 target="_blank"
                 class="hover:text-orange-600"
                 >docs</a
@@ -28,7 +25,7 @@
         </div>
         <div class="hidden md:block">
             <a
-                href="https://github.com/UTS-eResearch/describo/wiki/About"
+                href="https://github.com/Arkisto-Platform/describo/wiki/About"
                 target="_blank"
                 class="hover:text-orange-600"
                 >about</a
@@ -36,7 +33,7 @@
         </div>
         <div>
             <a
-                href="https://github.com/UTS-eResearch/describo"
+                href="https://github.com/Arkisto-Platform/describo"
                 target="_blank"
                 class="hover:text-orange-600"
                 ><i class="fab fa-github"></i> github</a
@@ -44,7 +41,7 @@
         </div>
         <div class="hidden md:block">
             <a
-                href="https://github.com/UTS-eResearch/describo/issues"
+                href="https://github.com/Arkisto-Platform/describo/issues"
                 target="_blank"
                 class="hover:text-orange-600"
                 >issues</a
