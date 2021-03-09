@@ -8,7 +8,7 @@ Describo is a tool to describe and package research data and corresponding metad
 
 You can get a pre-built bundle from the download section on our web pages: [https://arkisto-platform.github.io/describo/](https://arkisto-platform.github.io/describo/).
 
-Once you have installed the desktop version of describo, on the first run you will be welcome with a guided tour showing step by step how to use it. You can take that guided tour with you or share it with colleagues by downloading the [PDF version here](./docs/describo_getting_started.pdf){:target="_blank"}. By default, describo will work with a predefined profile that fits needs for most users. If you want to create your own customize profile, you can visit our wiki where you will find [further documentation](https://github.com/Arkisto-Platform/describo/wiki).
+Once you have installed the desktop version of describo, on the first run you will be welcome with a guided tour showing step by step how to use it. You can take that guided tour with you or share it with colleagues by downloading the [PDF version here](./docs/describo_getting_started.pdf). By default, describo will work with a predefined profile that fits needs for most users. If you want to create your own customize profile, you can visit our wiki where you will find [further documentation](https://github.com/Arkisto-Platform/describo/wiki).
 
 
 ## describo for developers
