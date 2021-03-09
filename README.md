@@ -2,11 +2,9 @@
 
 # describo
 
-Describo is a tool to describe and package data. It is a desktop app that runs on your Mac, Windows or Linux computer. You point it at a directory and it will allow you to describe the data therein as a `Dataset` using the [RO-Crate Standard](https://researchobject.github.io/ro-crate/1.0/). RO-Crate uses a linked data approach to metadata - in describing your Dataset Data Item you will be able to add properties such as `author` - where the value is not just a string, but a Contextual Item - a `Person` - which in turn may link to other Contextual Items.
+Describo is a tool to describe and package research data and corresponding metadata following the [RO-Crate standard](https://researchobject.github.io/ro-crate/1.0/). You will start from a directory and then use Describo to describe the data therein as a `Dataset`, including metadata on the "who, what and where" properties such as `author` - where the value is not just a string, but a Contextual Item - a `Person` - which in turn may link to other Contextual Items. Describo runs as a desktop app on your Mac, Windows or Linux computer. There is also a [version that can be installed as a web application](https://arkisto-platform.github.io/describo-online/), e.g., to make it available from your servers for all the researchers at your institution.  
 
-We do not have tutorial documentation yet but would be interested to hear what people make of the tool anyway.
-
-If you follow the instructions below to run in a dev environment an application will start on your computer.
+We do not have yet a formal tutorial documentation for developers but would be interested to hear what people make of the tool anyway. Here we provide some instructions to run it in a dev environment so an application will start on your computer. 
 
 - [describo](#describo)
   - [Technology](#technology)
