@@ -2,20 +2,21 @@
 
 # describo
 
-Describo is a tool to describe and package research data and corresponding metadata following the [RO-Crate standard](https://researchobject.github.io/ro-crate/1.0/). You will start from a directory and then use Describo to describe the data therein as a `Dataset`, including metadata on the "who, what and where" properties such as `author` - where the value is not just a string, but a Contextual Item - a `Person` - which in turn may link to other Contextual Items. Describo runs as a desktop app on your Mac, Windows or Linux computer. There is also a [version that can be installed as a web application](https://arkisto-platform.github.io/describo-online/), e.g., to make it available from your servers for all the researchers at your institution.   
+Describo is a tool to describe and package research data and corresponding metadata following the [RO-Crate standard](https://researchobject.github.io/ro-crate/1.0/). You will start from a directory and then use Describo to describe the data therein as a `Dataset`, including metadata on the "who, what and where" properties such as `author` - where the value is not just a string, but a Contextual Item - a `Person` - which in turn may link to other Contextual Items. Describo runs as a desktop app on your Mac, Windows or Linux computer. There is also a [version that can be installed as a web application](https://arkisto-platform.github.io/describo-online/), e.g., to make it available from your servers for all the researchers at your institution.
 
 ## describo for users
 
 You can get a pre-built bundle from the download section on our web pages: [https://arkisto-platform.github.io/describo/](https://arkisto-platform.github.io/describo/).
 
-Once you have installed the desktop version of describo, on the first run you will be welcome with a guided tour showing step by step how to use it. You can take that guided tour with you or share it with colleagues by downloading the [PDF version here](./docs/describo_getting_started.pdf). By default, describo will work with a predefined profile that fits needs for most users. If you want to create your own customize profile, you can visit our wiki where you will find [further documentation](https://github.com/Arkisto-Platform/describo/wiki).
-
+Once you have installed the desktop version of describo, on the first run you will be welcome with a guided tour showing step by step how to use it. You can take that guided tour with you or share it with colleagues by downloading the [PDF version here](./describo_getting_started.pdf). By default, describo will work with a predefined profile that fits needs for most users. If you want to create your own customize profile, you can visit our wiki where you will find [further documentation](https://github.com/Arkisto-Platform/describo/wiki).
 
 ## describo for developers
 
 We do not have yet a formal tutorial documentation for developers but would be interested to hear what people make of the tool anyway. Here we provide some instructions to run it in a dev environment so an application will start on your computer.
 
 - [describo](#describo)
+  - [describo for users](#describo-for-users)
+  - [describo for developers](#describo-for-developers)
   - [Technology](#technology)
   - [Running the development environment](#running-the-development-environment)
   - [Tests](#tests)
