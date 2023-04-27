@@ -1,4 +1,7 @@
-> ## **If you're not a developer you should probably get a pre-built bundle from: [https://arkisto-platform.github.io/describo/](https://arkisto-platform.github.io/describo/)**
+> # This code is no longer being developed here - there is a [separate github organization started by Marco La Rosa where current development is taking place](https://github.com/describo).
+
+
+
 
 # describo
 
