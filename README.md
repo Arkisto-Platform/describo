@@ -1,4 +1,4 @@
-> # This code is no longer being developed here - there is a [separate github organization started by Marco La Rosa where current development is taking place](https://github.com/describo).
+> # This code is no longer being developed here - please go to https://describo.github.io.
 
 
 
